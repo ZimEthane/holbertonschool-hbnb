@@ -80,6 +80,19 @@ contains all business rules.
 
 ## 4. API Interaction Flow
 ❤️ **Insert Sequence Diagrams here**
+## User registration sequence diagram
+![User registration sequence diagram](Api_User_Registration.png)
+
+## Place creation sequence diagram
+![Place creation sequence diagram](API_Place_Creation.png)
+
+## Review submission sequence diagram
+![Review submission sequence diagram](API_Review_Submission.png)
+
+## List of place sequence diagram
+![List of place sequence diagram](API_List_of_places.png)
+
+
 Figure 3+: Sequence Diagrams for API Calls
 
 4.1 Purpose of the Diagrams
