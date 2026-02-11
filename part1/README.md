@@ -79,7 +79,7 @@ The Business Logic layer represents the core of the application and
 contains all business rules.
 
 ## 4. API Interaction Flow
-❤️ **Insert Sequence Diagrams here**
+
 ## User registration sequence diagram
 ![User registration sequence diagram](Api_User_Registration.png)
 
