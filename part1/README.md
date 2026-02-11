@@ -22,7 +22,7 @@ application to evolve over time while keeping the core business logic
 independent from both the API layer and the data storage mechanism.
 
 ## 2. High-Level Architecture
- ❤️ **Insert High-Level Package Diagram here**
+![High level package diagram](high_level_package_diagram.png)
 Figure 1: High-Level Package Diagram of the HBnB architecture
 
 2.1 Purpose of the Diagram
