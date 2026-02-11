@@ -56,7 +56,7 @@ This diagram defines the core structure of the HBnB application and
 serves as a reference for organizing the codebase.
 
 ## 3. Business Logic Layer
-❤️ **Insert Business Logic Class Diagram here**
+![Business logic class diagram](Business_logic_class_diagram.png)
 Figure 2: Detailed Class Diagram of the Business Logic Layer
 
 3.1 Purpose of the Diagram
