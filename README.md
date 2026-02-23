@@ -1,15 +1,15 @@
-## Holbertonschool-hbnb
+# Holbertonschool-hbnb
 
 Clone simplifié de AirBnB développé dans le cadre de la formation Holberton School.
 
-# Application organisée en couches :
+## Application organisée en couches :
 
 - API
 - Services / Facade
 - Models
 - Persistence
 
-# 🧱 Partie 1 — Conception (Part1)
+## 🧱 Partie 1 — Conception (Part1)
 
 Dans cette première partie, nous avons travaillé sur la conception du projet.
 Création des diagrammes UML (classes, séquences, architecture).
@@ -18,7 +18,7 @@ Organisation de l’architecture en différentes couches.
 Préparation de la structure technique avant le développement.
 But : comprendre la modélisation d’une application complexe avant son implémentation.
 
-# 🌐 Partie 2 — API / Backend (Part2)
+## 🌐 Partie 2 — API / Backend (Part2)
 
 Dans cette seconde partie, nous avons développé le backend avec Flask.
 Mise en place d’une API REST.
@@ -27,7 +27,7 @@ Gestion des modèles et de la persistance des données.
 Architecture propre (API → Services → Models → Storage).
 But : construire la logique serveur de l’application.
 
-# 🛠️ Installation
+## 🛠️ Installation
 Cloner le dépôt
 ```bash
 git clone https://github.com/ZimEthane/holbertonschool-hbnb.git
