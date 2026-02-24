@@ -18,4 +18,6 @@ class Amenity(BaseModel):
             raise TypeError("Value must be a string")
         if value == "":
             raise ValueError("Value must not be empty")
+        if len(value) > 50:
+            raise ValueError("Value must not exceed 50 characters")
         self.__name = value
