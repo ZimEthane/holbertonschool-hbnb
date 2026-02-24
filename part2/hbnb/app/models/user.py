@@ -33,6 +33,8 @@ class User(BaseModel):
             raise TypeError("first_name must be a string")
         if value == "":
             raise ValueError("first_name must not be empty")
+        if len(value) > 50:
+            raise ValueError("first_name must not exceed 50 characters")
         self.__first_name = value
 
     @last_name.setter
@@ -41,6 +43,8 @@ class User(BaseModel):
             raise TypeError("last_name must be a string")
         if value == "":
             raise ValueError("last_name must not be empty")
+        if len(value) > 50:
+            raise ValueError("last_name must not exceed 50 characters")
         self.__last_name = value
 
     @email.setter
@@ -49,6 +53,8 @@ class User(BaseModel):
             raise TypeError("email must be a string")
         if value == "":
             raise ValueError("email must not be empty")
+        if "@" not in value or "." not in value:
+            raise ValueError("email must be a valid email address")
         self.__email = value
 
     @is_admin.setter
