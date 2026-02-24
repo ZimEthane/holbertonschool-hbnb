@@ -1,12 +1,14 @@
 from basemodel import BaseModel
+from user import User
+from place import Place
 
 class Review(BaseModel):
-    def __init__(self, text="", rating=0, place="", user=""):
+    def __init__(self, text="", rating=0, place=None, user=None):
         super().__init__()
         self.__text = text
         self.__rating = rating
         self.__place = place
-        self.__user = user
+		self.__user = user
 
     @property
     def text(self):
@@ -31,27 +33,33 @@ class Review(BaseModel):
     @text.setter
     def text(self, value):
         """information must be checked"""
-        if not isinstance(value, str) or value == "":
-            raise ValueError("The text must be a string")
+        if not isinstance(value, str):
+            raise TypeError("The text must be a string")
+        if value == "":
+            raise ValueError("The text must not be empty")
         self.__text = value
 
     @rating.setter
     def rating(self, value):
         """information must be checked"""
         if not isinstance(value, int):
-            raise ValueError("The rating must be an integer")
-        if value < 0:
-            raise ValueError("The rating must be positive")
-        if value > 5:
-            raise ValueError("The rating must be less than or equal to 5")
+            raise TypeError("The rating must be an integer")
+        if value < 0 or value > 5:
+			raise ValueError("The rating must be between 0 and 5")
         self.__rating = value
 
     @place.setter
     def place(self, value):
         """information must be checked"""
+		if not isinstance(value, Place):
+			raise TypeError("place must be an instance of Place")
         self.__place = value
+		value.add_review(self)
 
     @user.setter
     def user(self, value):
         """information must be checked"""
+		if not isinstance(value, User):
+			raise TypeError("user must be an instance of User")
         self.__user = value
+		value.add_review(self)

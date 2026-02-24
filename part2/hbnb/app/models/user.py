@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 from BaseModel import BaseModel
 from Place import Place
+from Review import Review
 
 
 class User(BaseModel):
@@ -12,6 +13,7 @@ class User(BaseModel):
         self.email = email
         self.is_admin = is_admin
         self.places = []
+        self.reviews = []
 
     @property
     def first_name(self):
@@ -69,3 +71,8 @@ class User(BaseModel):
         if not isinstance(place, Place):
             raise TypeError("place must be an instance of Place")
         self.places.append(place)
+    
+    def add_review(self, review):
+        if not isinstance(review, Review):
+            raise TypeError("review must be an instance of Review")
+        self.reviews.append(review)
