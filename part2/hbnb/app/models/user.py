@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 from BaseModel import BaseModel
+from Place import Place
 
 
 class User(BaseModel):
@@ -10,6 +11,7 @@ class User(BaseModel):
         self.last_name = last_name
         self.email = email
         self.is_admin = is_admin
+        self.places = []
 
     @property
     def first_name(self):
@@ -62,3 +64,8 @@ class User(BaseModel):
         if not isinstance(value, bool):
             raise TypeError("is_admin must be a boolean")
         self.__is_admin = value
+
+    def add_place(self, place):
+        if not isinstance(place, Place):
+            raise TypeError("place must be an instance of Place")
+        self.places.append(place)
