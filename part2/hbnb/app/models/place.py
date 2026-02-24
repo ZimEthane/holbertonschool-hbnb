@@ -1,6 +1,10 @@
+#!/usr/bin/python3
+from BaseModel import BaseModel
+
+
 class Place(BaseModel):
     def __init__(self, title="", description="", price=0, latitude=0, longitude=0, owner=""):
-        super().__init__(id, created_at, updated_at)
+        super().__init__()
         self.__title = title
         self.__description = description
         self.__price = price
@@ -37,15 +41,15 @@ class Place(BaseModel):
         def title(self, value):
             if value < 0:
                 raise ValueError("The title is mandatory")
-            if value > 101:
-                raise ValueError("The lenght title must be max 100 character")
-            self.__title = title
+            if value > 100:
+                raise ValueError("The length of title must be max 100 characters")
+            self.__title = value
 
         @price.setter
         def price(self, value):
             if value <= 0:
                 raise ValueError("The price must be positive")
-            self.__price = price
+            self.__price = value
 
         @latitude.setter
         def latitude(self, value):
@@ -53,6 +57,7 @@ class Place(BaseModel):
                 raise ValueError("The latitude must be greater -90,0 and less than 90,0")
             if value > 90,0:
                 raise ValueError("The latitude must be greater -90,0 and less than 90,0")
+            self.__latitude = value
 
         @longitude.setter
         def longitude(self, value):
@@ -60,7 +65,9 @@ class Place(BaseModel):
                 raise ValueError("The longitude must be greater -180,0 and less than 180,0")
             if value > 180,0:
                 raise ValueError("The longitude must be greater -180,0 and less than 180,0")
+            self.__longitude = value
 
         @owner.setter
         def owner(self, value):
             """information must be checked"""
+            self.__owner = value
