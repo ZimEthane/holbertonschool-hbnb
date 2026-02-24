@@ -1,7 +1,7 @@
 #!/usr/bin/python3
-from BaseModel import BaseModel
-from Place import Place
-from Review import Review
+from .baseModel import BaseModel
+from .place import Place
+from .review import Review
 
 
 class User(BaseModel):

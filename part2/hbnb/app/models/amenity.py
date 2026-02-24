@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-from BaseModel import BaseModel
+from .baseModel import BaseModel
 
 
 class Amenity(BaseModel):

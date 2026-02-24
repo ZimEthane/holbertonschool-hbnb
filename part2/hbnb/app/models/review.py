@@ -1,6 +1,7 @@
-from basemodel import BaseModel
-from user import User
-from place import Place
+from .baseModel import BaseModel
+from .user import User
+from .place import Place
+
 
 class Review(BaseModel):
     def __init__(self, text="", rating=0, place=None, user=None):

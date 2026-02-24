@@ -1,8 +1,8 @@
 #!/usr/bin/python3
-from BaseModel import BaseModel
-from User import User
-from Review import Review
-from Amenity import Amenity
+from .baseModel import BaseModel
+from .user import User
+from .review import Review
+from .amenity import Amenity
 
 
 class Place(BaseModel):
