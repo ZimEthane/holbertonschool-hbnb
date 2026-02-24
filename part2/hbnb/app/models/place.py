@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 from BaseModel import BaseModel
 from User import User
+from Review import Review
+from Amenity import Amenity
 
 
 class Place(BaseModel):
@@ -12,6 +14,8 @@ class Place(BaseModel):
         self.__latitude = latitude
         self.__longitude = longitude
         self.__owner = owner
+        self.reviews = []
+        self.amenities = []
 
     @property
     def title(self):
@@ -84,3 +88,13 @@ class Place(BaseModel):
             raise TypeError("owner must be an instance of User")
         self.__owner = value
         value.add_place(self)
+
+    def add_review(self, review):
+        if not isinstance(review, Review):
+            raise TypeError("review must be an instance of Review")
+        self.reviews.append(review)
+
+    def add_amenity(self, amenity):
+        if not isinstance(amenity, Amenity):
+            raise TypeError("amenity must be an instance of Amenity")
+        self.amenities.append(amenity)
