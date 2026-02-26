@@ -5,13 +5,22 @@ api = Namespace('places', description='Place operations')
 facade = HBnBFacade()
 
 place_model = api.model('Place', {
+    'id': fields.String,
     'title': fields.String(required=True),
     'description': fields.String,
     'price': fields.Float(required=True),
     'latitude': fields.Float(required=True),
     'longitude': fields.Float(required=True),
     'owner_id': fields.String(required=True),
-    'amenities': fields.List(fields.String)
+    'amenities': fields.List(fields.String),
+    'reviews': fields.List(fields.Nested(review_model))
+})
+
+review_model = api.model('PlaceReview', {
+    'id': fields.String(description='Review ID'),
+    'text': fields.String(description='Text of the review'),
+    'rating': fields.Integer(description='Rating of the place (1-5)'),
+    'user_id': fields.String(description='ID of the user')
 })
 
 @api.route('/')
@@ -59,25 +68,35 @@ class PlaceResource(Resource):
         owner = facade.users.get(place.owner_id)
 
         return {
-            "id": place.id,
-            "title": place.title,
-            "description": place.description,
-            "latitude": place.latitude,
-            "longitude": place.longitude,
-            "owner": {
-                "id": owner.id,
-                "first_name": owner.first_name,
-                "last_name": owner.last_name,
-                "email": owner.email
-            },
-            "amenities": [
-                {
-                    "id": a.id,
-                    "name": a.name
-                }
-                for a in place.amenities
-            ]
-        }, 200
+    "id": place.id,
+    "title": place.title,
+    "description": place.description,
+    "price": place.price,
+    "latitude": place.latitude,
+    "longitude": place.longitude,
+    "owner": {
+        "id": owner.id,
+        "first_name": owner.first_name,
+        "last_name": owner.last_name,
+        "email": owner.email
+    },
+    "amenities": [
+        {
+            "id": a.id,
+            "name": a.name
+        }
+        for a in place.amenities
+    ],
+    "reviews": [
+        {
+            "id": r.id,
+            "text": r.text,
+            "rating": r.rating,
+            "user_id": r.user.id
+        }
+        for r in place.reviews
+    ]
+}, 200
 
     @api.expect(place_model)
     def put(self, place_id):
