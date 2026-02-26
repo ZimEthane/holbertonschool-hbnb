@@ -1,6 +1,4 @@
 from .baseModel import BaseModel
-from .user import User
-from .place import Place
 
 
 class Review(BaseModel):
@@ -9,7 +7,7 @@ class Review(BaseModel):
         self.__text = text
         self.__rating = rating
         self.__place = place
-		self.__user = user
+        self.__user = user
 
     @property
     def text(self):
@@ -46,21 +44,23 @@ class Review(BaseModel):
         if not isinstance(value, int):
             raise TypeError("The rating must be an integer")
         if value < 0 or value > 5:
-			raise ValueError("The rating must be between 0 and 5")
+            raise ValueError("The rating must be between 0 and 5")
         self.__rating = value
 
     @place.setter
     def place(self, value):
         """information must be checked"""
-		if not isinstance(value, Place):
-			raise TypeError("place must be an instance of Place")
+        from .place import Place
+        if not isinstance(value, Place):
+            raise TypeError("place must be an instance of Place")
         self.__place = value
-		value.add_review(self)
+        value.add_review(self)
 
     @user.setter
     def user(self, value):
         """information must be checked"""
-		if not isinstance(value, User):
-			raise TypeError("user must be an instance of User")
+        from .user import User
+        if not isinstance(value, User):
+            raise TypeError("user must be an instance of User")
         self.__user = value
-		value.add_review(self)
+        value.add_review(self)

@@ -1,19 +1,16 @@
 #!/usr/bin/python3
 from .baseModel import BaseModel
-from .user import User
-from .review import Review
-from .amenity import Amenity
 
 
 class Place(BaseModel):
     def __init__(self, title="", description="", price=0, latitude=0, longitude=0, owner=None):
         super().__init__()
-        self.__title = title
-        self.__description = description
-        self.__price = price
-        self.__latitude = latitude
-        self.__longitude = longitude
-        self.__owner = owner
+        self.title = title
+        self.description = description
+        self.price = price
+        self.latitude = latitude
+        self.longitude = longitude
+        self.owner = owner
         self.reviews = []
         self.amenities = []
 
@@ -22,6 +19,11 @@ class Place(BaseModel):
         """Gets the title of the place"""
         return self.__title
 
+    @property
+    def description(self):
+        """Gets the description of the place"""
+        return self.__description
+    
     @property
     def price(self):
         """Gets the price of the place"""
@@ -84,17 +86,20 @@ class Place(BaseModel):
 
     @owner.setter
     def owner(self, value):
+        from .user import User
         if not isinstance(value, User):
             raise TypeError("owner must be an instance of User")
         self.__owner = value
         value.add_place(self)
 
     def add_review(self, review):
+        from .review import Review
         if not isinstance(review, Review):
             raise TypeError("review must be an instance of Review")
         self.reviews.append(review)
 
     def add_amenity(self, amenity):
+        from .amenity import Amenity
         if not isinstance(amenity, Amenity):
             raise TypeError("amenity must be an instance of Amenity")
         self.amenities.append(amenity)

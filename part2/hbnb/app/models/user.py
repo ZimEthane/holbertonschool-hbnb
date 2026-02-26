@@ -1,7 +1,5 @@
 #!/usr/bin/python3
 from .baseModel import BaseModel
-from .place import Place
-from .review import Review
 
 
 class User(BaseModel):
@@ -68,11 +66,13 @@ class User(BaseModel):
         self.__is_admin = value
 
     def add_place(self, place):
+        from .place import Place
         if not isinstance(place, Place):
             raise TypeError("place must be an instance of Place")
         self.places.append(place)
     
     def add_review(self, review):
+        from .review import Review
         if not isinstance(review, Review):
             raise TypeError("review must be an instance of Review")
         self.reviews.append(review)
