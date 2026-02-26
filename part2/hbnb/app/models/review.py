@@ -4,10 +4,10 @@ from .baseModel import BaseModel
 class Review(BaseModel):
     def __init__(self, text="", rating=0, place=None, user=None):
         super().__init__()
-        self.__text = text
-        self.__rating = rating
-        self.__place = place
-        self.__user = user
+        self.text = text
+        self.rating = rating
+        self.place = place
+        self.user = user
 
     @property
     def text(self):
