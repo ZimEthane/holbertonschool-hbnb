@@ -76,3 +76,10 @@ class User(BaseModel):
         if not isinstance(review, Review):
             raise TypeError("review must be an instance of Review")
         self.reviews.append(review)
+
+    def remove_review(self, review):
+        from .review import Review
+        if not isinstance(review, Review):
+            raise TypeError("review must be an instance of Review")
+        if review in self.reviews:
+            self.reviews.remove(review)
