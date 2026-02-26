@@ -48,14 +48,14 @@ hbnb/
 
 ## Installation
 
-# 1. Clone the repository (or navigate to your project folder)
+### 1. Clone the repository (or navigate to your project folder)
 ```bash
 
 git clone <your-repo-url>
 cd hbnb
 
 ```
-# 2. Create and activate a virtual environment (strongly recommended)
+### 2. Create and activate a virtual environment (strongly recommended)
 ```bash
 
 python -m venv venv
@@ -64,21 +64,21 @@ source venv/bin/activate      # Linux / macOS
 venv\Scripts\activate         # Windows
 
 ```
-# 3. Install dependencies
+### 3. Install dependencies
 ```bash
 
 pip install -r requirements.txt
 
 ```
 
-## Main Dependencies (requirements.txt)
+### Main Dependencies (requirements.txt)
 
 flask
 flask-restx
 
-## Running the Application
+### Running the Application
 
-# From the project root
+## From the project root
 python run.py
 
 The API will be available at:
