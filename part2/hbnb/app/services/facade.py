@@ -1,12 +1,14 @@
 from app.persistence.repository import InMemoryRepository
 from app.models.user import User
 from app.models.amenity import Amenity
+from app.models.place import Place
 
 
 class HBnBFacade:
     def __init__(self):
         self.user_repo = InMemoryRepository()
         self.amenities = {}  # Stockage en mémoire des amenities
+        self.places = {}
 
     ##########################
     ## User-related methods ##
@@ -22,7 +24,6 @@ class HBnBFacade:
 
     def get_user_by_email(self, email):
         return self.user_repo.get_by_attribute('email', email)
-
 
 
     #############################   
@@ -58,3 +59,51 @@ class HBnBFacade:
                 raise ValueError(str(e))
         amenity.save()
         return amenity
+
+
+    ###########################
+    ## Place-related methods ##
+    ###########################
+
+
+    def create_place(self, place_data):
+        if place_data['owner_id'] not in self.users:
+            raise ValueError("Owner not found")
+
+        amenities_objs = []
+        for amenity_id in place_data.get('amenities', []):
+            amenity = self.amenities.get(amenity_id)
+            if not amenity:
+                raise ValueError(f"Amenity {amenity_id} not found")
+            amenities_objs.append(amenity)
+
+        place = Place(
+            title=place_data['title'],
+            description=place_data.get('description', ''),
+            price=place_data['price'],
+            latitude=place_data['latitude'],
+            longitude=place_data['longitude'],
+            owner_id=place_data['owner_id'],
+            amenities=amenities_objs
+        )
+
+        self.places[place.id] = place
+        return place
+
+    def get_place(self, place_id):
+        return self.places.get(place_id)
+
+    def get_all_places(self):
+        return list(self.places.values())
+
+    def update_place(self, place_id, place_data):
+        place = self.get_place(place_id)
+        if not place:
+            return None
+
+        for key, value in place_data.items():
+            if hasattr(place, key):
+                setattr(place, key, value)
+
+        place.save()
+        return place
