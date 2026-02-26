@@ -114,25 +114,75 @@ class HBnBFacade:
     ############################
 
     def create_review(self, review_data):
-    # Placeholder for logic to create a review, including validation for user_id, place_id, and rating
-        pass
+        """Create a review with validation"""
+
+        user_id = review_data.get("user_id")
+        place_id = review_data.get("place_id")
+        text = review_data.get("text")
+        rating = review_data.get("rating")
+
+        if not user_id or not place_id:
+            raise ValueError("user_id and place_id are required")
+
+        user = self.get_user(user_id)
+        if not user:
+            raise ValueError("User not found")
+
+        place = self.get_place(place_id)
+        if not place:
+            raise ValueError("Place not found")
+
+        review = Review(text=text, rating=rating)
+        review.user = user
+        review.place = place
+
+        self.storage["reviews"][review.id] = review
+        return review
 
     def get_review(self, review_id):
-        # Placeholder for logic to retrieve a review by ID
-        pass
+        """Get review by ID"""
+        return self.storage["reviews"].get(review_id)
 
     def get_all_reviews(self):
-        # Placeholder for logic to retrieve all reviews
-        pass
+        """Get all reviews"""
+        return list(self.storage["reviews"].values())
 
     def get_reviews_by_place(self, place_id):
-        # Placeholder for logic to retrieve all reviews for a specific place
-        pass
+        """Return reviews for a specific place"""
+
+        place = self.get_place(place_id)
+        if not place:
+            raise ValueError("Place not found")
+
+        return place.reviews
 
     def update_review(self, review_id, review_data):
-        # Placeholder for logic to update a review
-        pass
+        """Update review text or rating"""
+
+        review = self.get_review(review_id)
+        if not review:
+            return None
+        
+        if "text" in review_data:
+            review.text = review_data["text"]
+
+        if "rating" in review_data:
+            review.rating = review_data["rating"]
+
+        review.save()
+        return review
 
     def delete_review(self, review_id):
-        # Placeholder for logic to delete a review
-        pass
+        """Delete a review"""
+        review = self.get_review(review_id)
+        if not review:
+            return False
+
+        if review.user:
+            review.user.remove_review(review)
+
+        if review.place:
+            review.place.remove_review(review)
+
+        del self.storage["reviews"][review_id]
+        return True
