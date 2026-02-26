@@ -108,9 +108,14 @@ class HBnBFacade:
         place.save()
         return place
 
+
+    ############################
+    ## Review-related methods ##
+    ############################
+
     def create_review(self, review_data):
     # Placeholder for logic to create a review, including validation for user_id, place_id, and rating
-    pass
+        pass
 
     def get_review(self, review_id):
         # Placeholder for logic to retrieve a review by ID
