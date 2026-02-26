@@ -100,11 +100,11 @@ Input data validation
 Relationship handling (reviews ↔ places, amenities ↔ places…)
 Gradual replacement of in-memory repository with SQLAlchemy
 
-## Useful Commands
+### Useful Commands
 Bash# Quick restart
 python run.py
 
-# Exit the virtual environment when finished
+### Exit the virtual environment when finished
 deactivate
 
 
@@ -154,7 +154,7 @@ print(user.first_name)  # John
 ```
 
 
-## 🏠 Place
+## Place
 Represents a rental property.
 
 ### Attributes
@@ -191,7 +191,7 @@ print(place.title)  # Cozy Apartment
 ```
 
 
-## ⭐ Review
+## Review
 Represents a review written by a user for a place.
 
 ### Attributes
@@ -221,7 +221,7 @@ print(review.rating)  # 5
 ```
 
 
-## 🛜 Amenity
+## Amenity
 Represents a feature of a place (Wi-Fi, Pool, Parking, etc.).
 
 ### Attributes
@@ -240,7 +240,7 @@ place.add_amenity(wifi)
 ```
 
 
-## 🔗 Entity Relationships
+## Entity Relationships
 The domain model includes the following relationships:
 
 - User → Place
@@ -258,19 +258,19 @@ One place can have multiple amenities.
 These relationships are managed through object references and list attributes inside each entity.
 
 
-## 🏗 Business Logic Design Principles
+## Business Logic Design Principles
 - Encapsulation through property getters/setters
 - Strong validation at entity level
 - Clear separation between:
-- - Models (domain logic)
-- - Services (Facade layer)
-- - Persistence (Repository layer)
-- - API layer (Flask endpoints)
+    - Models (domain logic)
+    - Services (Facade layer)
+    - Persistence (Repository layer)
+    - API layer (Flask endpoints)
 
 The Business Logic layer is fully independent from Flask and can be tested separately using unit tests.
 
 
-## 🧪 Example of Independent Testing
+## Example of Independent Testing
 ```bash
 from app.models.user import User
 from app.models.place import Place
