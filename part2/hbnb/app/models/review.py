@@ -50,17 +50,15 @@ class Review(BaseModel):
     @place.setter
     def place(self, value):
         """information must be checked"""
-        from .place import Place
-        if not isinstance(value, Place):
-            raise TypeError("place must be an instance of Place")
+        if value is None or not hasattr(value, "add_review"):
+            raise TypeError("place must be a valid Place")
         self.__place = value
         value.add_review(self)
 
     @user.setter
     def user(self, value):
         """information must be checked"""
-        from .user import User
-        if not isinstance(value, User):
-            raise TypeError("user must be an instance of User")
+        if value is None or not hasattr(value, "add_review"):
+            raise TypeError("user must be a valid User")
         self.__user = value
         value.add_review(self)

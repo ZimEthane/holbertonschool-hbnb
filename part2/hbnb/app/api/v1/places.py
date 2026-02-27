@@ -1,9 +1,8 @@
 #!/usr/bin/python3
 from flask_restx import Namespace, Resource, fields
-from app.services.facade import HBnBFacade
+from app.services import facade
 
 api = Namespace('places', description='Place operations')
-facade = HBnBFacade()
 
 # 1) Define review_model FIRST
 review_model = api.model('PlaceReview', {
@@ -45,7 +44,7 @@ class PlaceList(Resource):
             "price": place.price,
             "latitude": place.latitude,
             "longitude": place.longitude,
-            "owner_id": place.owner_id
+            "owner_id": place.owner.id
         }, 201
 
     def get(self):
@@ -69,7 +68,10 @@ class PlaceResource(Resource):
         if not place:
             return {"message": "Place not found"}, 404
 
-        owner = facade.users.get(place.owner_id)
+        owner = place.owner
+
+        if not owner:
+            return {"message": "Owner not found"}, 404
 
         return {
             "id": place.id,

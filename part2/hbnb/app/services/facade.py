@@ -2,6 +2,7 @@ from app.persistence.repository import InMemoryRepository
 from app.models.user import User
 from app.models.amenity import Amenity
 from app.models.place import Place
+from app.models.review import Review
 
 
 class HBnBFacade:
@@ -9,6 +10,7 @@ class HBnBFacade:
         self.user_repo = InMemoryRepository()
         self.amenities = {}  # Stockage en mémoire des amenities
         self.places = {}
+        self.reviews = {}
 
     ##########################
     ## User-related methods ##
@@ -24,6 +26,9 @@ class HBnBFacade:
 
     def get_user_by_email(self, email):
         return self.user_repo.get_by_attribute('email', email)
+
+    def get_all_users(self):
+        return self.user_repo.get_all()
 
 
     #############################   
@@ -67,7 +72,12 @@ class HBnBFacade:
 
 
     def create_place(self, place_data):
-        if place_data['owner_id'] not in self.users:
+        owner_id = place_data.get('owner_id')
+        if not owner_id:
+            raise ValueError("owner_id is required")
+
+        owner = self.get_user(owner_id)
+        if not owner:
             raise ValueError("Owner not found")
 
         amenities_objs = []
@@ -78,15 +88,14 @@ class HBnBFacade:
             amenities_objs.append(amenity)
 
         place = Place(
-            title=place_data['title'],
+            title=place_data.get('title', ''),
             description=place_data.get('description', ''),
-            price=place_data['price'],
-            latitude=place_data['latitude'],
-            longitude=place_data['longitude'],
-            owner_id=place_data['owner_id'],
-            amenities=amenities_objs
+            price=place_data.get('price', 0),
+            latitude=place_data.get('latitude', 0),
+            longitude=place_data.get('longitude', 0),
+            owner=owner
         )
-
+        place.amenities = amenities_objs
         self.places[place.id] = place
         return place
 
@@ -136,16 +145,16 @@ class HBnBFacade:
         review.user = user
         review.place = place
 
-        self.storage["reviews"][review.id] = review
+        self.reviews[review.id] = review
         return review
 
     def get_review(self, review_id):
         """Get review by ID"""
-        return self.storage["reviews"].get(review_id)
+        return self.reviews.get(review_id)
 
     def get_all_reviews(self):
         """Get all reviews"""
-        return list(self.storage["reviews"].values())
+        return list(self.reviews.values())
 
     def get_reviews_by_place(self, place_id):
         """Return reviews for a specific place"""
@@ -184,5 +193,5 @@ class HBnBFacade:
         if review.place:
             review.place.remove_review(review)
 
-        del self.storage["reviews"][review_id]
+        del self.reviews[review_id]
         return True
