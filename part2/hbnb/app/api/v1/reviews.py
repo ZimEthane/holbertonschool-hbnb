@@ -69,4 +69,3 @@ class ReviewResource(Resource):
             return {"error": "Review not found"}, 404
 
         return {"message": "Review deleted successfully"}, 200
-        
