@@ -93,7 +93,7 @@ class HBnBFacade:
             price=place_data.get('price', 0),
             latitude=place_data.get('latitude', 0),
             longitude=place_data.get('longitude', 0),
-            owner=owner
+            owner= owner 
         )
         place.amenities = amenities_objs
         self.places[place.id] = place

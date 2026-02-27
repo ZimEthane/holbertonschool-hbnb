@@ -87,10 +87,11 @@ class Place(BaseModel):
     @owner.setter
     def owner(self, value):
         from .user import User
-        if not isinstance(value, User):
+        if value is not None and not isinstance(value, User):
             raise TypeError("owner must be an instance of User")
         self.__owner = value
-        value.add_place(self)
+        if value:
+            value.add_place(self)
 
     def add_review(self, review):
         from .review import Review

@@ -20,7 +20,7 @@ place_model = api.model('Place', {
     'price': fields.Float(required=True),
     'latitude': fields.Float(required=True),
     'longitude': fields.Float(required=True),
-    'owner_id': fields.String(required=True),
+    'owner_id': fields.String(required=False),
     'amenities': fields.List(fields.String),
     'reviews': fields.List(fields.Nested(review_model))
 })
@@ -37,15 +37,7 @@ class PlaceList(Resource):
         except Exception as e:
             return {"message": str(e)}, 400
 
-        return {
-            "id": place.id,
-            "title": place.title,
-            "description": place.description,
-            "price": place.price,
-            "latitude": place.latitude,
-            "longitude": place.longitude,
-            "owner_id": place.owner.id
-        }, 201
+        return place.to_dict(), 201
 
     def get(self):
         places = facade.get_all_places()
