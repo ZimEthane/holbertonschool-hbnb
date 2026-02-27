@@ -6,8 +6,12 @@ class Review(BaseModel):
         super().__init__()
         self.text = text
         self.rating = rating
-        self.place = place
-        self.user = user
+
+        if place is not None:
+            self.place = place
+
+        if user is not None:
+            self.user = user
 
     @property
     def text(self):
@@ -60,3 +64,13 @@ class Review(BaseModel):
         if value is None:
             raise TypeError("user must be a valid User")
         self.__user = value
+
+    def to_dict(self):
+        """Convert the review to a dictionary for JSON serialization"""
+        return {
+            "id": self.id,
+            "text": self.text,
+            "rating": self.rating,
+            "user_id": self.user.id if self.user else None,
+            "place_id": self.place.id if self.place else None
+        }

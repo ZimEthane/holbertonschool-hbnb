@@ -110,3 +110,31 @@ class Place(BaseModel):
         if not isinstance(amenity, Amenity):
             raise TypeError("amenity must be an instance of Amenity")
         self.amenities.append(amenity)
+
+    def to_dict(self):
+        """Convert the place to a dictionary for JSON serialization"""
+        return {
+            "id": self.id,
+            "title": self.title,
+            "description": self.description,
+            "price": self.price,
+            "latitude": self.latitude,
+            "longitude": self.longitude,
+            "owner_id": self.owner.id if self.owner else None,
+            "amenities": [
+                {
+                    "id": a.id,
+                    "name": a.name
+                }
+                for a in self.amenities
+            ],
+            "reviews": [
+                {
+                    "id": r.id,
+                    "text": r.text,
+                    "rating": r.rating,
+                    "user_id": r.user.id if r.user else None
+                }
+                for r in self.reviews
+            ]
+        }

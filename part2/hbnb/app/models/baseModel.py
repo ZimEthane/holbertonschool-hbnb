@@ -19,3 +19,11 @@ class BaseModel:
             if hasattr(self, key):
                 setattr(self, key, value)
         self.save()  # Update the updated_at timestamp
+
+    def to_dict(self):
+        """Convert the object to a dictionary for JSON serialization"""
+        return {
+            "id": self.id,
+            "created_at": self.created_at.isoformat(),
+            "updated_at": self.updated_at.isoformat()
+        }

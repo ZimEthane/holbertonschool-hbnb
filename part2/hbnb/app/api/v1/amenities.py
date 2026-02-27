@@ -1,11 +1,10 @@
 # api/v1/amenities.py
 from flask_restx import Namespace, Resource, fields
-from app.services.facade import HBnBFacade
+from app.services import facade
 
 api = Namespace('amenities', description='Amenity operations')
 
-# Façade singleton
-facade = HBnBFacade()
+
 
 # Définition du modèle pour Swagger / validation
 amenity_model = api.model('Amenity', {

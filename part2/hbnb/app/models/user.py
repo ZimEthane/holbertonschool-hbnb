@@ -83,3 +83,15 @@ class User(BaseModel):
             raise TypeError("review must be an instance of Review")
         if review in self.reviews:
             self.reviews.remove(review)
+
+    def to_dict(self):
+        """Convert the user to a dictionary for JSON serialization"""
+        return {
+            "id": self.id,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "email": self.email,
+            "is_admin": self.is_admin,
+            "places": [p.id for p in self.places],
+            "reviews": [r.id for r in self.reviews]
+        }
