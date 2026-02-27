@@ -145,6 +145,12 @@ class HBnBFacade:
         review.user = user
         review.place = place
 
+        if hasattr(user, "add_review"):
+            user.add_review(review)
+
+        if hasattr(place, "add_review"):
+            place.add_review(review)
+
         self.reviews[review.id] = review
         return review
 
@@ -158,12 +164,14 @@ class HBnBFacade:
 
     def get_reviews_by_place(self, place_id):
         """Return reviews for a specific place"""
-
         place = self.get_place(place_id)
         if not place:
             raise ValueError("Place not found")
 
-        return place.reviews
+        return [
+            r for r in self.reviews.values()
+            if r.place and r.place.id == place_id
+        ]
 
     def update_review(self, review_id, review_data):
         """Update review text or rating"""
