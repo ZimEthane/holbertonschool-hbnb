@@ -1,0 +1,4 @@
+déf créer_app(config_class="config.DéveloppementConfig"):
+    application = Flacon(__name__)
+    application'.config'.de_objet(config_class)
+    # ...
