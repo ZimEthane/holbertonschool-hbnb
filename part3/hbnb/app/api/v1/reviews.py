@@ -27,11 +27,19 @@ class ReviewList(Resource):
         data = api.payload
         place_id = data['place_id']
         place = facade.get_place(place_id)
+        rating = data.get('rating')#ligne rajoutée par ju' 
+        
         if not place:
             return {'error': 'Place not found'}, 404
         if place.owner.id == current_user_id:
             return {'error': 'You cannot review your own place'}, 400
+        #Ce que je viens de rajouter pour que le code fonctionne
+        if rating is None:
+            return {'error': 'rating is required'}, 400
 
+        if not isinstance(rating, int):
+            return {'error': 'rating must be an integer'}, 400
+        #ça s'arrete ici 
         # Check if user already reviewed this place
         existing_reviews = facade.get_reviews_by_place(place_id)
         if any(r.user.id == current_user_id for r in existing_reviews):
