@@ -17,7 +17,15 @@ class HBnBFacade:
     ##########################
 
     def create_user(self, user_data):
-        user = User(**user_data)
+        
+        user = User(
+            first_name=user_data["first_name"],
+            last_name=user_data["last_name"],
+            email=user_data["email"]
+        )
+
+        user.hash_password(user_data["password"])
+
         self.user_repo.add(user)
         return user
 

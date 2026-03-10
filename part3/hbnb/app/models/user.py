@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 from .baseModel import BaseModel
+from app.extensions import bcrypt
 
 
 class User(BaseModel):
@@ -10,6 +11,7 @@ class User(BaseModel):
         self.last_name = last_name
         self.email = email
         self.is_admin = is_admin
+        self.password = None 
         self.places = []
         self.reviews = []
 
@@ -83,6 +85,14 @@ class User(BaseModel):
             raise TypeError("review must be an instance of Review")
         if review in self.reviews:
             self.reviews.remove(review)
+
+    def hash_password(self, password):
+        """Hashes the password before storing it."""
+        self.password = bcrypt.generate_password_hash(password).decode('utf-8')
+    
+    def verify_password(self, password):
+        """Verifies if the provided password matches the hashed password."""
+        return bcrypt.check_password_hash(self.password, password)
 
     def to_dict(self):
         """Convert the user to a dictionary for JSON serialization"""
