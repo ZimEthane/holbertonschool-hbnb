@@ -1,5 +1,5 @@
 from flask_restx import Namespace, Resource, fields
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt, get_jwt_identity
 from app.services import facade
 from app.models.user import User
 
@@ -21,8 +21,12 @@ class UserList(Resource):
     @api.response(201, 'User successfully created')
     @api.response(400, 'Email already registered')
     @api.response(400, 'Invalid input data')
+    @jwt_required()
     def post(self):
-        """Create a new user"""
+        """Create a new user (admin only)"""
+        claims = get_jwt()
+        if not claims.get('is_admin', False):
+            return {'error': 'Admin privileges required'}, 403
 
         data = api.payload
 
@@ -85,22 +89,33 @@ class UserResource(Resource):
     @api.response(400, 'Invalid input data')
     @api.response(403, 'Unauthorized action')
     def put(self, user_id):
-        """Update user details (authenticated, self only, no email/password)"""
+        """Update user details.
+
+        * Admin: full access, can change email/password (with uniqueness check)
+        * Regular: only self; cannot change email/password.
+        """
+        claims = get_jwt()
+        is_admin = claims.get('is_admin', False)
         current_user_id = get_jwt_identity()
-        if user_id != current_user_id:
+
+        if not is_admin and user_id != current_user_id:
             return {'error': 'Unauthorized action'}, 403
 
         data = api.payload
-        if 'email' in data or 'password' in data:
+        if not is_admin and ('email' in data or 'password' in data):
             return {'error': 'You cannot modify email or password'}, 400
+
+        if is_admin and 'email' in data:
+            existing_user = facade.get_user_by_email(data['email'])
+            if existing_user and existing_user.id != user_id:
+                return {'error': 'Email already in use'}, 400
 
         user = facade.get_user(user_id)
         if not user:
             return {'error': 'User not found'}, 404
 
-        # Update allowed fields
         for key, value in data.items():
-            if hasattr(user, key) and key not in ['email', 'password']:
+            if hasattr(user, key):
                 setattr(user, key, value)
 
         return {
