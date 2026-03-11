@@ -1,4 +1,4 @@
-from app.persistence.repository import InMemoryRepository
+from app.persistence.repository import InMemoryRepository, SQLAlchemyRepository
 from app.models.user import User
 from app.models.amenity import Amenity
 from app.models.place import Place
@@ -7,7 +7,7 @@ from app.models.review import Review
 
 class HBnBFacade:
     def __init__(self):
-        self.user_repo = InMemoryRepository()
+        self.user_repo = SQLAlchemyRepository(User)
         self.amenities = {}  # Stockage en mémoire des amenities
         self.places = {}
         self.reviews = {}
