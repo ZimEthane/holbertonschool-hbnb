@@ -23,10 +23,10 @@ class UserList(Resource):
     @api.response(400, 'Invalid input data')
     @jwt_required()
     def post(self):
-        """Create a new user (admin only)"""
-        claims = get_jwt()
+        """Create a new user"""
+        """claims = get_jwt()
         if not claims.get('is_admin', False):
-            return {'error': 'Admin privileges required'}, 403
+            return {'error': 'Admin privileges required'}, 403"""
 
         data = api.payload
 
