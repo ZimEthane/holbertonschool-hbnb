@@ -21,7 +21,7 @@ class UserList(Resource):
     @api.response(201, 'User successfully created')
     @api.response(400, 'Email already registered')
     @api.response(400, 'Invalid input data')
-    """@jwt_required()"""
+   
     def post(self):
         """Create a new user"""
         """claims = get_jwt()
