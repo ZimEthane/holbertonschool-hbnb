@@ -1,27 +1,30 @@
 #!/usr/bin/python3
 import uuid
 from datetime import datetime
+from app.extensions import db
 
 
-class BaseModel:
-    def __init__(self):
-        self.id = str(uuid.uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = datetime.now()
+class BaseModel(db.Model):
+    __abstract__ = True  # SQLAlchemy ne crée pas de table pour BaseModel
+
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     def save(self):
-        """Update the updated_at timestamp whenever the object is modified"""
-        self.updated_at = datetime.now()
+        """Met à jour updated_at et commit en base."""
+        self.updated_at = datetime.utcnow()
+        db.session.commit()
 
     def update(self, data):
-        """Update the attributes of the object based on the provided dictionary"""
+        """Met à jour les attributs de l'objet à partir d'un dictionnaire."""
         for key, value in data.items():
             if hasattr(self, key):
                 setattr(self, key, value)
-        self.save()  # Update the updated_at timestamp
+        self.save()
 
     def to_dict(self):
-        """Convert the object to a dictionary for JSON serialization"""
+        """Convertit l'objet en dictionnaire pour la sérialisation JSON."""
         return {
             "id": self.id,
             "created_at": self.created_at.isoformat(),
