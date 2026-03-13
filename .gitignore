@@ -1,0 +1,32 @@
+# ─── Python ───────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# ─── Environnements virtuels ──────────────────────────────
+venv/
+venvScriptsactivate/
+.venv/
+env/
+ENV/
+
+# ─── Base de données SQLite ───────────────────────────────
+*.db
+*.sqlite3
+instance/
+
+# ─── Flask ────────────────────────────────────────────────
+.env
+.flaskenv
+*.secret
+
+# ─── OS ───────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ─── Éditeurs ─────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo

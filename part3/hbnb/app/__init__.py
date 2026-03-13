@@ -15,7 +15,10 @@ def create_app(config_class="config.DevelopmentConfig"):
 
     # Import des modèles AVANT db.create_all() pour les enregistrer
     with app.app_context():
-        from app.models import user  # noqa: F401
+        from app.models import user      # noqa: F401
+        from app.models import place     # noqa: F401
+        from app.models import review    # noqa: F401
+        from app.models import amenity   # noqa: F401
         db.create_all()
 
     from app.api.v1.users import api as users_ns

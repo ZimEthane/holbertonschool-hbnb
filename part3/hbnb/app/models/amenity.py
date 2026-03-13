@@ -1,30 +1,31 @@
 #!/usr/bin/python3
+from app.extensions import db
+from sqlalchemy.orm import validates
 from .baseModel import BaseModel
 
 
 class Amenity(BaseModel):
-    def __init__(self, name=""):
-        super().__init__()
-        self.name = name
+    __tablename__ = 'amenities'
 
-    @property
-    def name(self):
-        """Gets the name"""
-        return self.__name
+    name = db.Column(db.String(50), nullable=False, unique=True)
 
-    @name.setter
-    def name(self, value):
+    # ── Validateurs SQLAlchemy ──────────────────────────────────────────────
+
+    @validates('name')
+    def validate_name(self, key, value):
         if not isinstance(value, str):
-            raise TypeError("Value must be a string")
-        if value == "":
-            raise ValueError("Value must not be empty")
+            raise TypeError("name must be a string")
+        if not value.strip():
+            raise ValueError("name must not be empty")
         if len(value) > 50:
-            raise ValueError("Value must not exceed 50 characters")
-        self.__name = value
+            raise ValueError("name must not exceed 50 characters")
+        return value
+
+    # ── Sérialisation ───────────────────────────────────────────────────────
 
     def to_dict(self):
-        """Convert the amenity to a dictionary for JSON serialization"""
-        return {
-            "id": self.id,
-            "name": self.name
-        }
+        base = super().to_dict()
+        base.update({
+            "name": self.name,
+        })
+        return base
