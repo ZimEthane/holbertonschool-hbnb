@@ -64,12 +64,20 @@ class HBnBFacade:
     # ── Place ─────────────────────────────────────────────────────────────
 
     def create_place(self, place_data):
+        owner_id = place_data.get('owner_id')
+        if not owner_id:
+            raise ValueError("owner_id is required")
+        owner = self.get_user(owner_id)
+        if not owner:
+            raise ValueError("Owner not found")
+
         place = Place(
             title=place_data.get('title', ''),
             description=place_data.get('description', ''),
             price=place_data.get('price', 0),
             latitude=place_data.get('latitude', 0),
             longitude=place_data.get('longitude', 0),
+            owner_id=owner_id
         )
         self.places_repo.add(place)
         return place
@@ -81,18 +89,48 @@ class HBnBFacade:
         return self.places_repo.get_all()
 
     def update_place(self, place_id, place_data):
+        from app.extensions import db
         place = self.get_place(place_id)
         if not place:
             return None
-        self.places_repo.update(place_id, place_data)
-        return self.places_repo.get(place_id)
+
+        # Gérer les amenities séparément
+        amenity_ids = place_data.pop('amenities', None)
+        if amenity_ids is not None:
+            amenities = []
+            for amenity_id in amenity_ids:
+                amenity = self.get_amenity(amenity_id)
+                if amenity:
+                    amenities.append(amenity)
+            place.amenities = amenities
+
+        # Mettre à jour les autres champs
+        allowed = ['title', 'description', 'price', 'latitude', 'longitude']
+        for key, value in place_data.items():
+            if key in allowed:
+                setattr(place, key, value)
+
+        db.session.commit()
+        return place
 
     # ── Review ────────────────────────────────────────────────────────────
 
     def create_review(self, review_data):
+        user_id = review_data.get('user_id')
+        place_id = review_data.get('place_id')
+
+        if not user_id or not place_id:
+            raise ValueError("user_id and place_id are required")
+        if not self.get_user(user_id):
+            raise ValueError("User not found")
+        if not self.get_place(place_id):
+            raise ValueError("Place not found")
+
         review = Review(
             text=review_data.get('text'),
             rating=review_data.get('rating'),
+            user_id=user_id,
+            place_id=place_id
         )
         self.reviews_repo.add(review)
         return review
@@ -107,7 +145,7 @@ class HBnBFacade:
         place = self.get_place(place_id)
         if not place:
             raise ValueError("Place not found")
-        return self.reviews_repo.get_all()
+        return place.reviews
 
     def update_review(self, review_id, review_data):
         review = self.get_review(review_id)

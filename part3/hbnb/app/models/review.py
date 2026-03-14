@@ -10,7 +10,9 @@ class Review(BaseModel):
     text = db.Column(db.String(2048), nullable=False)
     rating = db.Column(db.Integer, nullable=False)
 
-    # ── Validateurs SQLAlchemy ──────────────────────────────────────────────
+    # FK
+    place_id = db.Column(db.String(36), db.ForeignKey('places.id'), nullable=False)
+    user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
 
     @validates('text')
     def validate_text(self, key, value):
@@ -28,12 +30,12 @@ class Review(BaseModel):
             raise ValueError("rating must be between 1 and 5")
         return value
 
-    # ── Sérialisation ───────────────────────────────────────────────────────
-
     def to_dict(self):
         base = super().to_dict()
         base.update({
             "text": self.text,
             "rating": self.rating,
+            "place_id": self.place_id,
+            "user_id": self.user_id,
         })
         return base

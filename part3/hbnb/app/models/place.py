@@ -3,6 +3,11 @@ from app.extensions import db
 from sqlalchemy.orm import validates
 from .baseModel import BaseModel
 
+# Table d'association Many-to-Many Place <-> Amenity
+place_amenity = db.Table('place_amenity',
+    db.Column('place_id', db.String(36), db.ForeignKey('places.id'), primary_key=True),
+    db.Column('amenity_id', db.String(36), db.ForeignKey('amenities.id'), primary_key=True)
+)
 
 class Place(BaseModel):
     __tablename__ = 'places'
@@ -13,7 +18,13 @@ class Place(BaseModel):
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
 
-    # ── Validateurs SQLAlchemy ──────────────────────────────────────────────
+    # FK vers User
+    owner_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
+
+    # Relations
+    reviews = db.relationship('Review', backref='place', lazy=True)
+    amenities = db.relationship('Amenity', secondary=place_amenity, lazy='subquery',
+                                backref=db.backref('places', lazy=True))
 
     @validates('title')
     def validate_title(self, key, value):
@@ -55,10 +66,7 @@ class Place(BaseModel):
             raise ValueError("longitude must be between -180 and 180")
         return float(value)
 
-    # ── Sérialisation ───────────────────────────────────────────────────────
-
     def to_dict(self):
-        """Convertit le lieu en dictionnaire pour la sérialisation JSON."""
         base = super().to_dict()
         base.update({
             "title": self.title,
@@ -66,5 +74,6 @@ class Place(BaseModel):
             "price": self.price,
             "latitude": self.latitude,
             "longitude": self.longitude,
+            "owner_id": self.owner_id,
         })
         return base
