@@ -15,21 +15,16 @@ class HBnBFacade:
         self.places_repo = PlaceRepository()
         self.reviews_repo = ReviewRepository()
 
-    ##########################
-    ## User-related methods ##
-    ##########################
+    # ── User ──────────────────────────────────────────────────────────────
 
     def create_user(self, user_data):
-
         user = User(
             first_name=user_data["first_name"],
             last_name=user_data["last_name"],
             email=user_data["email"],
             is_admin=user_data.get("is_admin", False)
         )
-
         user.hash_password(user_data["password"])
-
         self.user_repo.add(user)
         return user
 
@@ -42,176 +37,88 @@ class HBnBFacade:
     def get_all_users(self):
         return self.user_repo.get_all()
 
+    def update_user(self, user_id, data):
+        self.user_repo.update(user_id, data)
+        return self.user_repo.get(user_id)
 
-    #############################   
-    ## Amenity-related methods ##
-    #############################
+    # ── Amenity ───────────────────────────────────────────────────────────
 
     def create_amenity(self, amenity_data):
-        """Crée un nouvel Amenity et le stocke"""
-        try:
-            amenity = Amenity(name=amenity_data['name'])
-        except (TypeError, ValueError) as e:
-            raise ValueError(str(e))
-        self.amenities[amenity.id] = amenity
+        amenity = Amenity(name=amenity_data['name'])
+        self.amenities_repo.add(amenity)
         return amenity
 
     def get_amenity(self, amenity_id):
-        """Récupère un Amenity par son ID"""
-        return self.amenities.get(amenity_id)
+        return self.amenities_repo.get(amenity_id)
 
     def get_all_amenities(self):
-        """Récupère tous les Amenity"""
-        return list(self.amenities.values())
+        return self.amenities_repo.get_all()
 
     def update_amenity(self, amenity_id, amenity_data):
-        """Met à jour un Amenity existant"""
         amenity = self.get_amenity(amenity_id)
         if not amenity:
             return None
-        if 'name' in amenity_data:
-            try:
-                amenity.name = amenity_data['name']
-            except (TypeError, ValueError) as e:
-                raise ValueError(str(e))
-        amenity.save()
-        return amenity
+        self.amenities_repo.update(amenity_id, amenity_data)
+        return self.amenities_repo.get(amenity_id)
 
-
-    ###########################
-    ## Place-related methods ##
-    ###########################
-
+    # ── Place ─────────────────────────────────────────────────────────────
 
     def create_place(self, place_data):
-        owner_id = place_data.get('owner_id')
-        if not owner_id:
-            raise ValueError("owner_id is required")
-
-        owner = self.get_user(owner_id)
-        if not owner:
-            raise ValueError("Owner not found")
-
-        amenities_objs = []
-        for amenity_id in place_data.get('amenities', []):
-            amenity = self.amenities.get(amenity_id)
-            if not amenity:
-                raise ValueError(f"Amenity {amenity_id} not found")
-            amenities_objs.append(amenity)
-
         place = Place(
             title=place_data.get('title', ''),
             description=place_data.get('description', ''),
             price=place_data.get('price', 0),
             latitude=place_data.get('latitude', 0),
             longitude=place_data.get('longitude', 0),
-            owner= owner 
         )
-        place.amenities = amenities_objs
-        self.places[place.id] = place
+        self.places_repo.add(place)
         return place
 
     def get_place(self, place_id):
-        return self.places.get(place_id)
+        return self.places_repo.get(place_id)
 
     def get_all_places(self):
-        return list(self.places.values())
+        return self.places_repo.get_all()
 
     def update_place(self, place_id, place_data):
         place = self.get_place(place_id)
         if not place:
             return None
+        self.places_repo.update(place_id, place_data)
+        return self.places_repo.get(place_id)
 
-        for key, value in place_data.items():
-            if hasattr(place, key):
-                setattr(place, key, value)
-
-        place.save()
-        return place
-
-
-    ############################
-    ## Review-related methods ##
-    ############################
+    # ── Review ────────────────────────────────────────────────────────────
 
     def create_review(self, review_data):
-        """Create a review with validation"""
-
-        user_id = review_data.get("user_id")
-        place_id = review_data.get("place_id")
-        text = review_data.get("text")
-        rating = review_data.get("rating")
-
-        if not user_id or not place_id:
-            raise ValueError("user_id and place_id are required")
-
-        user = self.get_user(user_id)
-        if not user:
-            raise ValueError("User not found")
-
-        place = self.get_place(place_id)
-        if not place:
-            raise ValueError("Place not found")
-
-        review = Review(text=text, rating=rating)
-        review.user = user
-        review.place = place
-
-        if hasattr(user, "add_review"):
-            user.add_review(review)
-
-        if hasattr(place, "add_review"):
-            place.add_review(review)
-
-        self.reviews[review.id] = review
+        review = Review(
+            text=review_data.get('text'),
+            rating=review_data.get('rating'),
+        )
+        self.reviews_repo.add(review)
         return review
 
     def get_review(self, review_id):
-        """Get review by ID"""
-        return self.reviews.get(review_id)
+        return self.reviews_repo.get(review_id)
 
     def get_all_reviews(self):
-        """Get all reviews"""
-        return list(self.reviews.values())
+        return self.reviews_repo.get_all()
 
     def get_reviews_by_place(self, place_id):
-        """Return reviews for a specific place"""
         place = self.get_place(place_id)
         if not place:
             raise ValueError("Place not found")
-
-        return [
-            r for r in self.reviews.values()
-            if r.place and r.place.id == place_id
-        ]
+        return self.reviews_repo.get_all()
 
     def update_review(self, review_id, review_data):
-        """Update review text or rating"""
-
         review = self.get_review(review_id)
         if not review:
             return None
-        
-        if "text" in review_data:
-            review.text = review_data["text"]
-
-        if "rating" in review_data:
-            review.rating = review_data["rating"]
-
-        review.save()
-        return review
+        self.reviews_repo.update(review_id, review_data)
+        return self.reviews_repo.get(review_id)
 
     def delete_review(self, review_id):
-        """Delete a review"""
         review = self.get_review(review_id)
         if not review:
             return False
-
-        if review.user:
-            review.user.remove_review(review)
-
-        if review.place:
-            review.place.remove_review(review)
-
-        del self.reviews[review_id]
+        self.reviews_repo.delete(review_id)
         return True
