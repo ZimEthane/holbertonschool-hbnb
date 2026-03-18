@@ -27,6 +27,26 @@ Gestion des modèles et de la persistance des données.
 Architecture propre (API → Services → Models → Storage).
 But : construire la logique serveur de l’application.
 
+## 💾 Partie 3 — Base de Données (Part3)
+
+Dans cette troisième partie, nous intégrons une base de données pour la persistance des données.
+Création des scripts SQL pour initialiser la base de données.
+Schéma complet avec 5 tables : User, Place, Review, Amenity, Place_Amenity.
+Support de **MySQL** (production) et **SQLite** (développement local).
+Relations correctement définies avec clés étrangères et contraintes uniques.
+Données initiales : Admin user + 3 Amenities (WiFi, Piscine, Climatisation).
+But : passer de la mémoire vive à la persistance en base de données réelle.
+
+### Structure SQL
+```bash
+part3/hbnb/sql/
+├── init_database.sql          → Création des tables (MySQL)
+├── insert_data.sql            → Données initiales (MySQL)
+├── init_database_sqlite.sql   → Création des tables (SQLite)
+├── insert_data_sqlite.sql     → Données initiales (SQLite)
+└── README_SQLITE.md           → Documentation SQLite
+```
+
 ## 🛠️ Installation
 Cloner le dépôt
 ```bash
@@ -41,4 +61,20 @@ pip install -r requirements.txt
 Lancer l’API
 ```bash
 flask run
+```
+
+## 🗄️ Initialiser la Base de Données
+
+### MySQL (Production)
+```bash
+cd part3/hbnb/sql
+mysql -u username -p database < init_database.sql
+mysql -u username -p database < insert_data.sql
+```
+
+### SQLite (Développement Local)
+```bash
+cd part3/hbnb/sql
+sqlite3 hbnb.db < init_database_sqlite.sql
+sqlite3 hbnb.db < insert_data_sqlite.sql
 ```

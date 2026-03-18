@@ -3,12 +3,13 @@
 RESTful API built with Flask for managing an Airbnb-style rental platform.  
 Project structured in clean layers (API / Services-Facade / Models / Persistence).
 
-## Current phase:  
-- Modular structure + proper Python packaging  
-- **In-memory** repository (InMemoryRepository)  
-- **Facade** pattern (HBnBFacade)  
-- Versioned API endpoints (`/api/v1/`) — skeleton only for now  
+## Current phase:
+- Modular structure + proper Python packaging
+- **In-memory** repository (InMemoryRepository)
+- **Facade** pattern (HBnBFacade)
+- Versioned API endpoints (`/api/v1/`) — skeleton only for now
 - Basic Flask setup + automatic Swagger documentation
+- **Database layer** with SQL scripts (MySQL + SQLite support)
 
 ## Project Structure
 ```bash
@@ -35,6 +36,12 @@ hbnb/
 │   └── persistence/            → Data persistence layer
 │       ├── init.py
 │       └── repository.py       → Repository interface + InMemory implementation
+├── sql/                        → Database initialization scripts
+│   ├── init_database.sql       → Create tables (MySQL)
+│   ├── insert_data.sql         → Initial data (MySQL)
+│   ├── init_database_sqlite.sql    → Create tables (SQLite)
+│   ├── insert_data_sqlite.sql      → Initial data (SQLite)
+│   └── README_SQLITE.md        → SQLite documentation
 ├── run.py                      → Main entry point to start the application
 ├── config.py                   → Configuration (dev, test, prod, env variables)
 ├── requirements.txt            → Python dependencies
@@ -269,6 +276,76 @@ These relationships are managed through object references and list attributes in
 
 The Business Logic layer is fully independent from Flask and can be tested separately using unit tests.
 
+
+## Database Integration (Part 3)
+
+### Overview
+This phase introduces database persistence with SQL scripts for both **MySQL** (production) and **SQLite** (local development).
+
+### Database Schema
+
+#### Tables Created
+1. **user** - Platform users with UUID, email, password (bcrypt)
+2. **place** - Rental properties with geolocation and pricing
+3. **review** - User reviews (max 1 review per user per place)
+4. **amenity** - Place features/amenities
+5. **place_amenity** - Many-to-many relationship between places and amenities
+
+#### Key Features
+- UUID (CHAR 36) for all primary keys
+- Foreign key constraints with CASCADE DELETE
+- Unique constraint on (user_id, place_id) for reviews
+- Rating validation (1-5)
+- Composite primary key for place_amenity table
+- Timestamps (created_at, updated_at)
+
+### Initial Data
+```sql
+Admin User:
+- ID: 36c9050e-ddd3-4c3b-9731-9f487208bbc1
+- Email: admin@hbnb.io
+- Password: admin1234 (bcrypt hashed)
+- is_admin: True
+
+Amenities:
+1. WiFi (d912d7a9-c584-47db-a24f-b64a9e742f51)
+2. Piscine (bd408c8f-a6d5-4818-9ba8-788da242a303)
+3. Climatisation (4362e7dd-360e-472d-914d-b671b269623d)
+```
+
+### Setup Instructions
+
+#### MySQL (Production)
+```bash
+cd part3/hbnb/sql
+
+# Create tables
+mysql -u username -p database < init_database.sql
+
+# Insert initial data
+mysql -u username -p database < insert_data.sql
+```
+
+#### SQLite (Local Development)
+```bash
+cd part3/hbnb/sql
+
+# Create tables
+sqlite3 hbnb.db < init_database_sqlite.sql
+
+# Insert initial data
+sqlite3 hbnb.db < insert_data_sqlite.sql
+
+# Verify
+sqlite3 hbnb.db "SELECT * FROM user; SELECT * FROM amenity;"
+```
+
+### Files in `/sql` Directory
+- `init_database.sql` - MySQL table creation
+- `insert_data.sql` - MySQL initial data
+- `init_database_sqlite.sql` - SQLite table creation
+- `insert_data_sqlite.sql` - SQLite initial data
+- `README_SQLITE.md` - Detailed SQLite documentation
 
 ## Example of Independent Testing
 ```bash
