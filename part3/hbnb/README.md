@@ -277,7 +277,7 @@ These relationships are managed through object references and list attributes in
 The Business Logic layer is fully independent from Flask and can be tested separately using unit tests.
 
 
-## Database Integration (Part 3)
+## Database Integration
 
 ### Overview
 This phase introduces database persistence with SQL scripts for both **MySQL** (production) and **SQLite** (local development).
