@@ -12,9 +12,9 @@ env/
 ENV/
 
 # ─── Base de données SQLite ───────────────────────────────
-*.db
-*.sqlite3
-instance/
+# *.db
+# *.sqlite3
+# instance/
 
 # ─── Flask ────────────────────────────────────────────────
 .env
