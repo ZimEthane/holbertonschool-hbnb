@@ -363,5 +363,4 @@ assert len(user.reviews) == 1
 
 ## Authors:
 - Zimmermann Ethane
-- Callejo Esteban
 - Hinlang Julien
