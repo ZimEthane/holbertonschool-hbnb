@@ -2,7 +2,7 @@
 
 ## Vue d'ensemble
 
-Ce guide vous explique comment utiliser les scripts SQL pour initialiser, vérifier et gérer votre base de données HBNB.
+Guide d'utilisation 
 
 ---
 
