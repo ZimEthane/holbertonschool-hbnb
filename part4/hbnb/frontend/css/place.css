@@ -1,0 +1,262 @@
+/* Place Details Page Styles */
+.back-link {
+  margin-bottom: 2rem;
+  display: inline-block;
+}
+
+.back-link a {
+  color: var(--secondary-color);
+  text-decoration: none;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.back-link a:hover {
+  color: var(--primary-color);
+  transform: translateX(-5px);
+}
+
+.place-details {
+  background: white;
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: var(--shadow);
+  margin-bottom: 2rem;
+  animation: fadeIn 0.5s ease-out 0.3s both;
+}
+
+.place-hero-image {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 15px;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow);
+}
+
+.place-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.info-block {
+  background: linear-gradient(135deg, #f8f9fa, #ecf0f1);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border-left: 4px solid var(--secondary-color);
+  transition: var(--transition);
+}
+
+.info-block:hover {
+  transform: translateX(5px);
+  background: linear-gradient(135deg, #ecf0f1, #f8f9fa);
+}
+
+.info-block h4 {
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+.place-description {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f8f9fa, #ecf0f1);
+  border-radius: 12px;
+  border-left: 4px solid var(--secondary-color);
+}
+
+.place-description h3 {
+  margin-bottom: 1rem;
+}
+
+.place-description p {
+  line-height: 1.8;
+}
+
+.amenities {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.amenity {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1rem;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  transition: var(--transition);
+}
+
+.amenity:hover {
+  border-color: var(--secondary-color);
+  background: rgba(78, 205, 196, 0.05);
+}
+
+.amenity img {
+  width: 30px;
+  height: 30px;
+}
+
+/* Reviews Section */
+.reviews-section {
+  margin-top: 3rem;
+}
+
+.reviews-section h2 {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.review-card {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  margin: 20px;
+  padding: 10px;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+  animation: slideUp 0.5s ease-out;
+}
+
+.review-card:hover {
+  box-shadow: var(--shadow);
+  transform: translateX(5px);
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.review-author {
+  font-weight: 600;
+  color: var(--dark-color);
+}
+
+.review-rating {
+  color: var(--accent-color);
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.review-rating span {
+  color: var(--accent-color);
+  margin-left: 0.5rem;
+}
+
+.review-comment {
+  color: var(--text-color);
+  line-height: 1.8;
+}
+
+.review-date {
+  font-size: 0.85rem;
+  color: #95a5a6;
+  margin-top: 0.8rem;
+}
+
+.login-prompt {
+  text-align: center;
+  padding: 2rem;
+  background: rgba(78, 205, 196, 0.1);
+  border-radius: 10px;
+  margin-top: 2rem;
+}
+
+.login-prompt p {
+  margin-bottom: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .place-hero-image {
+    height: 250px;
+  }
+
+  .place-info {
+    grid-template-columns: 1fr;
+  }
+
+  .amenities {
+    grid-template-columns: 1fr;
+  }
+
+  .place-details {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .place-details {
+    padding: 1rem;
+  }
+
+  .review-card {
+    margin: 10px;
+  }
+
+  .place-hero-image {
+    height: 200px;
+  }
+}
+
+/* Header button disabled */
+#headerLoginBtn:disabled {
+  opacity: 0.5;
+}
+
+/* Info block price */
+.price-info {
+  font-size: 1.8rem;
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+/* Amenity container */
+.amenity-icon {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+/* Inline forms with flex */
+.flex-form {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.flex-form input {
+  flex: 1;
+}
+
+.flex-form span {
+  font-weight: bold;
+  color: var(--accent-color);
+  min-width: 30px;
+}
+
+/* Title rating form */
+.range-row p {
+  font-size: 0.9rem;
+  color: var(--text-color);
+  margin-top: 0.5rem;
+}
+
+/* Full width button */
+.full-width {
+  width: 100% !important;
+}
+
+/* Flex input */
+.flex-input {
+  flex: 1;
+}

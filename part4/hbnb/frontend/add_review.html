@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="HBNB - Ajouter un avis">
+  <link rel="icon" type="image/png" href="images/icon.png">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/add-review.css">
+  <title>HBNB - Ajouter un Avis</title>
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <img src="images/logo.png" alt="HBNB Logo" class="logo">
+      <nav>
+        <a href="index.html">Accueil</a>
+        <a href="#">À propos</a>
+        <a href="#">Contact</a>
+      </nav>
+    </div>
+    <button class="login-button" id="headerLoginBtn">Connexion</button>
+  </header>
+
+  <main class="container">
+    <div class="review-form-container">
+      <div class="back-link">
+        <a href="javascript:history.back()">← Retour</a>
+      </div>
+
+      <div id="authCheck" class="auth-check">
+        <p>Vous devez être connecté pour ajouter un avis</p>
+        <button class="login-button" onclick="window.location.href='login.html'">Se connecter</button>
+      </div>
+
+      <div id="reviewFormContent" class="hidden">
+        <h1>📝 Ajouter votre avis</h1>
+
+        <div class="form-section">
+          <h3>Évaluation</h3>
+          <div class="rating-display" id="ratingDisplay">★ 5</div>
+          <div class="stars-rating" id="starsContainer">
+            <span class="star active" data-rating="1">★</span>
+            <span class="star active" data-rating="2">★</span>
+            <span class="star active" data-rating="3">★</span>
+            <span class="star active" data-rating="4">★</span>
+            <span class="star active" data-rating="5">★</span>
+          </div>
+        </div>
+
+        <form class="add-review form" id="addReviewForm">
+          <h3>Détails de votre avis</h3>
+
+          <div class="form-group">
+            <label for="reviewTitle">Titre de votre avis</label>
+            <input
+              type="text"
+              id="reviewTitle"
+              name="title"
+              required
+              placeholder="Ex: Excellent séjour!"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="reviewComment">Votre avis détaillé</label>
+            <textarea
+              id="reviewComment"
+              name="comment"
+              required
+              placeholder="Décrivez votre expérience..."
+              class="textarea-large"
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="cleanliness">Propreté</label>
+            <input type="range" id="cleanliness" name="cleanliness" min="1" max="5" value="5">
+            <p class="range-value">Note: <span id="cleanlinessValue">5</span>/5</p>
+          </div>
+
+          <div class="form-group">
+            <label for="communication">Communication avec l'hôte</label>
+            <input type="range" id="communication" name="communication" min="1" max="5" value="5">
+            <p class="range-value">Note: <span id="communicationValue">5</span>/5</p>
+          </div>
+
+          <div class="form-group">
+            <label for="value">Rapport qualité-prix</label>
+            <input type="range" id="value" name="value" min="1" max="5" value="5">
+            <p class="range-value">Note: <span id="valueValue">5</span>/5</p>
+          </div>
+
+          <div class="form-buttons">
+            <button type="submit">✓ Soumettre l'avis</button>
+            <button type="reset">✕ Annuler</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 HBNB. Tous droits réservés.</p>
+  </footer>
+
+  <script src="js/common.js"></script>
+  <script src="js/add-review.js"></script>
+</body>
+</html>

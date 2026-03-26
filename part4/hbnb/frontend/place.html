@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="HBNB - Détails de la location">
+  <link rel="icon" type="image/png" href="images/icon.png">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/place.css">
+  <title>HBNB - Détails</title>
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <img src="images/logo.png" alt="HBNB Logo" class="logo">
+      <nav>
+        <a href="index.html">Accueil</a>
+        <a href="#">À propos</a>
+        <a href="#">Contact</a>
+      </nav>
+    </div>
+    <button class="login-button" id="headerLoginBtn">Connexion</button>
+  </header>
+
+  <main class="container">
+    <div class="back-link">
+      <a href="index.html">← Retour à l'accueil</a>
+    </div>
+
+    <div class="place-details" id="placeDetails">
+      <!-- Contenu chargé dynamiquement -->
+    </div>
+
+    <div class="reviews-section">
+      <h2>Avis des clients</h2>
+      <div id="reviewsList">
+        <!-- Avis chargés dynamiquement -->
+      </div>
+
+      <div id="addReviewSection" class="hidden">
+        <div class="add-review form">
+          <h3>Ajouter votre avis</h3>
+          <form id="addReviewForm">
+            <div class="form-group">
+              <label for="reviewRating">Note (1-5)</label>
+              <div class="flex-form">
+                <input type="range" id="reviewRating" name="rating" min="1" max="5" value="5" class="flex-input">
+                <span id="ratingValue">5</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="reviewComment">Votre avis</label>
+              <textarea
+                id="reviewComment"
+                name="comment"
+                required
+                placeholder="Partagez votre expérience..."
+              ></textarea>
+            </div>
+
+            <button type="submit" class="details-button full-width">Soumettre l'avis</button>
+          </form>
+        </div>
+      </div>
+
+      <div id="loginPrompt" class="login-prompt">
+        <p>Vous devez être connecté pour ajouter un avis</p>
+        <button class="login-button" onclick="window.location.href='login.html'">Se connecter</button>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 HBNB. Tous droits réservés.</p>
+  </footer>
+
+  <script src="js/common.js"></script>
+  <script src="js/place.js"></script>
+</body>
+</html>
