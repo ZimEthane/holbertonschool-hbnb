@@ -184,7 +184,7 @@ async function loadReviews() {
     try {
         console.log('Fetching reviews for place:', placeId);
 
-        const url = `${API_BASE_URL}/api/v1/places/${placeId}/reviews/`;
+        const url = `${API_BASE_URL}/api/v1/places/${placeId}/reviews`;
         const options = {
             method: 'GET',
             headers: {
@@ -277,7 +277,7 @@ function setupReviewForm() {
  */
 async function submitReview(rating, comment) {
     try {
-        const url = `${API_BASE_URL}/api/v1/places/${placeId}/reviews/`;
+        const url = `${API_BASE_URL}/api/v1/reviews/`;
         const options = {
             method: 'POST',
             headers: {
@@ -287,7 +287,8 @@ async function submitReview(rating, comment) {
             },
             body: JSON.stringify({
                 rating: rating,
-                text: comment
+                text: comment,
+                place_id: placeId
             })
         };
 

@@ -4,17 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="HBNB - Ajouter un avis">
-  <link rel="icon" type="image/png" href="images/icon.png">
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/add-review.css">
+  <link rel="icon" type="image/png" href="/images/icon.png">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/add-review.css">
   <title>HBNB - Ajouter un Avis</title>
 </head>
 <body>
   <header>
     <div class="header-left">
-      <img src="images/logo.png" alt="HBNB Logo" class="logo">
+      <img src="/images/logo.png" alt="HBNB Logo" class="logo">
       <nav>
-        <a href="index.html">Accueil</a>
+        <a href="/index.html">Accueil</a>
         <a href="#">À propos</a>
         <a href="#">Contact</a>
       </nav>
@@ -30,7 +30,7 @@
 
       <div id="authCheck" class="auth-check">
         <p>Vous devez être connecté pour ajouter un avis</p>
-        <button class="login-button" onclick="window.location.href='login.html'">Se connecter</button>
+        <button class="login-button" onclick="window.location.href='/login.html'">Se connecter</button>
       </div>
 
       <div id="reviewFormContent" class="hidden">
@@ -52,17 +52,6 @@
           <h3>Détails de votre avis</h3>
 
           <div class="form-group">
-            <label for="reviewTitle">Titre de votre avis</label>
-            <input
-              type="text"
-              id="reviewTitle"
-              name="title"
-              required
-              placeholder="Ex: Excellent séjour!"
-            >
-          </div>
-
-          <div class="form-group">
             <label for="reviewComment">Votre avis détaillé</label>
             <textarea
               id="reviewComment"
@@ -73,29 +62,19 @@
             ></textarea>
           </div>
 
-          <div class="form-group">
-            <label for="cleanliness">Propreté</label>
-            <input type="range" id="cleanliness" name="cleanliness" min="1" max="5" value="5">
-            <p class="range-value">Note: <span id="cleanlinessValue">5</span>/5</p>
-          </div>
-
-          <div class="form-group">
-            <label for="communication">Communication avec l'hôte</label>
-            <input type="range" id="communication" name="communication" min="1" max="5" value="5">
-            <p class="range-value">Note: <span id="communicationValue">5</span>/5</p>
-          </div>
-
-          <div class="form-group">
-            <label for="value">Rapport qualité-prix</label>
-            <input type="range" id="value" name="value" min="1" max="5" value="5">
-            <p class="range-value">Note: <span id="valueValue">5</span>/5</p>
-          </div>
-
           <div class="form-buttons">
             <button type="submit">✓ Soumettre l'avis</button>
             <button type="reset">✕ Annuler</button>
           </div>
         </form>
+
+        <div id="successMessage" class="hidden" style="color: #4caf50; padding: 20px; text-align: center;">
+          ✓ Avis soumis avec succès!
+        </div>
+
+        <div id="errorMessage" class="hidden" style="color: #d32f2f; padding: 20px; text-align: center;">
+          ✕ Erreur lors de la soumission
+        </div>
       </div>
     </div>
   </main>
@@ -104,7 +83,7 @@
     <p>&copy; 2026 HBNB. Tous droits réservés.</p>
   </footer>
 
-  <script src="js/common.js"></script>
-  <script src="js/add-review.js"></script>
+  <script src="/js/common.js"></script>
+  <script src="/js/add-review.js"></script>
 </body>
 </html>
