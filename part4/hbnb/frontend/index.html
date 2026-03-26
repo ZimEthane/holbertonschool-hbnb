@@ -25,6 +25,16 @@
     <h1>Découvrez nos meilleures locations</h1>
     <p class="subtitle">Trouvez votre maison idéale parmi nos sélections de propriétés</p>
 
+    <div class="filters">
+      <label for="priceFilter">Filtrer par prix (par nuit):</label>
+      <select id="priceFilter" class="price-filter">
+        <option value="">Tous les prix</option>
+        <option value="10">Jusqu'à 10€</option>
+        <option value="50">Jusqu'à 50€</option>
+        <option value="100">Jusqu'à 100€</option>
+      </select>
+    </div>
+
     <div class="places-grid" id="placesGrid">
       <!-- Les places seront chargées ici via JavaScript -->
     </div>

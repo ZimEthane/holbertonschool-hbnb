@@ -1,199 +1,358 @@
-// Données de démonstration
-const placesData = {
-  1: {
-    id: 1,
-    name: "Cosy Studio au Centre-Ville",
-    price: 75,
-    bedrooms: 1,
-    bathrooms: 1,
-    image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=400&fit=crop",
-    description: "Un studio moderne et confortable au cœur de la ville",
-    host: "Marie Dupont",
-    address: "123 Rue de la Paix, Paris 75001",
-    amenities: ["WiFi", "Climatisation", "Cuisine équipée"],
-    reviews: [
-      { author: "Jean Martin", rating: 5, comment: "Très confortable et bien situé!", date: "2026-03-20" },
-      { author: "Sophie Lambert", rating: 4, comment: "Bon rapport qualité-prix", date: "2026-03-15" }
-    ]
-  },
-  2: {
-    id: 2,
-    name: "Appartement de Luxe",
-    price: 150,
-    bedrooms: 2,
-    bathrooms: 2,
-    image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=400&fit=crop",
-    description: "Apartement élégant avec vue panoramique",
-    host: "Pierre Moreau",
-    address: "456 Avenue Montaigne, Paris 75008",
-    amenities: ["WiFi", "Télévision", "Climatisation", "Vue panoramique"],
-    reviews: [
-      { author: "Luc Bernard", rating: 5, comment: "Magnifique vue et luxe confirmé!", date: "2026-03-18" }
-    ]
-  },
-  3: {
-    id: 3,
-    name: "Maison de Famille",
-    price: 120,
-    bedrooms: 3,
-    bathrooms: 2,
-    image: "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=400&fit=crop",
-    description: "Grande maison parfaite pour les familles",
-    host: "Isabelle Leclerc",
-    address: "789 Rue du Parc, Versailles 78000",
-    amenities: ["WiFi", "Jardin", "Parking", "Cuisine équipée", "Buanderie"],
-    reviews: [
-      { author: "François Renard", rating: 5, comment: "Idéale pour une famille!", date: "2026-03-10" },
-      { author: "Nathalie Petit", rating: 5, comment: "Magnifique séjour", date: "2026-03-05" }
-    ]
-  }
-};
+/**
+ * Place details page functionality for HBNB application
+ * Handles fetching and displaying detailed place information and reviews
+ */
 
-// Récupérer l'ID de la place depuis l'URL
-function getPlaceId() {
-  const params = new URLSearchParams(window.location.search);
-  return params.get('id');
+const API_BASE_URL = getApiUrl();
+let placeId = null;
+let currentToken = null;
+
+/**
+ * Auto-détecte l'URL de l'API selon l'environnement
+ */
+function getApiUrl() {
+    const hostname = window.location.hostname;
+    const protocol = window.location.protocol;
+
+    // GitHub Codespaces
+    if (hostname.includes('app.github.dev')) {
+        const newHostname = hostname.replace(/(\d+)\.app\.github\.dev/, '5000.app.github.dev');
+        return `${protocol}//${newHostname}`;
+    }
+
+    // Localhost
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        return 'http://localhost:5000';
+    }
+
+    return `${protocol}//${hostname}:5000`;
 }
 
-// Charger les détails de la place
-function loadPlaceDetails() {
-  const placeId = getPlaceId();
-  const place = placesData[placeId];
+/**
+ * Get JWT token from cookie
+ */
+function getToken() {
+    const name = 'access_token=';
+    const decodedCookie = decodeURIComponent(document.cookie);
+    const cookieArray = decodedCookie.split(';');
 
-  if (!place) {
-    document.getElementById('placeDetails').innerHTML = '<p style="text-align: center; color: red;">Place non trouvée</p>';
-    return;
-  }
-
-  const detailsHTML = `
-    <img src="${place.image}" alt="${place.name}" class="place-hero-image">
-
-    <h1 style="margin-bottom: 1rem;">${place.name}</h1>
-
-    <div class="place-info">
-      <div class="info-block">
-        <h4>Prix</h4>
-        <p style="font-size: 1.8rem; color: var(--primary-color); font-weight: bold;">$${place.price}/nuit</p>
-      </div>
-
-      <div class="info-block">
-        <h4>Hôte</h4>
-        <p>${place.host}</p>
-      </div>
-
-      <div class="info-block">
-        <h4>Adresse</h4>
-        <p>${place.address}</p>
-      </div>
-
-      <div class="info-block">
-        <h4>Chambres & Salles de bain</h4>
-        <p>🛏️ ${place.bedrooms} chambre(s) | 🚿 ${place.bathrooms} salle(s) de bain</p>
-      </div>
-    </div>
-
-    <div class="place-description">
-      <h3>Description</h3>
-      <p>${place.description}</p>
-    </div>
-
-    <div>
-      <h3 style="margin-bottom: 1.5rem;">Équipements</h3>
-      <div class="amenities">
-        ${place.amenities.map(amenity => `
-          <div class="amenity">
-            <span>${getAmenityIcon(amenity)}</span>
-            <span>${amenity}</span>
-          </div>
-        `).join('')}
-      </div>
-    </div>
-  `;
-
-  document.getElementById('placeDetails').innerHTML = detailsHTML;
+    for (let cookie of cookieArray) {
+        cookie = cookie.trim();
+        if (cookie.indexOf(name) === 0) {
+            return cookie.substring(name.length);
+        }
+    }
+    return null;
 }
 
-// Charger les avis
-function loadReviews() {
-  const placeId = getPlaceId();
-  const place = placesData[placeId];
-
-  if (!place || place.reviews.length === 0) {
-    document.getElementById('reviewsList').innerHTML = '<p style="text-align: center; color: var(--text-color);">Pas d\'avis encore. Soyez le premier!</p>';
-    return;
-  }
-
-  const reviewsHTML = place.reviews.map(review => `
-    <div class="review-card">
-      <div class="review-header">
-        <span class="review-author">${review.author}</span>
-        <span class="review-rating">★ ${review.rating}<span>/5</span></span>
-      </div>
-      <p class="review-comment">${review.comment}</p>
-      <p class="review-date">${new Date(review.date).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-    </div>
-  `).join('');
-
-  document.getElementById('reviewsList').innerHTML = reviewsHTML;
+/**
+ * Extract place ID from URL query parameters
+ */
+function getPlaceIdFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('id');
 }
 
-// Obtenir l'icône de l'équipement
-function getAmenityIcon(amenity) {
-  const icons = {
-    'WiFi': '📶',
-    'Climatisation': '❄️',
-    'Cuisine équipée': '🍽️',
-    'Télévision': '📺',
-    'Vue panoramique': '🏙️',
-    'Jardin': '🌳',
-    'Parking': '🚗',
-    'Buanderie': '🧺'
-  };
-  return icons[amenity] || '✓';
-}
+/**
+ * Initialize page on load
+ */
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('Place details page loaded');
+    console.log('API URL:', API_BASE_URL);
 
-// Vérifier si l'utilisateur est connecté
-function checkLoginStatus() {
-  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-  const headerLoginBtn = document.getElementById('headerLoginBtn');
+    // Get place ID from URL
+    placeId = getPlaceIdFromURL();
+    if (!placeId) {
+        showError('Place ID not provided');
+        return;
+    }
 
-  if (isLoggedIn) {
-    document.getElementById('addReviewSection').classList.remove('hidden');
-    document.getElementById('loginPrompt').classList.add('hidden');
-    headerLoginBtn.textContent = 'Déconnexion';
-    headerLoginBtn.onclick = function() {
-      localStorage.setItem('isLoggedIn', 'false');
-      window.location.href = 'index.html';
-    };
-  } else {
-    document.getElementById('addReviewSection').classList.add('hidden');
-    document.getElementById('loginPrompt').classList.remove('hidden');
-  }
-}
+    // Check authentication
+    currentToken = getToken();
+    updateAuthenticationUI();
 
-// Initialisation
-document.addEventListener('DOMContentLoaded', function() {
-  loadPlaceDetails();
-  loadReviews();
-  checkLoginStatus();
+    // Load place details and reviews
+    await loadPlaceDetails();
+    await loadReviews();
 
-  // Mise à jour de la valeur du curseur
-  const ratingInput = document.getElementById('reviewRating');
-  if (ratingInput) {
-    ratingInput.addEventListener('input', function() {
-      document.getElementById('ratingValue').textContent = this.value;
-    });
-  }
-
-  // Soumission du formulaire
-  const form = document.getElementById('addReviewForm');
-  if (form) {
-    form.addEventListener('submit', function(e) {
-      e.preventDefault();
-      alert('Avis soumis avec succès!');
-      this.reset();
-      document.getElementById('reviewRating').value = 5;
-      document.getElementById('ratingValue').textContent = '5';
-    });
-  }
+    // Setup review form if authenticated
+    if (currentToken) {
+        setupReviewForm();
+    }
 });
+
+/**
+ * Update UI based on authentication status
+ */
+function updateAuthenticationUI() {
+    const addReviewSection = document.getElementById('addReviewSection');
+    const loginPrompt = document.getElementById('loginPrompt');
+
+    if (currentToken) {
+        addReviewSection?.classList.remove('hidden');
+        loginPrompt?.classList.add('hidden');
+    } else {
+        addReviewSection?.classList.add('hidden');
+        loginPrompt?.classList.remove('hidden');
+    }
+}
+
+/**
+ * Fetch and display place details
+ */
+async function loadPlaceDetails() {
+    try {
+        console.log('Fetching place details for ID:', placeId);
+
+        const url = `${API_BASE_URL}/api/v1/places/${placeId}`;
+        const options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        };
+
+        if (currentToken) {
+            options.headers['Authorization'] = `Bearer ${currentToken}`;
+        }
+
+        const response = await fetch(url, options);
+
+        if (!response.ok) {
+            throw new Error(`API Error: ${response.status}`);
+        }
+
+        const place = await response.json();
+        console.log('Place details received:', place);
+
+        displayPlaceDetails(place);
+
+    } catch (error) {
+        console.error('Error loading place details:', error);
+        showError(`Erreur: ${error.message}`);
+    }
+}
+
+/**
+ * Display place details in HTML
+ */
+function displayPlaceDetails(place) {
+    const detailsContainer = document.getElementById('placeDetails');
+    if (!detailsContainer) return;
+
+    const title = place.title || 'Unnamed Place';
+    const price = place.price || 'N/A';
+    const description = place.description || 'No description available';
+    const owner_id = place.owner_id || 'Unknown';
+
+    const html = `
+        <div class="place-hero">
+            <img src="/images/logo.png" alt="${escapeHtml(title)}" class="place-hero-image">
+        </div>
+
+        <div class="place-header">
+            <h1>${escapeHtml(title)}</h1>
+            <div class="place-price-tag">${price}€ <span>/nuit</span></div>
+        </div>
+
+        <div class="place-info-grid">
+            <div class="info-block">
+                <h4>Description</h4>
+                <p>${escapeHtml(description)}</p>
+            </div>
+
+            <div class="info-block">
+                <h4>Propriétaire</h4>
+                <p>ID: ${escapeHtml(owner_id)}</p>
+            </div>
+
+            <div class="info-block">
+                <h4>Coordonnées</h4>
+                <p>Lat: ${place.latitude || 'N/A'} | Lon: ${place.longitude || 'N/A'}</p>
+            </div>
+        </div>
+    `;
+
+    detailsContainer.innerHTML = html;
+}
+
+/**
+ * Fetch and display reviews
+ */
+async function loadReviews() {
+    try {
+        console.log('Fetching reviews for place:', placeId);
+
+        const url = `${API_BASE_URL}/api/v1/places/${placeId}/reviews/`;
+        const options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        };
+
+        if (currentToken) {
+            options.headers['Authorization'] = `Bearer ${currentToken}`;
+        }
+
+        const response = await fetch(url, options);
+
+        if (!response.ok) {
+            throw new Error(`API Error: ${response.status}`);
+        }
+
+        const reviews = await response.json();
+        console.log('Reviews received:', reviews);
+
+        displayReviews(reviews);
+
+    } catch (error) {
+        console.error('Error loading reviews:', error);
+        // Ne pas afficher d'erreur, juste laisser vide
+        displayReviews([]);
+    }
+}
+
+/**
+ * Display reviews in HTML
+ */
+function displayReviews(reviews) {
+    const reviewsList = document.getElementById('reviewsList');
+    if (!reviewsList) return;
+
+    if (!reviews || reviews.length === 0) {
+        reviewsList.innerHTML = '<p class="no-reviews">Aucun avis pour cette place. Soyez le premier!</p>';
+        return;
+    }
+
+    const reviewsHtml = reviews.map(review => `
+        <div class="review-card">
+            <div class="review-header">
+                <span class="review-author">${escapeHtml(review.user_name || 'Utilisateur')}</span>
+                <span class="review-rating">★ ${review.rating || 5}<span>/5</span></span>
+            </div>
+            <p class="review-comment">${escapeHtml(review.text || review.comment || '')}</p>
+            <p class="review-date">${formatDate(review.created_at || new Date())}</p>
+        </div>
+    `).join('');
+
+    reviewsList.innerHTML = reviewsHtml;
+}
+
+/**
+ * Setup review form submission
+ */
+function setupReviewForm() {
+    const form = document.getElementById('addReviewForm');
+    if (!form) return;
+
+    // Update rating display
+    const ratingInput = document.getElementById('reviewRating');
+    if (ratingInput) {
+        ratingInput.addEventListener('input', (e) => {
+            document.getElementById('ratingValue').textContent = e.target.value;
+        });
+    }
+
+    // Handle form submission
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const rating = parseInt(document.getElementById('reviewRating').value);
+        const comment = document.getElementById('reviewComment').value.trim();
+
+        if (!comment) {
+            alert('Veuillez entrer un avis');
+            return;
+        }
+
+        await submitReview(rating, comment);
+    });
+}
+
+/**
+ * Submit review to API
+ */
+async function submitReview(rating, comment) {
+    try {
+        const url = `${API_BASE_URL}/api/v1/places/${placeId}/reviews/`;
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${currentToken}`
+            },
+            body: JSON.stringify({
+                rating: rating,
+                text: comment
+            })
+        };
+
+        const response = await fetch(url, options);
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to submit review');
+        }
+
+        alert('Avis soumis avec succès!');
+        document.getElementById('addReviewForm').reset();
+        document.getElementById('reviewRating').value = 5;
+        document.getElementById('ratingValue').textContent = '5';
+
+        // Reload reviews
+        await loadReviews();
+
+    } catch (error) {
+        console.error('Error submitting review:', error);
+        alert(`Erreur: ${error.message}`);
+    }
+}
+
+/**
+ * Format date to French format
+ */
+function formatDate(dateStr) {
+    try {
+        const date = new Date(dateStr);
+        return date.toLocaleDateString('fr-FR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    } catch {
+        return 'Date inconnue';
+    }
+}
+
+/**
+ * Escape HTML special characters
+ */
+function escapeHtml(text) {
+    if (!text) return '';
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, m => map[m]);
+}
+
+/**
+ * Show error message
+ */
+function showError(message) {
+    const detailsContainer = document.getElementById('placeDetails');
+    if (detailsContainer) {
+        detailsContainer.innerHTML = `
+            <div class="error-message" style="color: #d32f2f; padding: 20px; text-align: center;">
+                ${escapeHtml(message)}
+            </div>
+        `;
+    }
+}
