@@ -185,8 +185,38 @@
   font-weight: normal !important;
 }
 
-/* Disabled header button */
-.login-button:disabled {
-  opacity: 0.5 !important;
-  cursor: not-allowed;
+
+/* Message alerts */
+.error-message,
+.success-message {
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+  animation: slideDown 0.3s ease-out;
+  font-weight: 500;
+}
+
+.error-message.error {
+  background-color: #fee;
+  color: #c33;
+  border-left: 4px solid #ff6b6b;
+  border: 1px solid #ffcccc;
+}
+
+.success-message {
+  background-color: #efe;
+  color: #3a3;
+  border-left: 4px solid #52c41a;
+  border: 1px solid #ccffcc;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

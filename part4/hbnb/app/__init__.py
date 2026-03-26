@@ -1,19 +1,66 @@
-from flask import Flask
+from flask import Flask, request, send_from_directory
 from flask_restx import Api
-from app.extensions import bcrypt, jwt, db
+from app.extensions import bcrypt, jwt, db, cors
+import os
 
 
 def create_app(config_class="config.DevelopmentConfig"):
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder='../frontend', static_url_path='')
 
     app.config.from_object(config_class)
     app.config['JWT_SECRET_KEY'] = 'your-secret-key'
 
+    # Initialize extensions
     bcrypt.init_app(app)
     jwt.init_app(app)
     db.init_app(app)
 
-    # Import des modèles AVANT db.create_all() pour les enregistrer
+    # Configure CORS
+    cors.init_app(app, resources={r"/*": {
+        "origins": "*",
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"],
+        "expose_headers": ["Content-Type"],
+        "supports_credentials": False,
+        "max_age": 3600
+    }})
+
+    # Add middleware to ensure CORS headers are always present
+    @app.before_request
+    def handle_preflight():
+        if request.method == "OPTIONS":
+            response = app.make_default_options_response()
+            response.headers['Access-Control-Allow-Origin'] = '*'
+            response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+            response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+            response.headers['Access-Control-Max-Age'] = '3600'
+            return response, 200
+
+    @app.after_request
+    def after_request(response):
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+        response.headers['Access-Control-Max-Age'] = '3600'
+        return response
+
+    # Serve frontend files
+    @app.route('/')
+    def index():
+        return send_from_directory('../frontend', 'index.html')
+
+    @app.route('/<path:path>')
+    def serve_static(path):
+        # Try static folder first
+        full_path = os.path.join('../frontend', path)
+        if os.path.exists(full_path):
+            if os.path.isdir(full_path):
+                return send_from_directory(full_path, 'index.html')
+            else:
+                return send_from_directory('../frontend', path)
+        return {'error': 'Not found'}, 404
+
+    # Import models
     with app.app_context():
         from app.models import user      # noqa: F401
         from app.models import place     # noqa: F401
