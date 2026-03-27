@@ -542,7 +542,7 @@ function escapeHtml(text) {
 
 function showError(message) {
     console.error(message);
-    alert(message);
+    Swal.fire('Erreur!', message, 'error');
 }
 
 function showSuccess(message) {

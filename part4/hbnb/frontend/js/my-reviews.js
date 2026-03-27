@@ -204,7 +204,7 @@ async function submitEditedReview() {
         const text = document.getElementById('editText').value.trim();
 
         if (!text) {
-            alert('Veuillez entrer un avis');
+            Swal.fire('Attention!', 'Veuillez entrer un avis', 'warning');
             return;
         }
 
@@ -230,13 +230,13 @@ async function submitEditedReview() {
             throw new Error(errorData.error || 'Failed to update review');
         }
 
-        alert('Avis mis à jour avec succès!');
+        Swal.fire('Succès!', 'Avis mis à jour avec succès!', 'success');
         closeEditModal();
         await loadMyReviews();
 
     } catch (error) {
         console.error('Error updating review:', error);
-        alert(`Erreur: ${error.message}`);
+        Swal.fire('Erreur!', `Erreur: ${error.message}`, 'error');
     }
 }
 
@@ -266,12 +266,12 @@ async function deleteReview(reviewId) {
             throw new Error(errorData.error || 'Failed to delete review');
         }
 
-        alert('Avis supprimé avec succès!');
+        Swal.fire('Succès!', 'Avis supprimé avec succès!', 'success');
         await loadMyReviews();
 
     } catch (error) {
         console.error('Error deleting review:', error);
-        alert(`Erreur: ${error.message}`);
+        Swal.fire('Erreur!', `Erreur: ${error.message}`, 'error');
     }
 }
 

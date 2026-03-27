@@ -324,7 +324,7 @@ function setupReviewForm() {
         const comment = document.getElementById('reviewComment').value.trim();
 
         if (!comment) {
-            alert('Veuillez entrer un avis');
+            Swal.fire('Attention!', 'Veuillez entrer un avis', 'warning');
             return;
         }
 
@@ -365,7 +365,7 @@ async function submitReview(rating, comment) {
             throw new Error(errorData.error || 'Failed to submit review');
         }
 
-        alert('Avis soumis avec succès!');
+        Swal.fire('Succès!', 'Avis soumis avec succès!', 'success');
         document.getElementById('addReviewForm').reset();
         document.getElementById('reviewRating').value = 5;
         document.getElementById('ratingValue').textContent = '5';
@@ -375,7 +375,7 @@ async function submitReview(rating, comment) {
 
     } catch (error) {
         console.error('Error submitting review:', error);
-        alert(`Erreur: ${error.message}`);
+        Swal.fire('Erreur!', `Erreur: ${error.message}`, 'error');
     }
 }
 

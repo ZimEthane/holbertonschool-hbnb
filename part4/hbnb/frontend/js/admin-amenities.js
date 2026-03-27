@@ -81,8 +81,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Check if user is admin
     userIsAdmin = isUserAdmin(currentToken);
     if (!userIsAdmin) {
-        alert('❌ Accès refusé! Cette page est réservée aux administrateurs.');
-        window.location.href = '/index.html';
+        Swal.fire('Erreur!', '❌ Accès refusé! Cette page est réservée aux administrateurs.', 'error').then(() => {
+            window.location.href = '/index.html';
+        });
         return;
     }
 
@@ -188,7 +189,7 @@ async function addAmenity() {
         const name = document.getElementById('amenityName').value.trim();
 
         if (!name) {
-            alert('Veuillez entrer un nom d\'aménité');
+            Swal.fire('Attention!', 'Veuillez entrer un nom d\'aménité', 'warning');
             return;
         }
 
@@ -213,13 +214,13 @@ async function addAmenity() {
         const newAmenity = await response.json();
         console.log('Amenity added:', newAmenity);
 
-        alert('Aménité ajoutée avec succès!');
+        Swal.fire('Succès!', 'Aménité ajoutée avec succès!', 'success');
         document.getElementById('addAmenityForm').reset();
         await loadAmenities();
 
     } catch (error) {
         console.error('Error adding amenity:', error);
-        alert(`Erreur: ${error.message}`);
+        Swal.fire('Erreur!', `Erreur: ${error.message}`, 'error');
     }
 }
 
@@ -264,7 +265,7 @@ async function submitEditAmenity() {
         const name = document.getElementById('editAmenityName').value.trim();
 
         if (!name) {
-            alert('Veuillez entrer un nom d\'aménité');
+            Swal.fire('Attention!', 'Veuillez entrer un nom d\'aménité', 'warning');
             return;
         }
 
@@ -286,13 +287,13 @@ async function submitEditAmenity() {
             throw new Error(errorData.message || errorData.error || 'Failed to update amenity');
         }
 
-        alert('Aménité mise à jour avec succès!');
+        Swal.fire('Succès!', 'Aménité mise à jour avec succès!', 'success');
         closeEditModal();
         await loadAmenities();
 
     } catch (error) {
         console.error('Error updating amenity:', error);
-        alert(`Erreur: ${error.message}`);
+        Swal.fire('Erreur!', `Erreur: ${error.message}`, 'error');
     }
 }
 
@@ -322,12 +323,12 @@ async function deleteAmenity(amenityId) {
             throw new Error(errorData.message || errorData.error || 'Failed to delete amenity');
         }
 
-        alert('Aménité supprimée avec succès!');
+        Swal.fire('Succès!', 'Aménité supprimée avec succès!', 'success');
         await loadAmenities();
 
     } catch (error) {
         console.error('Error deleting amenity:', error);
-        alert(`Erreur: ${error.message}`);
+        Swal.fire('Erreur!', `Erreur: ${error.message}`, 'error');
     }
 }
 

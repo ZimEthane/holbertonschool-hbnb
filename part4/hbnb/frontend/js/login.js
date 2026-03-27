@@ -209,7 +209,7 @@ function showError(message) {
         }, 5000);
     } else {
         console.error('Error:', message);
-        alert(message);
+        Swal.fire('Erreur!', message, 'error');
     }
 }
 
