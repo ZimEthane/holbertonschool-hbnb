@@ -131,3 +131,31 @@ class UserResource(Resource):
             'phone': user.phone,
             'photo_url': user.photo_url
         }, 200
+
+    @jwt_required()
+    @api.response(200, 'User deleted successfully')
+    @api.response(403, 'Unauthorized action')
+    @api.response(404, 'User not found')
+    def delete(self, user_id):
+        """Delete a user account.
+
+        * Admin: can delete any user
+        * Regular: can only delete own account
+        """
+        from app.extensions import db
+
+        claims = get_jwt()
+        is_admin = claims.get('is_admin', False)
+        current_user_id = get_jwt_identity()
+
+        if not is_admin and user_id != current_user_id:
+            return {'error': 'Unauthorized action'}, 403
+
+        user = facade.get_user(user_id)
+        if not user:
+            return {'error': 'User not found'}, 404
+
+        db.session.delete(user)
+        db.session.commit()
+
+        return {'message': 'User deleted successfully'}, 200

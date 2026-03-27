@@ -14,8 +14,8 @@ class User(BaseModel):
     is_admin = db.Column(db.Boolean, default=False)
     phone = db.Column(db.String(20), nullable=True)
     photo_url = db.Column(db.Text, nullable=True)
-    places = db.relationship('Place', backref='owner', lazy=True)
-    reviews = db.relationship('Review', backref='user', lazy=True)
+    places = db.relationship('Place', backref='owner', lazy=True, cascade='all, delete-orphan')
+    reviews = db.relationship('Review', backref='user', lazy=True, cascade='all, delete-orphan')
 
     # ── Validateurs SQLAlchemy ──────────────────────────────────────────────
 

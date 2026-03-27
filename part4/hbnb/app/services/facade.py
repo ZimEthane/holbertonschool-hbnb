@@ -41,6 +41,13 @@ class HBnBFacade:
         self.user_repo.update(user_id, data)
         return self.user_repo.get(user_id)
 
+    def delete_user(self, user_id):
+        user = self.get_user(user_id)
+        if not user:
+            return False
+        self.user_repo.delete(user_id)
+        return True
+
     # ── Amenity ───────────────────────────────────────────────────────────
 
     def create_amenity(self, amenity_data):
@@ -60,6 +67,13 @@ class HBnBFacade:
             return None
         self.amenities_repo.update(amenity_id, amenity_data)
         return self.amenities_repo.get(amenity_id)
+
+    def delete_amenity(self, amenity_id):
+        amenity = self.get_amenity(amenity_id)
+        if not amenity:
+            return False
+        self.amenities_repo.delete(amenity_id)
+        return True
 
     # ── Place ─────────────────────────────────────────────────────────────
 

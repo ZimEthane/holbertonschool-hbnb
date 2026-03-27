@@ -22,7 +22,7 @@ class Place(BaseModel):
     owner_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
 
     # Relations
-    reviews = db.relationship('Review', backref='place', lazy=True)
+    reviews = db.relationship('Review', backref='place', lazy=True, cascade='all, delete-orphan')
     amenities = db.relationship('Amenity', secondary=place_amenity, lazy='subquery',
                                 backref=db.backref('places', lazy=True))
 

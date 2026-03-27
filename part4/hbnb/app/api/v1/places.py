@@ -14,6 +14,15 @@ place_model = api.model('Place', {
     'amenities': fields.List(fields.String),
 })
 
+update_place_model = api.model('UpdatePlace', {
+    'title': fields.String(),
+    'description': fields.String(),
+    'price': fields.Float(),
+    'latitude': fields.Float(),
+    'longitude': fields.Float(),
+    'amenities': fields.List(fields.String),
+})
+
 
 @api.route('/')
 class PlaceList(Resource):
@@ -71,7 +80,7 @@ class PlaceResource(Resource):
         }, 200
 
     @jwt_required()
-    @api.expect(place_model)
+    @api.expect(update_place_model)
     def put(self, place_id):
         claims = get_jwt()
         is_admin = claims.get('is_admin', False)
