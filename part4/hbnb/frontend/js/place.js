@@ -7,6 +7,8 @@ const API_BASE_URL = getApiUrl();
 let placeId = null;
 let currentToken = null;
 let allAmenities = [];
+let placeOwnerId = null;
+let currentUserId = null;
 
 /**
  * Auto-détecte l'URL de l'API selon l'environnement
@@ -70,6 +72,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Check authentication
     currentToken = getToken();
+    currentUserId = localStorage.getItem('userId');
     updateAuthenticationUI();
 
     // Load amenities first
@@ -93,11 +96,19 @@ function updateAuthenticationUI() {
     const loginPrompt = document.getElementById('loginPrompt');
 
     if (currentToken) {
-        addReviewSection?.classList.remove('hidden');
-        loginPrompt?.classList.add('hidden');
+        // Check if user is the owner of the place
+        if (placeOwnerId && currentUserId && placeOwnerId === currentUserId) {
+            addReviewSection?.classList.add('hidden');
+            loginPrompt?.classList.remove('hidden');
+            loginPrompt.innerHTML = '<p>⚠️ Vous ne pouvez pas ajouter un avis à votre propre location</p>';
+        } else {
+            addReviewSection?.classList.remove('hidden');
+            loginPrompt?.classList.add('hidden');
+        }
     } else {
         addReviewSection?.classList.add('hidden');
         loginPrompt?.classList.remove('hidden');
+        loginPrompt.innerHTML = '<p>Vous devez être connecté pour ajouter un avis</p><a href="/login.html" class="login-button">Se connecter</a>';
     }
 }
 
@@ -151,7 +162,13 @@ async function loadPlaceDetails() {
         const place = await response.json();
         console.log('Place details received:', place);
 
+        // Store owner ID
+        placeOwnerId = place.owner_id;
+
         displayPlaceDetails(place);
+
+        // Update UI now that we know the owner
+        updateAuthenticationUI();
 
     } catch (error) {
         console.error('Error loading place details:', error);
