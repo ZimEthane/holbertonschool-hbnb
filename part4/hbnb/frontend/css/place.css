@@ -370,6 +370,25 @@
   background: var(--gradient-secondary);
 }
 
+/* ==================== AMENITIES ==================== */
+.amenities-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.amenity-tag {
+  display: inline-block;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
 /* ==================== RESPONSIVE ==================== */
 @media (max-width: 768px) {
   .place-details {

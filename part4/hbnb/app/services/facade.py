@@ -94,6 +94,19 @@ class HBnBFacade:
             owner_id=owner_id
         )
         self.places_repo.add(place)
+
+        # Associer les aménités
+        amenity_ids = place_data.get('amenities', [])
+        if amenity_ids:
+            amenities = []
+            for amenity_id in amenity_ids:
+                amenity = self.get_amenity(amenity_id)
+                if amenity:
+                    amenities.append(amenity)
+            place.amenities = amenities
+            from app.extensions import db
+            db.session.commit()
+
         return place
 
     def get_place(self, place_id):

@@ -6,6 +6,7 @@
 const API_BASE_URL = getApiUrl();
 let placeId = null;
 let currentToken = null;
+let allAmenities = [];
 
 /**
  * Auto-détecte l'URL de l'API selon l'environnement
@@ -71,6 +72,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     currentToken = getToken();
     updateAuthenticationUI();
 
+    // Load amenities first
+    await loadAmenities();
+
     // Load place details and reviews
     await loadPlaceDetails();
     await loadReviews();
@@ -94,6 +98,27 @@ function updateAuthenticationUI() {
     } else {
         addReviewSection?.classList.add('hidden');
         loginPrompt?.classList.remove('hidden');
+    }
+}
+
+/**
+ * Load all amenities from API
+ */
+async function loadAmenities() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/v1/amenities/`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            allAmenities = await response.json();
+        }
+    } catch (error) {
+        console.error('Error loading amenities:', error);
     }
 }
 
@@ -148,6 +173,19 @@ function displayPlaceDetails(place) {
     const latitude = place.latitude || 'N/A';
     const longitude = place.longitude || 'N/A';
 
+    // Build amenities HTML
+    const amenitiesHtml = place.amenities && place.amenities.length > 0
+        ? `<div class="info-block">
+                <h4>Aménités</h4>
+                <div class="amenities-list">
+                    ${place.amenities.map(amenityId => {
+                        const amenity = allAmenities.find(a => a.id === amenityId);
+                        return amenity ? `<span class="amenity-tag">${escapeHtml(amenity.name)}</span>` : '';
+                    }).join('')}
+                </div>
+            </div>`
+        : '';
+
     const html = `
         <div class="place-hero">
             <img src="/images/logo.png" alt="${escapeHtml(title)}" class="place-hero-image">
@@ -174,6 +212,8 @@ function displayPlaceDetails(place) {
                 <p>Latitude: ${latitude}</p>
                 <p>Longitude: ${longitude}</p>
             </div>
+
+            ${amenitiesHtml}
         </div>
     `;
 

@@ -37,7 +37,8 @@ class PlaceList(Resource):
                 'longitude': p.longitude,
                 'description': p.description,
                 'owner_id': p.owner_id,
-                'owner_name': f"{p.owner.first_name} {p.owner.last_name}" if p.owner else 'Unknown'
+                'owner_name': f"{p.owner.first_name} {p.owner.last_name}" if p.owner else 'Unknown',
+                'amenities': [a.id for a in p.amenities]
             }
             for p in places
         ], 200
@@ -57,7 +58,8 @@ class PlaceList(Resource):
                 'price': new_place.price,
                 'latitude': new_place.latitude,
                 'longitude': new_place.longitude,
-                'owner_id': new_place.owner_id
+                'owner_id': new_place.owner_id,
+                'amenities': [a.id for a in new_place.amenities]
             }, 201
         except (ValueError, TypeError) as e:
             return {"error": str(e)}, 400
@@ -102,6 +104,7 @@ class PlaceResource(Resource):
                 'price': updated.price,
                 'latitude': updated.latitude,
                 'longitude': updated.longitude,
+                'amenities': [a.id for a in updated.amenities]
             }, 200
         except (ValueError, TypeError) as e:
             return {"error": str(e)}, 400

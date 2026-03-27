@@ -601,3 +601,79 @@
   font-size: 0.9rem;
   color: var(--text-color);
 }
+
+/* ==================== AMENITIES CHECKBOXES ==================== */
+.amenities-checkboxes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+  padding: 1.5rem;
+  background: rgba(102, 126, 234, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+.amenity-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 10px 12px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  user-select: none;
+  background: white;
+  border: 1px solid #e0e0e0;
+}
+
+.amenity-checkbox:hover {
+  background: rgba(102, 126, 234, 0.1);
+  border-color: var(--primary-color);
+}
+
+.amenity-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--primary-color);
+}
+
+.amenity-checkbox span {
+  color: var(--text-color);
+  font-weight: 500;
+  flex: 1;
+}
+
+.amenity-checkbox input[type="checkbox"]:checked + span {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.loading-amenities,
+.no-amenities {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #999;
+  margin: 0;
+  padding: 1rem;
+}
+
+/* Amenities tags in place list */
+.place-amenities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.amenity-tag {
+  display: inline-block;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+

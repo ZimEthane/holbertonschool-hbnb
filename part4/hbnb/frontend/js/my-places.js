@@ -7,6 +7,7 @@ const API_BASE_URL = getApiUrl();
 let currentToken = null;
 let currentUserId = null;
 let allPlaces = [];
+let allAmenities = [];
 let editingPlaceId = null;
 let map = null;
 let marker = null;
@@ -67,6 +68,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     setupEventListeners();
+    await loadAmenities();
     await loadUserPlaces();
 });
 
@@ -127,6 +129,50 @@ async function loadUserPlaces() {
     }
 }
 
+async function loadAmenities() {
+    try {
+        console.log('Loading amenities...');
+
+        const response = await fetch(`${API_BASE_URL}/api/v1/amenities/`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${currentToken}`,
+                'Accept': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Erreur lors du chargement des aménités');
+        }
+
+        allAmenities = await response.json();
+        console.log('Amenities loaded:', allAmenities.length);
+        displayAmenities();
+
+    } catch (error) {
+        console.error('Error loading amenities:', error);
+    }
+}
+
+function displayAmenities() {
+    const container = document.getElementById('amenitiesContainer');
+    if (!container) return;
+
+    if (allAmenities.length === 0) {
+        container.innerHTML = '<p class="no-amenities">Aucune aménité disponible</p>';
+        return;
+    }
+
+    const html = allAmenities.map(amenity => `
+        <label class="amenity-checkbox">
+            <input type="checkbox" name="amenities" value="${amenity.id}">
+            <span>${escapeHtml(amenity.name)}</span>
+        </label>
+    `).join('');
+
+    container.innerHTML = html;
+}
+
 function displayPlaces() {
     const placesList = document.getElementById('placesList');
     const emptyState = document.getElementById('emptyState');
@@ -140,7 +186,17 @@ function displayPlaces() {
     placesList.classList.remove('hidden');
     emptyState.classList.add('hidden');
 
-    placesList.innerHTML = allPlaces.map(place => `
+    placesList.innerHTML = allPlaces.map(place => {
+        const amenitiesHtml = place.amenities && place.amenities.length > 0
+            ? `<div class="place-amenities">
+                ${place.amenities.map(amenityId => {
+                    const amenity = allAmenities.find(a => a.id === amenityId);
+                    return amenity ? `<span class="amenity-tag">${escapeHtml(amenity.name)}</span>` : '';
+                }).join('')}
+                </div>`
+            : '';
+
+        return `
         <div class="place-item">
             <div class="place-item-header">
                 <h3>${escapeHtml(place.title)}</h3>
@@ -150,6 +206,8 @@ function displayPlaces() {
             </div>
 
             <p class="place-description">${escapeHtml(place.description || '')}</p>
+
+            ${amenitiesHtml}
 
             <div class="place-meta">
                 <div class="meta-item">
@@ -164,7 +222,7 @@ function displayPlaces() {
                 <button class="btn-delete" onclick="deletePlace('${place.id}')">🗑️ Supprimer</button>
             </div>
         </div>
-    `).join('');
+    `}).join('');
 }
 
 function showAddForm() {
@@ -304,6 +362,10 @@ async function handleAddPlace(e) {
     const latitude = parseFloat(document.getElementById('placeLatitude').value);
     const longitude = parseFloat(document.getElementById('placeLongitude').value);
 
+    // Get selected amenities
+    const amenities = Array.from(document.querySelectorAll('input[name="amenities"]:checked'))
+        .map(checkbox => checkbox.value);
+
     if (!title || !price || !description || !latitude || !longitude) {
         showError('Veuillez remplir tous les champs');
         return;
@@ -323,7 +385,8 @@ async function handleAddPlace(e) {
                 price,
                 description,
                 latitude,
-                longitude
+                longitude,
+                amenities
             })
         });
 
@@ -358,8 +421,33 @@ function editPlace(placeId) {
     document.getElementById('editPlaceLatitude').value = place.latitude;
     document.getElementById('editPlaceLongitude').value = place.longitude;
 
+    // Display amenities with place's current amenities checked
+    displayEditAmenities(place.amenities || []);
+
     // Show modal
     document.getElementById('editPlaceModal').classList.remove('hidden');
+}
+
+function displayEditAmenities(selectedAmenityIds) {
+    const container = document.getElementById('editAmenitiesContainer');
+    if (!container) return;
+
+    if (allAmenities.length === 0) {
+        container.innerHTML = '<p class="no-amenities">Aucune aménité disponible</p>';
+        return;
+    }
+
+    const html = allAmenities.map(amenity => {
+        const isChecked = selectedAmenityIds.includes(amenity.id) ? 'checked' : '';
+        return `
+        <label class="amenity-checkbox">
+            <input type="checkbox" name="editAmenities" value="${amenity.id}" ${isChecked}>
+            <span>${escapeHtml(amenity.name)}</span>
+        </label>
+    `;
+    }).join('');
+
+    container.innerHTML = html;
 }
 
 function hideModal() {
@@ -379,6 +467,10 @@ async function handleEditPlace(e) {
     const latitude = parseFloat(document.getElementById('editPlaceLatitude').value);
     const longitude = parseFloat(document.getElementById('editPlaceLongitude').value);
 
+    // Get selected amenities
+    const amenities = Array.from(document.querySelectorAll('input[name="editAmenities"]:checked'))
+        .map(checkbox => checkbox.value);
+
     try {
         const response = await fetch(`${API_BASE_URL}/api/v1/places/${editingPlaceId}`, {
             method: 'PUT',
@@ -391,7 +483,8 @@ async function handleEditPlace(e) {
                 price,
                 description,
                 latitude,
-                longitude
+                longitude,
+                amenities
             })
         });
 
