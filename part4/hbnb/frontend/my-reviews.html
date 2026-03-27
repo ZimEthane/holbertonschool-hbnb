@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="HBNB - Mes Avis">
+    <link rel="icon" type="image/png" href="/images/icon.png">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/my-reviews.css">
+    <title>HBNB - Mes Avis</title>
+</head>
+<body>
+    <header>
+        <div class="header-left">
+            <img src="/images/logo.png" alt="HBNB Logo" class="logo">
+            <nav>
+                <a href="/index.html">Accueil</a>
+                <a href="/my-places.html">Mes Locations</a>
+                <a href="/my-reviews.html">Mes Avis</a>
+                <a href="/user-profile.html">Mon Profil</a>
+            </nav>
+        </div>
+        <button class="login-button" onclick="logout()">Déconnexion</button>
+    </header>
+
+    <main class="container">
+        <div class="page-header">
+            <h1>📝 Mes Avis</h1>
+            <p class="subtitle">Gérez et consultez tous les avis que vous avez laissés</p>
+        </div>
+
+        <div id="reviewsContainer" class="reviews-grid">
+            <!-- Avis chargés dynamiquement -->
+        </div>
+
+        <div id="noReviews" class="empty-state hidden">
+            <div class="empty-state-content">
+                <h2>Aucun avis pour le moment</h2>
+                <p>Vous n'avez pas encore laissé d'avis. Explorez les locations et partagez votre expérience!</p>
+                <a href="/index.html" class="details-button">Voir les locations</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal d'édition -->
+    <div id="editModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Modifier mon avis</h2>
+                <button class="close-btn" onclick="closeEditModal()">✕</button>
+            </div>
+            <form id="editReviewForm" class="modal-form">
+                <div class="form-group">
+                    <label for="editPlace">Lieu</label>
+                    <input type="text" id="editPlace" disabled>
+                </div>
+
+                <div class="form-group">
+                    <label for="editRating">Note (1-5 étoiles)</label>
+                    <div class="rating-input">
+                        <input type="range" id="editRating" min="1" max="5" value="5">
+                        <span id="editRatingValue">5</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="editText">Votre avis</label>
+                    <textarea id="editText" required placeholder="Partagez votre expérience..."></textarea>
+                </div>
+
+                <div class="modal-buttons">
+                    <button type="submit" class="details-button">Enregistrer</button>
+                    <button type="button" class="cancel-button" onclick="closeEditModal()">Annuler</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 HBNB. Tous droits réservés.</p>
+    </footer>
+
+    <script src="/js/common.js"></script>
+    <script src="/js/my-reviews.js"></script>
+</body>
+</html>

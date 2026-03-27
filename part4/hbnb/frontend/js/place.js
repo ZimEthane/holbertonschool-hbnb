@@ -144,7 +144,9 @@ function displayPlaceDetails(place) {
     const title = place.title || 'Unnamed Place';
     const price = place.price || 'N/A';
     const description = place.description || 'No description available';
-    const owner_id = place.owner_id || 'Unknown';
+    const ownerName = place.owner_name || 'Unknown';
+    const latitude = place.latitude || 'N/A';
+    const longitude = place.longitude || 'N/A';
 
     const html = `
         <div class="place-hero">
@@ -164,12 +166,13 @@ function displayPlaceDetails(place) {
 
             <div class="info-block">
                 <h4>Propriétaire</h4>
-                <p>ID: ${escapeHtml(owner_id)}</p>
+                <p>${escapeHtml(ownerName)}</p>
             </div>
 
             <div class="info-block">
-                <h4>Coordonnées</h4>
-                <p>Lat: ${place.latitude || 'N/A'} | Lon: ${place.longitude || 'N/A'}</p>
+                <h4>Localisation</h4>
+                <p>Latitude: ${latitude}</p>
+                <p>Longitude: ${longitude}</p>
             </div>
         </div>
     `;

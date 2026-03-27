@@ -36,7 +36,8 @@ class PlaceList(Resource):
                 'latitude': p.latitude,
                 'longitude': p.longitude,
                 'description': p.description,
-                'owner_id': p.owner_id
+                'owner_id': p.owner_id,
+                'owner_name': f"{p.owner.first_name} {p.owner.last_name}" if p.owner else 'Unknown'
             }
             for p in places
         ], 200
@@ -76,6 +77,7 @@ class PlaceResource(Resource):
             'latitude': place.latitude,
             'longitude': place.longitude,
             'owner_id': place.owner_id,
+            'owner_name': f"{place.owner.first_name} {place.owner.last_name}" if place.owner else 'Unknown',
             'amenities': [a.id for a in place.amenities]
         }, 200
 

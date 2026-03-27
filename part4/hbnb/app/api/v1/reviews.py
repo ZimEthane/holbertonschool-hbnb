@@ -17,8 +17,14 @@ class ReviewList(Resource):
     def get(self):
         reviews = facade.get_all_reviews()
         return [
-            {'id': r.id, 'text': r.text, 'rating': r.rating,
-             'user_id': r.user_id, 'place_id': r.place_id}
+            {
+                'id': r.id,
+                'text': r.text,
+                'rating': r.rating,
+                'user_id': r.user_id,
+                'user_name': f"{r.user.first_name} {r.user.last_name}" if r.user else 'Unknown',
+                'place_id': r.place_id
+            }
             for r in reviews
         ], 200
 
@@ -52,7 +58,9 @@ class ReviewResource(Resource):
             'text': review.text,
             'rating': review.rating,
             'user_id': review.user_id,
-            'place_id': review.place_id
+            'user_name': f"{review.user.first_name} {review.user.last_name}" if review.user else 'Unknown',
+            'place_id': review.place_id,
+            'place_title': review.place.title if review.place else 'Unknown'
         }, 200
 
     @jwt_required()
@@ -72,7 +80,10 @@ class ReviewResource(Resource):
             return {
                 'id': updated.id,
                 'text': updated.text,
-                'rating': updated.rating
+                'rating': updated.rating,
+                'user_id': updated.user_id,
+                'user_name': f"{updated.user.first_name} {updated.user.last_name}" if updated.user else 'Unknown',
+                'place_id': updated.place_id
             }, 200
         except (ValueError, TypeError) as e:
             return {"error": str(e)}, 400
@@ -89,3 +100,28 @@ class ReviewResource(Resource):
             return {'error': 'Unauthorized action'}, 403
         facade.delete_review(review_id)
         return {'message': 'Review deleted successfully'}, 200
+
+
+@api.route('/user/my-reviews')
+class MyReviewsList(Resource):
+    @jwt_required()
+    def get(self):
+        """Get all reviews by current user"""
+        current_user_id = get_jwt_identity()
+        user = facade.get_user(current_user_id)
+        if not user:
+            return {'error': 'User not found'}, 404
+
+        reviews = [
+            {
+                'id': r.id,
+                'text': r.text,
+                'rating': r.rating,
+                'user_id': r.user_id,
+                'user_name': f"{r.user.first_name} {r.user.last_name}" if r.user else 'Unknown',
+                'place_id': r.place_id,
+                'place_title': r.place.title if r.place else 'Unknown'
+            }
+            for r in user.reviews
+        ]
+        return reviews, 200

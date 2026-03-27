@@ -82,7 +82,7 @@ function initHeaderLoginStatus() {
 }
 
 /**
- * Add user navigation links (Profil, Mes Locations)
+ * Add user navigation links (Profil, Mes Locations, Mes Avis)
  */
 function addUserNavLinks() {
     const nav = document.querySelector('nav');
@@ -129,6 +129,24 @@ function addUserNavLinks() {
         placesLink.style.background = 'transparent';
     };
 
+    // Mes Avis link
+    const reviewsLink = document.createElement('a');
+    reviewsLink.href = '/my-reviews.html';
+    reviewsLink.textContent = '📝 Mes Avis';
+    reviewsLink.style.color = 'white';
+    reviewsLink.style.textDecoration = 'none';
+    reviewsLink.style.fontWeight = '500';
+    reviewsLink.style.padding = '0.5rem 1rem';
+    reviewsLink.style.borderRadius = '8px';
+    reviewsLink.style.transition = 'all 0.3s ease';
+
+    reviewsLink.onmouseover = () => {
+        reviewsLink.style.background = 'rgba(255, 255, 255, 0.1)';
+    };
+    reviewsLink.onmouseout = () => {
+        reviewsLink.style.background = 'transparent';
+    };
+
     // Add a marker div to track that we added these links
     const marker = document.createElement('div');
     marker.id = 'userNavLinks';
@@ -137,6 +155,7 @@ function addUserNavLinks() {
     // Insert links before the marker
     nav.appendChild(profileLink);
     nav.appendChild(placesLink);
+    nav.appendChild(reviewsLink);
     nav.appendChild(marker);
 }
 
