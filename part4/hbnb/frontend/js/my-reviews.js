@@ -120,11 +120,16 @@ function displayReviews(reviews) {
     container.classList.remove('hidden');
     noReviews.classList.add('hidden');
 
-    const reviewsHtml = reviews.map(review => `
+    const reviewsHtml = reviews.map(review => {
+        const userAvatar = review.user_profile_picture || review.profile_picture || '/images/default-avatar.svg';
+        return `
         <div class="review-item">
-            <div class="review-place-info">
-                <h3>${escapeHtml(review.place_title || 'Unknown Place')}</h3>
-                <p class="review-meta">Avis le ${formatDate(review.created_at || new Date())}</p>
+            <div class="review-header-info">
+                <img src="${userAvatar}" alt="${escapeHtml(review.place_title)}" class="review-item-avatar" onerror="this.src='/images/default-avatar.svg'">
+                <div class="review-place-info">
+                    <h3>${escapeHtml(review.place_title || 'Unknown Place')}</h3>
+                    <p class="review-meta">Avis le ${formatDate(review.created_at || new Date())}</p>
+                </div>
             </div>
 
             <div class="review-rating">
@@ -145,7 +150,8 @@ function displayReviews(reviews) {
                 </button>
             </div>
         </div>
-    `).join('');
+    `;
+    }).join('');
 
     container.innerHTML = reviewsHtml;
 }

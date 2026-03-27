@@ -287,16 +287,24 @@ function displayReviews(reviews) {
         return;
     }
 
-    const reviewsHtml = reviews.map(review => `
+    const reviewsHtml = reviews.map(review => {
+        const userAvatar = review.user_profile_picture || review.profile_picture || '/images/default-avatar.svg';
+        return `
         <div class="review-card">
             <div class="review-header">
-                <span class="review-author">${escapeHtml(review.user_name || 'Utilisateur')}</span>
+                <div class="review-user-info">
+                    <img src="${userAvatar}" alt="${escapeHtml(review.user_name || 'Utilisateur')}" class="review-avatar" onerror="this.src='/images/default-avatar.svg'">
+                    <div class="review-user-details">
+                        <span class="review-author">${escapeHtml(review.user_name || 'Utilisateur')}</span>
+                        <span class="review-date">${formatDate(review.created_at || new Date())}</span>
+                    </div>
+                </div>
                 <span class="review-rating">★ ${review.rating || 5}<span>/5</span></span>
             </div>
             <p class="review-comment">${escapeHtml(review.text || review.comment || '')}</p>
-            <p class="review-date">${formatDate(review.created_at || new Date())}</p>
         </div>
-    `).join('');
+    `;
+    }).join('');
 
     reviewsList.innerHTML = reviewsHtml;
 }

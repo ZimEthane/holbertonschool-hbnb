@@ -216,6 +216,154 @@ nav a:hover::before {
   background: rgba(255, 255, 255, 0.1);
 }
 
+/* ==================== PROFILE DROPDOWN ==================== */
+.profile-dropdown {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.profile-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: var(--transition-short);
+  font-weight: 500;
+}
+
+.profile-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.profile-avatar {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  transition: var(--transition-short);
+}
+
+.profile-btn:hover .profile-avatar {
+  border-color: var(--secondary-color);
+  transform: scale(1.05);
+}
+
+.profile-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  min-width: 250px;
+  margin-top: 0.5rem;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: var(--transition-short);
+  z-index: 1000;
+}
+
+.profile-menu.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.profile-menu-header {
+  padding: 1.2rem;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.profile-menu-avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--secondary-color);
+}
+
+.profile-menu-info h3 {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--dark-color);
+  font-weight: 700;
+}
+
+.profile-menu-info p {
+  margin: 0.2rem 0 0 0;
+  font-size: 0.8rem;
+  color: var(--text-light);
+}
+
+.profile-menu-items {
+  padding: 0.5rem 0;
+}
+
+.profile-menu-item {
+  padding: 0.8rem 1.2rem;
+  cursor: pointer;
+  color: var(--text-color);
+  transition: var(--transition-short);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-size: 0.9rem;
+}
+
+.profile-menu-item:hover {
+  background: rgba(78, 205, 196, 0.1);
+  color: var(--secondary-color);
+}
+
+.profile-menu-divider {
+  height: 1px;
+  background: #eee;
+  margin: 0.5rem 0;
+}
+
+.profile-menu-item.logout {
+  color: var(--error-color);
+  border-top: 1px solid #eee;
+}
+
+.profile-menu-item.logout:hover {
+  background: rgba(211, 47, 47, 0.1);
+}
+
+.logout-button {
+  color: white;
+  background: linear-gradient(135deg, var(--error-color), #f44336);
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-short);
+  width: 100%;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.logout-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(211, 47, 47, 0.3);
+}
+
 .login-button {
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   color: white;
@@ -833,6 +981,47 @@ button[type="reset"]:hover {
     font-size: 0.85rem;
   }
 
+  .profile-dropdown {
+    gap: 0.5rem;
+  }
+
+  .profile-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+  }
+
+  .profile-avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+  .profile-menu {
+    min-width: 220px;
+    right: -5px;
+  }
+
+  .profile-menu-header {
+    padding: 1rem;
+  }
+
+  .profile-menu-avatar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .profile-menu-info h3 {
+    font-size: 0.9rem;
+  }
+
+  .profile-menu-info p {
+    font-size: 0.75rem;
+  }
+
+  .profile-menu-item {
+    padding: 0.7rem 1rem;
+    font-size: 0.85rem;
+  }
+
   .container {
     padding: 2rem 1.5rem;
   }
@@ -910,6 +1099,24 @@ button[type="reset"]:hover {
     flex-shrink: 0;
   }
 
+  .profile-btn {
+    padding: 0.35rem 0.7rem;
+    font-size: 0.8rem;
+  }
+
+  .profile-avatar {
+    width: 30px;
+    height: 30px;
+  }
+
+  .profile-btn span:last-child {
+    display: none;
+  }
+
+  .profile-menu {
+    min-width: 200px;
+  }
+
   .container {
     padding: 1.5rem 1rem;
   }
@@ -981,6 +1188,42 @@ button[type="reset"]:hover {
 
   .login-button::before {
     display: none;
+  }
+
+  .profile-dropdown {
+    gap: 0.3rem;
+  }
+
+  .profile-btn {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.7rem;
+  }
+
+  .profile-avatar {
+    width: 28px;
+    height: 28px;
+  }
+
+  .profile-menu {
+    min-width: 180px;
+    font-size: 0.85rem;
+  }
+
+  .profile-menu-header {
+    padding: 0.8rem;
+  }
+
+  .profile-menu-avatar {
+    width: 35px;
+    height: 35px;
+  }
+
+  .profile-menu-info h3 {
+    font-size: 0.85rem;
+  }
+
+  .profile-menu-info p {
+    font-size: 0.7rem;
   }
 
   .container {
@@ -1081,6 +1324,26 @@ button[type="reset"]:hover {
   .login-button {
     padding: 0.3rem 0.6rem;
     font-size: 0.65rem;
+  }
+
+  .profile-btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.6rem;
+  }
+
+  .profile-avatar {
+    width: 25px;
+    height: 25px;
+  }
+
+  .profile-menu {
+    min-width: 160px;
+    right: -10px;
+  }
+
+  .profile-menu-avatar {
+    width: 32px;
+    height: 32px;
   }
 
   .container {

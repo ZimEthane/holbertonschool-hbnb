@@ -76,20 +76,19 @@ function logoutUser() {
 /**
  * Initialize header login button status
  */
-function initHeaderLoginStatus() {
+async function initHeaderLoginStatus() {
     const headerLoginBtn = document.getElementById('headerLoginBtn');
     if (!headerLoginBtn) return;
 
     headerLoginBtn.disabled = false;
 
     if (isUserLoggedIn()) {
-        // User is logged in - change button to logout and add nav links
-        headerLoginBtn.textContent = 'Déconnexion';
-        headerLoginBtn.className = 'login-button logout';
-        headerLoginBtn.onclick = logoutUser;
+        // Hide immediately to avoid visual flicker while profile menu initializes
+        headerLoginBtn.style.visibility = 'hidden';
+        headerLoginBtn.style.pointerEvents = 'none';
 
-        // Add user nav links if not already there
-        addUserNavLinks();
+        // User is logged in - replace button with profile dropdown
+        await createProfileDropdown(headerLoginBtn);
     } else {
         // User is not logged in - show login button
         headerLoginBtn.textContent = 'Connexion';
@@ -104,105 +103,200 @@ function initHeaderLoginStatus() {
 }
 
 /**
- * Add user navigation links (Profil, Mes Locations, Mes Avis, + Admin si admin)
+ * Create profile dropdown with user avatar and menu
  */
-function addUserNavLinks() {
-    const nav = document.querySelector('nav');
-    if (!nav) return;
+async function createProfileDropdown(headerLoginBtn) {
+    const header = document.querySelector('header');
+    if (!header) return;
 
-    // Check if links already exist
-    if (document.getElementById('userNavLinks')) {
+    // Check if profile dropdown already exists
+    if (document.getElementById('profileDropdown')) {
+        headerLoginBtn.style.display = 'none';
         return;
     }
 
-    // Profil link
-    const profileLink = document.createElement('a');
-    profileLink.href = '/user-profile.html';
-    profileLink.textContent = '👤 Profil';
-    profileLink.style.color = 'white';
-    profileLink.style.textDecoration = 'none';
-    profileLink.style.fontWeight = '500';
-    profileLink.style.padding = '0.5rem 1rem';
-    profileLink.style.borderRadius = '8px';
-    profileLink.style.transition = 'all 0.3s ease';
+    // Hide button immediately while fetching user data
+    headerLoginBtn.style.display = 'none';
 
-    profileLink.onmouseover = () => {
-        profileLink.style.background = 'rgba(255, 255, 255, 0.1)';
-    };
-    profileLink.onmouseout = () => {
-        profileLink.style.background = 'transparent';
-    };
+    // Render immediately with fallback data, then hydrate from API.
+    const fallbackName = 'Profil';
+    const fallbackEmail = localStorage.getItem('userEmail') || '';
+    const fallbackAvatar = '/images/default-avatar.svg';
+    const userId = localStorage.getItem('userId');
+    const token = getTokenFromCookie();
 
-    // Mes Locations link
-    const placesLink = document.createElement('a');
-    placesLink.href = '/my-places.html';
-    placesLink.textContent = '🏠 Mes Locations';
-    placesLink.style.color = 'white';
-    placesLink.style.textDecoration = 'none';
-    placesLink.style.fontWeight = '500';
-    placesLink.style.padding = '0.5rem 1rem';
-    placesLink.style.borderRadius = '8px';
-    placesLink.style.transition = 'all 0.3s ease';
+    // Create profile dropdown HTML
+    const profileDropdown = document.createElement('div');
+    profileDropdown.className = 'profile-dropdown';
+    profileDropdown.id = 'profileDropdown';
 
-    placesLink.onmouseover = () => {
-        placesLink.style.background = 'rgba(255, 255, 255, 0.1)';
-    };
-    placesLink.onmouseout = () => {
-        placesLink.style.background = 'transparent';
-    };
+    const profileBtn = document.createElement('button');
+    profileBtn.className = 'profile-btn';
+    profileBtn.type = 'button';
+    profileBtn.setAttribute('aria-label', 'Profil utilisateur');
 
-    // Mes Avis link
-    const reviewsLink = document.createElement('a');
-    reviewsLink.href = '/my-reviews.html';
-    reviewsLink.textContent = '📝 Mes Avis';
-    reviewsLink.style.color = 'white';
-    reviewsLink.style.textDecoration = 'none';
-    reviewsLink.style.fontWeight = '500';
-    reviewsLink.style.padding = '0.5rem 1rem';
-    reviewsLink.style.borderRadius = '8px';
-    reviewsLink.style.transition = 'all 0.3s ease';
+    const userName = fallbackName;
+    const userEmail = fallbackEmail;
+    const userAvatar = fallbackAvatar;
 
-    reviewsLink.onmouseover = () => {
-        reviewsLink.style.background = 'rgba(255, 255, 255, 0.1)';
-    };
-    reviewsLink.onmouseout = () => {
-        reviewsLink.style.background = 'transparent';
-    };
+    profileBtn.innerHTML = `
+        <img src="${userAvatar}" alt="Avatar" class="profile-avatar" onerror="this.src='/images/default-avatar.svg'">
+        <span>${userName.substring(0, 15)}</span>
+        <span style="font-size: 0.7rem;">▼</span>
+    `;
 
-    // Add a marker div to track that we added these links
-    const marker = document.createElement('div');
-    marker.id = 'userNavLinks';
-    marker.style.display = 'none';
+    const profileMenu = document.createElement('div');
+    profileMenu.className = 'profile-menu';
 
-    // Insert links before the marker
-    nav.appendChild(profileLink);
-    nav.appendChild(placesLink);
-    nav.appendChild(reviewsLink);
+    profileMenu.innerHTML = `
+        <div class="profile-menu-header">
+            <img src="${userAvatar}" alt="Avatar" class="profile-menu-avatar" onerror="this.src='/images/default-avatar.svg'">
+            <div class="profile-menu-info">
+                <h3>${escapeHtml(userName)}</h3>
+                <p>${escapeHtml(userEmail)}</p>
+            </div>
+        </div>
+        <div class="profile-menu-items">
+            <a href="/user-profile.html" class="profile-menu-item">
+                <span>👤</span> Profil
+            </a>
+            <a href="/my-places.html" class="profile-menu-item">
+                <span>🏠</span> Mes Locations
+            </a>
+            <a href="/my-reviews.html" class="profile-menu-item">
+                <span>📝</span> Mes Avis
+            </a>
+            ${isUserAdmin() ? `
+            <div class="profile-menu-divider"></div>
+            <a href="/admin-amenities.html" class="profile-menu-item">
+                <span>⚙️</span> Aménités (Admin)
+            </a>
+            ` : ''}
+            <div class="profile-menu-divider"></div>
+            <button class="profile-menu-item logout" style="width: 100%; text-align: left; background: none; border: none; cursor: pointer;">
+                <span>🚪</span> Déconnexion
+            </button>
+        </div>
+    `;
 
-    // Admin link - only for admins
-    if (isUserAdmin()) {
-        const adminLink = document.createElement('a');
-        adminLink.href = '/admin-amenities.html';
-        adminLink.textContent = '⚙️ Aménités';
-        adminLink.style.color = 'white';
-        adminLink.style.textDecoration = 'none';
-        adminLink.style.fontWeight = '500';
-        adminLink.style.padding = '0.5rem 1rem';
-        adminLink.style.borderRadius = '8px';
-        adminLink.style.transition = 'all 0.3s ease';
-        adminLink.style.background = 'rgba(255, 152, 0, 0.3)';
+    profileDropdown.appendChild(profileBtn);
+    profileDropdown.appendChild(profileMenu);
 
-        adminLink.onmouseover = () => {
-            adminLink.style.background = 'rgba(255, 152, 0, 0.5)';
-        };
-        adminLink.onmouseout = () => {
-            adminLink.style.background = 'rgba(255, 152, 0, 0.3)';
-        };
+    // Replace login button with profile dropdown
+    headerLoginBtn.parentNode.insertBefore(profileDropdown, headerLoginBtn);
 
-        nav.appendChild(adminLink);
+    // Setup event listeners
+    profileBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        profileMenu.classList.toggle('active');
+    });
+
+    // Close menu when clicking on a link
+    const menuLinks = profileMenu.querySelectorAll('a, button');
+    menuLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            if (this.classList.contains('logout')) {
+                e.preventDefault();
+                logoutUser();
+            } else {
+                profileMenu.classList.remove('active');
+            }
+        });
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function(event) {
+        const isClickInsideDropdown = profileDropdown.contains(event.target);
+        if (!isClickInsideDropdown) {
+            profileMenu.classList.remove('active');
+        }
+    });
+
+    // Add user nav links to nav bar
+    addUserNavLinks();
+
+    // Fetch and apply user data after dropdown is visible (same UX for admin/non-admin)
+    if (userId && token) {
+        try {
+            const API_BASE_URL = getApiBaseUrl();
+            const response = await fetch(`${API_BASE_URL}/api/v1/users/${userId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const userData = await response.json();
+                const fullName = `${userData.first_name || ''} ${userData.last_name || ''}`.trim() || 'Profil';
+                const email = userData.email || '';
+                const avatar = userData.profile_picture || '/images/default-avatar.svg';
+
+                const profileAvatar = profileBtn.querySelector('.profile-avatar');
+                const profileName = profileBtn.querySelector('span');
+                const menuAvatar = profileMenu.querySelector('.profile-menu-avatar');
+                const menuName = profileMenu.querySelector('.profile-menu-info h3');
+                const menuEmail = profileMenu.querySelector('.profile-menu-info p');
+
+                if (profileAvatar) profileAvatar.src = avatar;
+                if (profileName) profileName.textContent = fullName.substring(0, 15);
+                if (menuAvatar) menuAvatar.src = avatar;
+                if (menuName) menuName.textContent = fullName;
+                if (menuEmail) menuEmail.textContent = email;
+            }
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+        }
+    }
+}
+
+/**
+ * Get API base URL
+ */
+function getApiBaseUrl() {
+    const hostname = window.location.hostname;
+    const protocol = window.location.protocol;
+
+    if (hostname.includes('app.github.dev')) {
+        const newHostname = hostname.replace(/(\d+)\.app\.github\.dev/, '5000.app.github.dev');
+        return `${protocol}//${newHostname}`;
     }
 
-    nav.appendChild(marker);
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        return 'http://localhost:5000';
+    }
+
+    return `${protocol}//${hostname}:5000`;
+}
+
+/**
+ * Escape HTML to prevent XSS
+ */
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+/**
+ * Add user navigation links (kept for mobile menu compatibility)
+ */
+function addUserNavLinks() {
+    // Links are now in the profile dropdown, no need to add sep. nav links
+    // But keep this for compatibility with mobile menu
+    return;
+}
+
+/**
+ * Remove user navigation links
+ */
+function removeUserNavLinks() {
+    const marker = document.getElementById('userNavLinks');
+    if (marker) {
+        marker.remove();
+    }
 }
 
 // Initialize header login status when DOM is ready

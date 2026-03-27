@@ -238,11 +238,46 @@
   flex-wrap: wrap;
 }
 
+.review-user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.review-avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--secondary-color);
+  transition: var(--transition-short);
+}
+
+.review-card:hover .review-avatar {
+  transform: scale(1.1);
+  border-color: var(--primary-color);
+}
+
+.review-user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
 .review-author {
   font-weight: 700;
   color: var(--dark-color);
   font-size: 1.05rem;
   letter-spacing: 0.3px;
+  margin: 0;
+}
+
+.review-date {
+  font-size: 0.75rem;
+  color: var(--text-light);
+  letter-spacing: 0.3px;
+  margin: 0;
 }
 
 .review-rating {
@@ -252,6 +287,7 @@
   background-clip: text;
   font-weight: 800;
   font-size: 1.1rem;
+  flex-shrink: 0;
 }
 
 .review-rating span {
@@ -266,12 +302,6 @@
   line-height: 1.8;
   margin-bottom: 1rem;
   font-weight: 500;
-}
-
-.review-date {
-  font-size: 0.85rem;
-  color: var(--text-light);
-  letter-spacing: 0.3px;
 }
 
 /* ==================== ADD REVIEW SECTION ==================== */
@@ -441,6 +471,27 @@
     padding: 1.2rem;
     margin-bottom: 1rem;
   }
+
+  .review-user-info {
+    gap: 0.8rem;
+  }
+
+  .review-avatar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .review-user-details {
+    gap: 0.1rem;
+  }
+
+  .review-author {
+    font-size: 0.95rem;
+  }
+
+  .review-date {
+    font-size: 0.7rem;
+  }
 }
 
 /* ==================== SMALL TABLETS (640px and down) ==================== */
@@ -563,23 +614,39 @@
   .review-header {
     gap: 0.5rem;
     margin-bottom: 0.8rem;
+    flex-wrap: wrap;
+  }
+
+  .review-user-info {
+    gap: 0.6rem;
+    width: 100%;
+  }
+
+  .review-avatar {
+    width: 35px;
+    height: 35px;
+  }
+
+  .review-user-details {
+    gap: 0.1rem;
   }
 
   .review-author {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+  }
+
+  .review-date {
+    font-size: 0.7rem;
   }
 
   .review-rating {
     font-size: 0.9rem;
+    flex-shrink: 1;
   }
 
   .review-comment {
     font-size: 0.85rem;
     line-height: 1.5;
-  }
-
-  .review-date {
-    font-size: 0.75rem;
   }
 
   .delete-review-btn {
@@ -620,17 +687,28 @@
     padding: 0.75rem;
   }
 
+  .review-user-info {
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .review-avatar {
+    width: 30px;
+    height: 30px;
+  }
+
   .review-author {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
+  }
+
+  .review-date {
+    font-size: 0.65rem;
   }
 
   .review-comment {
     font-size: 0.8rem;
   }
 }
-    flex-direction: column;
-    align-items: flex-start;
-  }
 
   .amenities {
     grid-template-columns: 1fr;
