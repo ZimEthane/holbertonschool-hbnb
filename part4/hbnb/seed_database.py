@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """Script pour seeder la base de données avec des données de test."""
 
+import json
 import sys
 from pathlib import Path
 from werkzeug.security import generate_password_hash
@@ -17,6 +18,64 @@ from app.models.review import Review
 from app.models.amenity import Amenity
 
 app = create_app()
+
+
+def get_place_images(place_title):
+    image_map = {
+        'Studio Minimaliste Budget': [
+            'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=80',
+            'https://images.unsplash.com/photo-1493666438817-866a91353ca9?auto=format&fit=crop&w=1200&q=80'
+        ],
+        'Chambre Simple Propre': [
+            'https://images.unsplash.com/photo-1616594039964-3c8be0f24f8f?auto=format&fit=crop&w=1200&q=80',
+            'https://images.unsplash.com/photo-1616486029423-aaa4789e8c9a?auto=format&fit=crop&w=1200&q=80'
+        ],
+        'Petit Logement Pratique': [
+            'https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=1200&q=80',
+            'https://images.unsplash.com/photo-1560448075-bb485b067938?auto=format&fit=crop&w=1200&q=80'
+        ],
+        'Appartement Confortable 100': [
+            'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=80',
+            'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=1200&q=80'
+        ],
+        'Cosy Studio au Centre-Ville': [
+            'https://images.unsplash.com/photo-1523217582562-09d0def993a6?auto=format&fit=crop&w=1200&q=80',
+            'https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1200&q=80',
+            'https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?auto=format&fit=crop&w=1200&q=80'
+        ],
+        'Appartement de Luxe avec Vue': [
+            'https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?auto=format&fit=crop&w=1200&q=80',
+            'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80'
+        ],
+        'Maison de Famille Spacieuse': [
+            'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80',
+            'https://images.unsplash.com/photo-1600573472550-8090b5e0745e?auto=format&fit=crop&w=1200&q=80'
+        ],
+        'Loft Industrial Chic': [
+            'https://images.unsplash.com/photo-1486304873000-235643847519?auto=format&fit=crop&w=1200&q=80',
+            'https://images.unsplash.com/photo-1554995207-c18c203602cb?auto=format&fit=crop&w=1200&q=80'
+        ],
+        'Villa avec Piscine Privée': [
+            'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=1200&q=80',
+            'https://images.unsplash.com/photo-1613977257365-aaae5a9817ff?auto=format&fit=crop&w=1200&q=80',
+            'https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&w=1200&q=80'
+        ],
+        'Penthouse Moderne avec Terrasse': [
+            'https://images.unsplash.com/photo-1515263487990-61b07816b324?auto=format&fit=crop&w=1200&q=80',
+            'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1200&q=80'
+        ],
+        'Petit Appartement Cosy': [
+            'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=80',
+            'https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1200&q=80'
+        ],
+        'Studio avec Balcon': [
+            'https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=1200&q=80',
+            'https://images.unsplash.com/photo-1505692952047-1a78307da8f2?auto=format&fit=crop&w=1200&q=80'
+        ],
+    }
+    return image_map.get(place_title, [
+        'https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?auto=format&fit=crop&w=1200&q=80'
+    ])
 
 with app.app_context():
     # Supprimer les données existantes (optionnel)
@@ -180,6 +239,10 @@ with app.app_context():
         existing = Place.query.filter_by(title=place_data['title']).first()
         if existing:
             print(f"⚠ Place '{place_data['title']}' existe déjà")
+            current_images = existing.get_image_urls() if hasattr(existing, 'get_image_urls') else []
+            if not current_images:
+                existing.image_urls = json.dumps(get_place_images(place_data['title']))
+                print(f"  ↳ Images ajoutées pour '{place_data['title']}'")
             places[place_data['title']] = existing
         else:
             owner = users[place_data['owner_email']]
@@ -189,7 +252,8 @@ with app.app_context():
                 price=place_data['price'],
                 latitude=place_data['latitude'],
                 longitude=place_data['longitude'],
-                owner_id=owner.id
+                owner_id=owner.id,
+                image_urls=json.dumps(get_place_images(place_data['title']))
             )
             db.session.add(new_place)
             db.session.flush()

@@ -25,6 +25,40 @@ INSERT INTO amenity (id, name) VALUES
     ('bd408c8f-a6d5-4818-9ba8-788da242a303', 'Piscine'),
     ('4362e7dd-360e-472d-914d-b671b269623d', 'Climatisation');
 
+-- 3. Insert Sample Places With Images
+INSERT IGNORE INTO place (id, title, description, price, latitude, longitude, image_urls, owner_id)
+VALUES
+    (
+        'b8c59d5f-d09b-4c23-9e6c-1bc8683f7e11',
+        'Cosy Studio au Centre-Ville',
+        'Un studio moderne et confortable au coeur de la ville.',
+        75.00,
+        48.8566,
+        2.3522,
+        '["https://images.unsplash.com/photo-1523217582562-09d0def993a6?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1200&q=80"]',
+        '36c9050e-ddd3-4c3b-9731-9f487208bbc1'
+    ),
+    (
+        '9f7a2af8-e6ba-4742-9230-5b8d2bbf03ff',
+        'Loft Industrial Chic',
+        'Loft tendance avec style industrial et beaux volumes.',
+        95.00,
+        48.8357,
+        2.3577,
+        '["https://images.unsplash.com/photo-1486304873000-235643847519?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1554995207-c18c203602cb?auto=format&fit=crop&w=1200&q=80"]',
+        '36c9050e-ddd3-4c3b-9731-9f487208bbc1'
+    ),
+    (
+        'b4f91f5f-6f64-4ccb-aad7-f0dbfd2e4428',
+        'Villa avec Piscine Privee',
+        'Villa spacieuse avec piscine privee et terrasse ensoleillee.',
+        200.00,
+        48.7045,
+        2.2230,
+        '["https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1613977257365-aaae5a9817ff?auto=format&fit=crop&w=1200&q=80", "https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&w=1200&q=80"]',
+        '36c9050e-ddd3-4c3b-9731-9f487208bbc1'
+    );
+
 -- ==============================================================
 -- VERIFY INSERTIONS
 -- ==============================================================
