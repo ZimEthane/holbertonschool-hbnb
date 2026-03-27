@@ -390,14 +390,18 @@
 }
 
 /* ==================== RESPONSIVE ==================== */
+
+/* ==================== TABLETS (768px and down) ==================== */
 @media (max-width: 768px) {
   .place-details {
-    padding: 2rem 1.5rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
   }
 
   .place-hero {
-    margin: -2rem -1.5rem 1.5rem -1.5rem;
+    margin: -1.5rem -1.5rem 1.5rem -1.5rem;
     height: 250px;
+    border-radius: 0;
   }
 
   .place-hero-image {
@@ -406,48 +410,224 @@
 
   .place-header {
     flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .place-header h1 {
+    font-size: 1.8rem;
   }
 
   .place-price-tag {
     width: 100%;
-    text-align: center;
+    text-align: left;
   }
 
   .place-info-grid {
     grid-template-columns: 1fr;
+    gap: 1.2rem;
   }
 
   .amenities {
     grid-template-columns: repeat(2, 1fr);
+    gap: 0.8rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
   }
 
   .review-card {
     padding: 1.2rem;
+    margin-bottom: 1rem;
   }
 }
 
-@media (max-width: 480px) {
+/* ==================== SMALL TABLETS (640px and down) ==================== */
+@media (max-width: 640px) {
   .place-details {
-    padding: 1.5rem 1rem;
-    margin-bottom: 1.5rem;
+    padding: 1.2rem;
   }
 
   .place-hero {
-    margin: -1.5rem -1rem 1rem -1rem;
-    height: 200px;
-    border-radius: 0;
+    margin: -1.2rem -1.2rem 1.2rem -1.2rem;
+    height: 220px;
+  }
+
+  .place-hero-image {
+    height: 220px;
   }
 
   .place-header h1 {
     font-size: 1.5rem;
   }
 
+  .place-info-grid {
+    gap: 1rem;
+  }
+
+  .amenities {
+    gap: 0.6rem;
+  }
+
+  .amenity-tag {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
+
   .review-card {
-    margin-bottom: 1rem;
     padding: 1rem;
+  }
+}
+
+/* ==================== MOBILE PHONES (480px and down) ==================== */
+@media (max-width: 480px) {
+  .place-details {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .place-hero {
+    margin: -1rem -1rem 1rem -1rem;
+    height: 180px;
+    border-radius: 0;
+  }
+
+  .place-hero-image {
+    height: 180px;
+  }
+
+  .place-header {
+    gap: 0.8rem;
+  }
+
+  .place-header h1 {
+    font-size: 1.3rem;
+  }
+
+  .place-location {
+    font-size: 0.9rem;
+  }
+
+  .place-price-tag {
+    font-size: 1.2rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .place-info-grid {
+    gap: 1rem;
+  }
+
+  .info-item h3 {
+    font-size: 0.95rem;
+  }
+
+  .info-item p {
+    font-size: 0.85rem;
+  }
+
+  .amenities {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .amenity-tag {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.8rem;
+  }
+
+  .form-group label {
+    font-size: 0.85rem;
+  }
+
+  .form-group textarea {
+    min-height: 100px;
+    font-size: 16px;
+  }
+
+  .form-group input[name="rating"] {
+    font-size: 0.85rem;
+  }
+
+  .submit-button {
+    padding: 0.8rem 1.2rem;
+    font-size: 0.85rem;
+  }
+
+  .review-card {
+    padding: 0.9rem;
+    margin-bottom: 0.8rem;
+    border-radius: 10px;
   }
 
   .review-header {
+    gap: 0.5rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .review-author {
+    font-size: 0.9rem;
+  }
+
+  .review-rating {
+    font-size: 0.9rem;
+  }
+
+  .review-comment {
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+
+  .review-date {
+    font-size: 0.75rem;
+  }
+
+  .delete-review-btn {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.7rem;
+  }
+}
+
+/* ==================== EXTRA SMALL PHONES (360px and down) ==================== */
+@media (max-width: 360px) {
+  .place-details {
+    padding: 0.75rem;
+  }
+
+  .place-hero {
+    margin: -0.75rem -0.75rem 0.75rem -0.75rem;
+    height: 150px;
+  }
+
+  .place-hero-image {
+    height: 150px;
+  }
+
+  .place-header h1 {
+    font-size: 1.1rem;
+  }
+
+  .place-price-tag {
+    font-size: 1rem;
+  }
+
+  .amenity-tag {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.7rem;
+  }
+
+  .review-card {
+    padding: 0.75rem;
+  }
+
+  .review-author {
+    font-size: 0.8rem;
+  }
+
+  .review-comment {
+    font-size: 0.8rem;
+  }
+}
     flex-direction: column;
     align-items: flex-start;
   }

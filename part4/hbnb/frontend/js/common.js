@@ -208,5 +208,90 @@ function addUserNavLinks() {
 // Initialize header login status when DOM is ready
 document.addEventListener('DOMContentLoaded', initHeaderLoginStatus);
 
+/**
+ * Initialize hamburger menu for mobile responsiveness
+ */
+function initHamburgerMenu() {
+    const header = document.querySelector('header');
+    if (!header) return;
 
+    // Get or create hamburger button
+    let hamburger = document.querySelector('.hamburger');
+    if (!hamburger) {
+        hamburger = document.createElement('button');
+        hamburger.className = 'hamburger';
+        hamburger.innerHTML = '<span></span><span></span><span></span>';
+        hamburger.setAttribute('aria-label', 'Toggle menu');
+        hamburger.setAttribute('aria-expanded', 'false');
+        
+        // Insert before login button
+        const loginButton = header.querySelector('.login-button');
+        if (loginButton) {
+            header.insertBefore(hamburger, loginButton);
+        }
+    }
+
+    // Get or create mobile menu
+    let mobileMenu = document.querySelector('.mobile-menu');
+    if (!mobileMenu) {
+        mobileMenu = document.createElement('div');
+        mobileMenu.className = 'mobile-menu';
+        
+        // Clone nav links into mobile menu
+        const nav = header.querySelector('nav');
+        if (nav) {
+            const links = nav.querySelectorAll('a');
+            links.forEach(link => {
+                const clonedLink = link.cloneNode(true);
+                mobileMenu.appendChild(clonedLink);
+            });
+        }
+        
+        // Insert after header
+        header.parentNode.insertBefore(mobileMenu, header.nextSibling);
+    }
+
+    // Toggle menu on hamburger click
+    hamburger.addEventListener('click', function(e) {
+        e.stopPropagation();
+        hamburger.classList.toggle('active');
+        mobileMenu.classList.toggle('active');
+        hamburger.setAttribute('aria-expanded', 
+            hamburger.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
+    });
+
+    // Close menu when clicking on a link
+    const menuLinks = mobileMenu.querySelectorAll('a');
+    menuLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            hamburger.classList.remove('active');
+            mobileMenu.classList.remove('active');
+            hamburger.setAttribute('aria-expanded', 'false');
+        });
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function(event) {
+        const isClickInsideHeader = header.contains(event.target);
+        const isClickInsideMenu = mobileMenu.contains(event.target);
+        
+        if (!isClickInsideHeader && !isClickInsideMenu) {
+            hamburger.classList.remove('active');
+            mobileMenu.classList.remove('active');
+            hamburger.setAttribute('aria-expanded', 'false');
+        }
+    });
+
+    // Close menu on window resize
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) {
+            hamburger.classList.remove('active');
+            mobileMenu.classList.remove('active');
+            hamburger.setAttribute('aria-expanded', 'false');
+        }
+    });
+}
+
+// Initialize hamburger menu when DOM is ready
+document.addEventListener('DOMContentLoaded', initHamburgerMenu);
 
