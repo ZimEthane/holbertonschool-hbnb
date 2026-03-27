@@ -356,6 +356,12 @@ async function submitReview(rating, comment) {
 
         if (!response.ok) {
             const errorData = await response.json();
+
+            // Check for ownership error
+            if (response.status === 403) {
+                throw new Error('⚠️ Vous ne pouvez pas ajouter un avis à votre propre location');
+            }
+
             throw new Error(errorData.error || 'Failed to submit review');
         }
 
