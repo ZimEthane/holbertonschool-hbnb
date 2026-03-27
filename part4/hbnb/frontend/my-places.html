@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="HBNB - Mes Locations">
+  <link rel="icon" type="image/png" href="/images/icon.png">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/my-places.css">
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <title>HBNB - Mes Locations</title>
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <img src="/images/logo.png" alt="HBNB Logo" class="logo">
+      <nav>
+        <a href="/index.html">Accueil</a>
+        <a href="#">À propos</a>
+        <a href="#">Contact</a>
+      </nav>
+    </div>
+    <button class="login-button" id="headerLoginBtn">Connexion</button>
+  </header>
+
+  <main class="container">
+    <div class="my-places-wrapper">
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1>🏠 Mes Locations</h1>
+        <button id="addPlaceBtn" class="btn-add-place">+ Ajouter une Location</button>
+      </div>
+
+      <!-- Add Place Form (Hidden by default) -->
+      <div id="addPlaceForm" class="add-place-form hidden">
+        <h2>Ajouter une nouvelle location</h2>
+        <form id="placeFormSubmit">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="placeName">Nom de la location *</label>
+              <input type="text" id="placeName" name="title" required placeholder="Ex: Cosy Studio en Centre-Ville">
+            </div>
+            <div class="form-group">
+              <label for="placePrice">Prix par nuit (€) *</label>
+              <input type="number" id="placePrice" name="price" required min="1" step="0.01" placeholder="75">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="placeDescription">Description *</label>
+            <textarea id="placeDescription" name="description" required placeholder="Décrivez votre location..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>🗺️ Sélectionner un lieu sur la carte *</label>
+            <div class="search-container">
+              <input
+                type="text"
+                id="locationSearch"
+                placeholder="Chercher une ville, une adresse... (ex: Paris, France)"
+                class="location-search"
+              >
+              <button type="button" id="searchBtn" class="search-btn">🔍 Chercher</button>
+            </div>
+            <div id="searchResults" class="search-results hidden"></div>
+            <div id="mapContainer" class="map-container">
+              <div id="placeMap" class="map"></div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="placeLatitude">Latitude *</label>
+              <input type="number" id="placeLatitude" name="latitude" required step="0.0001" placeholder="48.8566" readonly>
+            </div>
+            <div class="form-group">
+              <label for="placeLongitude">Longitude *</label>
+              <input type="number" id="placeLongitude" name="longitude" required step="0.0001" placeholder="2.3522" readonly>
+            </div>
+          </div>
+
+          <div class="form-buttons">
+            <button type="submit" class="btn-primary">✓ Créer la location</button>
+            <button type="button" class="btn-secondary" id="cancelFormBtn">Annuler</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Places List -->
+      <div class="places-list" id="placesList">
+        <p class="loading">Chargement de vos locations...</p>
+      </div>
+
+      <!-- Empty State -->
+      <div id="emptyState" class="empty-state hidden">
+        <div class="empty-icon">📪</div>
+        <h3>Pas encore de locations</h3>
+        <p>Commencez à partager votre espace avec la communauté HBNB!</p>
+        <button id="emptyAddBtn" class="btn-primary">+ Ajouter ma première location</button>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 HBNB. Tous droits réservés.</p>
+  </footer>
+
+  <!-- Edit Place Modal -->
+  <div id="editPlaceModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Modifier la location</h2>
+        <button class="modal-close" id="closeModalBtn">&times;</button>
+      </div>
+      <form id="editPlaceForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editPlaceName">Nom de la location *</label>
+            <input type="text" id="editPlaceName" name="title" required>
+          </div>
+          <div class="form-group">
+            <label for="editPlacePrice">Prix par nuit (€) *</label>
+            <input type="number" id="editPlacePrice" name="price" required min="1" step="0.01">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="editPlaceDescription">Description *</label>
+          <textarea id="editPlaceDescription" name="description" required></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editPlaceLatitude">Latitude *</label>
+            <input type="number" id="editPlaceLatitude" name="latitude" required step="0.0001">
+          </div>
+          <div class="form-group">
+            <label for="editPlaceLongitude">Longitude *</label>
+            <input type="number" id="editPlaceLongitude" name="longitude" required step="0.0001">
+          </div>
+        </div>
+
+        <div class="form-buttons">
+          <button type="submit" class="btn-primary">✓ Enregistrer</button>
+          <button type="button" class="btn-secondary" id="cancelEditBtn">Annuler</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/common.js"></script>
+  <!-- Leaflet JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="/js/my-places.js"></script>
+</body>
+</html>

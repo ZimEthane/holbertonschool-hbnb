@@ -25,7 +25,9 @@ class PlaceList(Resource):
                 'title': p.title,
                 'price': p.price,
                 'latitude': p.latitude,
-                'longitude': p.longitude
+                'longitude': p.longitude,
+                'description': p.description,
+                'owner_id': p.owner_id
             }
             for p in places
         ], 200
@@ -91,6 +93,22 @@ class PlaceResource(Resource):
                 'longitude': updated.longitude,
             }, 200
         except (ValueError, TypeError) as e:
+            return {"error": str(e)}, 400
+
+    @jwt_required()
+    def delete(self, place_id):
+        claims = get_jwt()
+        is_admin = claims.get('is_admin', False)
+        current_user_id = get_jwt_identity()
+        place = facade.get_place(place_id)
+        if not place:
+            return {'error': 'Place not found'}, 404
+        if not is_admin and place.owner_id != current_user_id:
+            return {'error': 'Unauthorized action'}, 403
+        try:
+            facade.delete_place(place_id)
+            return {'message': 'Place deleted successfully'}, 200
+        except ValueError as e:
             return {"error": str(e)}, 400
 
 

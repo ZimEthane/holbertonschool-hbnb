@@ -79,7 +79,9 @@ class UserResource(Resource):
             'id': user.id,
             'first_name': user.first_name,
             'last_name': user.last_name,
-            'email': user.email
+            'email': user.email,
+            'phone': user.phone,
+            'photo_url': user.photo_url
         }, 200
 
     @jwt_required()
@@ -93,6 +95,8 @@ class UserResource(Resource):
         * Admin: full access, can change email/password (with uniqueness check)
         * Regular: only self; cannot change email/password.
         """
+        from app.extensions import db
+
         claims = get_jwt()
         is_admin = claims.get('is_admin', False)
         current_user_id = get_jwt_identity()
@@ -117,9 +121,13 @@ class UserResource(Resource):
             if hasattr(user, key):
                 setattr(user, key, value)
 
+        db.session.commit()
+
         return {
             'id': user.id,
             'first_name': user.first_name,
             'last_name': user.last_name,
-            'email': user.email
+            'email': user.email,
+            'phone': user.phone,
+            'photo_url': user.photo_url
         }, 200

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="HBNB - Inscription">
+  <link rel="icon" type="image/png" href="/images/icon.png">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/register.css">
+  <title>HBNB - Inscription</title>
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <img src="/images/logo.png" alt="HBNB Logo" class="logo">
+      <nav>
+        <a href="/index.html">Accueil</a>
+        <a href="#">À propos</a>
+        <a href="#">Contact</a>
+      </nav>
+    </div>
+    <button class="login-button" id="headerLoginBtn">Connexion</button>
+  </header>
+
+  <main class="register-container">
+    <form class="register-form" id="registerForm">
+      <h1>Créer un compte</h1>
+      <p>Rejoignez-nous pour commencer vos aventures</p>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="firstName">Prénom</label>
+          <input
+            type="text"
+            id="firstName"
+            name="firstName"
+            required
+            placeholder="Jean"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="lastName">Nom</label>
+          <input
+            type="text"
+            id="lastName"
+            name="lastName"
+            required
+            placeholder="Dupont"
+          >
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          required
+          placeholder="votre@email.com"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="password">Mot de passe</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          required
+          placeholder="••••••••"
+          minlength="8"
+        >
+        <small>Minimum 8 caractères</small>
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Confirmer le mot de passe</label>
+        <input
+          type="password"
+          id="confirmPassword"
+          name="confirmPassword"
+          required
+          placeholder="••••••••"
+        >
+      </div>
+
+      <div class="terms">
+        <label>
+          <input type="checkbox" id="terms" name="terms" required>
+          J'accepte les <a href="#">conditions d'utilisation</a> et la <a href="#">politique de confidentialité</a>
+        </label>
+      </div>
+
+      <button type="submit" class="register-btn">Créer mon compte</button>
+
+      <div class="divider"><span>OU</span></div>
+
+      <div class="social-buttons">
+        <button type="button">Google</button>
+        <button type="button">Facebook</button>
+      </div>
+
+      <div class="login-link">
+        Déjà inscrit? <a href="/login.html">Se connecter</a>
+      </div>
+    </form>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 HBNB. Tous droits réservés.</p>
+  </footer>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/register.js"></script>
+</body>
+</html>

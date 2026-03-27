@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="HBNB - Profil Utilisateur">
+  <link rel="icon" type="image/png" href="/images/icon.png">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/profile.css">
+  <title>HBNB - Profil</title>
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <img src="/images/logo.png" alt="HBNB Logo" class="logo">
+      <nav>
+        <a href="/index.html">Accueil</a>
+        <a href="#">À propos</a>
+        <a href="#">Contact</a>
+      </nav>
+    </div>
+    <button class="login-button" id="headerLoginBtn">Connexion</button>
+  </header>
+
+  <main class="container">
+    <div class="profile-wrapper">
+      <!-- Profile Header -->
+      <div class="profile-header">
+        <div class="profile-cover"></div>
+        <div class="profile-info">
+          <div class="avatar-container">
+            <img src="/images/logo.png" alt="Avatar" class="avatar" id="avatarDisplay">
+            <label class="avatar-upload">
+              <input type="file" id="avatarInput" accept="image/*">
+              <span class="camera-icon">📷</span>
+            </label>
+          </div>
+          <div class="user-basic">
+            <h1 id="displayName">Utilisateur</h1>
+            <p id="displayEmail">email@example.com</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit Profile Form -->
+      <div class="profile-section">
+        <h2>Informations Personnelles</h2>
+
+        <form id="profileForm" class="profile-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName">Prénom</label>
+              <input type="text" id="firstName" name="firstName" required>
+            </div>
+            <div class="form-group">
+              <label for="lastName">Nom</label>
+              <input type="text" id="lastName" name="lastName" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email (lecture seule)</label>
+            <input type="email" id="email" name="email" disabled>
+            <small style="color: #7f8c8d; font-size: 0.85rem; margin-top: 0.3rem;">L'email ne peut être modifié que par un administrateur</small>
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Téléphone (optionnel)</label>
+            <input type="tel" id="phone" name="phone" placeholder="+33 6 12 34 56 78">
+          </div>
+
+          <div class="form-buttons">
+            <button type="submit" class="btn-primary">💾 Enregistrer les modifications</button>
+            <button type="reset" class="btn-secondary">↻ Annuler</button>
+          </div>
+        </form>
+
+        <div id="profileMessage" class="message hidden"></div>
+      </div>
+
+      <!-- Account Stats -->
+      <div class="profile-stats">
+        <div class="stat-card">
+          <div class="stat-number" id="placesCount">0</div>
+          <div class="stat-label">Locations</div>
+          <a href="/my-places.html" class="stat-link">Voir →</a>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="reviewsCount">0</div>
+          <div class="stat-label">Avis donnés</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="accountAge">0</div>
+          <div class="stat-label">Jours</div>
+        </div>
+      </div>
+
+      <!-- Danger Zone -->
+      <div class="profile-section danger-zone">
+        <h2>Zone Dangereuse</h2>
+        <div class="danger-box">
+          <div class="danger-info">
+            <h3>Supprimer le compte</h3>
+            <p>Une fois supprimé, il n'y a pas de retour en arrière. Soyez certain.</p>
+          </div>
+          <button id="deleteAccountBtn" class="btn-danger">🗑️ Supprimer mon compte</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 HBNB. Tous droits réservés.</p>
+  </footer>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/user-profile.js"></script>
+</body>
+</html>
