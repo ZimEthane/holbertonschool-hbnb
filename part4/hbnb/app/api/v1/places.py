@@ -133,7 +133,8 @@ class PlaceReviewList(Resource):
                     'id': r.id,
                     'text': r.text,
                     'rating': r.rating,
-                    'user_id': r.user_id
+                    'user_id': r.user_id,
+                    'user_name': f"{r.user.first_name} {r.user.last_name}" if r.user else 'Unknown'
                 }
                 for r in reviews
             ], 200

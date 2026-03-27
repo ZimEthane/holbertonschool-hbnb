@@ -6,6 +6,7 @@
 const API_BASE_URL = getApiUrl();
 let currentToken = null;
 let editingReviewId = null;
+let editingPlaceId = null;
 
 /**
  * Auto-détecte l'URL de l'API selon l'environnement
@@ -43,14 +44,6 @@ function getToken() {
         }
     }
     return null;
-}
-
-/**
- * Logout user
- */
-function logout() {
-    document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-    window.location.href = '/index.html';
 }
 
 /**
@@ -144,7 +137,7 @@ function displayReviews(reviews) {
             </div>
 
             <div class="review-actions">
-                <button class="edit-btn" onclick="openEditModal('${review.id}', '${escapeHtml(review.place_title)}', ${review.rating}, '${escapeHtml(review.text)}')">
+                <button class="edit-btn" onclick="openEditModal('${review.id}', '${escapeHtml(review.place_title)}', ${review.rating}, '${escapeHtml(review.text)}', '${review.place_id}')">
                     ✏️ Modifier
                 </button>
                 <button class="delete-btn" onclick="deleteReview('${review.id}')">
@@ -160,8 +153,9 @@ function displayReviews(reviews) {
 /**
  * Open edit modal
  */
-function openEditModal(reviewId, placeTitle, rating, text) {
+function openEditModal(reviewId, placeTitle, rating, text, placeId) {
     editingReviewId = reviewId;
+    editingPlaceId = placeId;
     document.getElementById('editPlace').value = placeTitle;
     document.getElementById('editRating').value = rating;
     document.getElementById('editRatingValue').textContent = rating;
@@ -203,7 +197,7 @@ function setupEditForm() {
  * Submit edited review
  */
 async function submitEditedReview() {
-    if (!editingReviewId) return;
+    if (!editingReviewId || !editingPlaceId) return;
 
     try {
         const rating = parseInt(document.getElementById('editRating').value);
@@ -225,7 +219,7 @@ async function submitEditedReview() {
             body: JSON.stringify({
                 rating: rating,
                 text: text,
-                place_id: 'dummy'  // Required field but not used in update
+                place_id: editingPlaceId
             })
         };
 
