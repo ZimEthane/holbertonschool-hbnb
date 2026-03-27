@@ -55,6 +55,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Load user data
     await loadUserProfile();
+    await loadUserStats();
     setupEventListeners();
 });
 
@@ -80,7 +81,6 @@ async function loadUserProfile() {
 
         currentUser = await response.json();
         populateForm();
-        calculateStats();
 
     } catch (error) {
         console.error('Error loading profile:', error);
@@ -104,15 +104,55 @@ function populateForm() {
 }
 
 function calculateStats() {
-    // Calculer nombres de placements et avis
-    document.getElementById('placesCount').textContent = '5'; // À implémenter avec API
-    document.getElementById('reviewsCount').textContent = '3'; // À implémenter avec API
-
     // Jours depuis création du compte
     const createdDate = new Date(currentUser.created_at || new Date());
     const today = new Date();
     const days = Math.floor((today - createdDate) / (1000 * 60 * 60 * 24));
     document.getElementById('accountAge').textContent = days;
+}
+
+async function loadUserStats() {
+    try {
+        const userId = getCurrentUserId();
+        if (!userId) return;
+
+        // Load user's places
+        const placesResponse = await fetch(`${API_BASE_URL}/api/v1/places/`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${currentToken}`,
+                'Accept': 'application/json'
+            }
+        });
+
+        if (placesResponse.ok) {
+            const places = await placesResponse.json();
+            const userPlaces = places.filter(p => p.owner_id === userId);
+            document.getElementById('placesCount').textContent = userPlaces.length;
+        }
+
+        // Load user's reviews
+        const reviewsResponse = await fetch(`${API_BASE_URL}/api/v1/reviews/user/my-reviews`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${currentToken}`,
+                'Accept': 'application/json'
+            }
+        });
+
+        if (reviewsResponse.ok) {
+            const reviews = await reviewsResponse.json();
+            document.getElementById('reviewsCount').textContent = reviews.length;
+        }
+
+        // Calculate account age
+        calculateStats();
+
+    } catch (error) {
+        console.error('Error loading user stats:', error);
+        // Keep default values if error
+        calculateStats();
+    }
 }
 
 function setupEventListeners() {
