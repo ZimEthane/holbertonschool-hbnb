@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="HBNB - Gestion des Aménités">
+    <link rel="icon" type="image/png" href="/images/icon.png">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/admin-amenities.css">
+    <title>HBNB - Gestion des Aménités</title>
+</head>
+<body>
+    <header>
+        <div class="header-left">
+            <img src="/images/logo.png" alt="HBNB Logo" class="logo">
+            <nav>
+                <a href="/index.html">Accueil</a>
+                <a href="#">À propos</a>
+                <a href="#">Contact</a>
+            </nav>
+        </div>
+        <button class="login-button" id="headerLoginBtn">Connexion</button>
+    </header>
+
+    <main class="container">
+        <div class="page-header">
+            <h1>⚙️ Gestion des Aménités</h1>
+            <p class="subtitle">Administrez les aménités disponibles pour les locations</p>
+        </div>
+
+        <!-- Add Amenity Section -->
+        <div class="add-amenity-section">
+            <div class="section-header">
+                <h2>Ajouter une nouvelle aménité</h2>
+            </div>
+            <form id="addAmenityForm" class="add-form">
+                <div class="form-group">
+                    <label for="amenityName">Nom de l'aménité</label>
+                    <input
+                        type="text"
+                        id="amenityName"
+                        required
+                        placeholder="ex: WiFi, Piscine, Parking..."
+                    >
+                </div>
+                <button type="submit" class="details-button">Ajouter l'aménité</button>
+            </form>
+        </div>
+
+        <!-- Amenities List -->
+        <div class="amenities-section">
+            <div class="section-header">
+                <h2>Liste des aménités</h2>
+                <span id="amenitiesCount" class="count-badge">0</span>
+            </div>
+
+            <div id="amenitiesContainer" class="amenities-grid">
+                <!-- Aménités chargées dynamiquement -->
+            </div>
+
+            <div id="noAmenities" class="empty-state hidden">
+                <div class="empty-state-content">
+                    <h3>Aucune aménité</h3>
+                    <p>Commencez par ajouter les aménités disponibles pour vos locations</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal d'édition -->
+    <div id="editModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Modifier l'aménité</h2>
+                <button class="close-btn" onclick="closeEditModal()">✕</button>
+            </div>
+            <form id="editAmenityForm" class="modal-form">
+                <div class="form-group">
+                    <label for="editAmenityName">Nom de l'aménité</label>
+                    <input type="text" id="editAmenityName" required>
+                </div>
+
+                <div class="modal-buttons">
+                    <button type="submit" class="details-button">Enregistrer</button>
+                    <button type="button" class="cancel-button" onclick="closeEditModal()">Annuler</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 HBNB. Tous droits réservés.</p>
+    </footer>
+
+    <script src="/js/common.js"></script>
+    <script src="/js/admin-amenities.js"></script>
+</body>
+</html>

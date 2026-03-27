@@ -35,6 +35,28 @@ function isUserLoggedIn() {
 }
 
 /**
+ * Check if user is admin from JWT
+ */
+function isUserAdmin() {
+    const token = getTokenFromCookie();
+    if (!token) return false;
+
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map((c) => {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+
+        const payload = JSON.parse(jsonPayload);
+        return payload.is_admin === true;
+    } catch (error) {
+        console.error('Error decoding token:', error);
+        return false;
+    }
+}
+
+/**
  * Logout user
  */
 function logoutUser() {
@@ -82,7 +104,7 @@ function initHeaderLoginStatus() {
 }
 
 /**
- * Add user navigation links (Profil, Mes Locations, Mes Avis)
+ * Add user navigation links (Profil, Mes Locations, Mes Avis, + Admin si admin)
  */
 function addUserNavLinks() {
     const nav = document.querySelector('nav');
@@ -156,20 +178,35 @@ function addUserNavLinks() {
     nav.appendChild(profileLink);
     nav.appendChild(placesLink);
     nav.appendChild(reviewsLink);
-    nav.appendChild(marker);
-}
 
-/**
- * Remove user navigation links
- */
-function removeUserNavLinks() {
-    const userNavLinks = document.getElementById('userNavLinks');
-    if (userNavLinks) {
-        userNavLinks.remove();
+    // Admin link - only for admins
+    if (isUserAdmin()) {
+        const adminLink = document.createElement('a');
+        adminLink.href = '/admin-amenities.html';
+        adminLink.textContent = '⚙️ Aménités';
+        adminLink.style.color = 'white';
+        adminLink.style.textDecoration = 'none';
+        adminLink.style.fontWeight = '500';
+        adminLink.style.padding = '0.5rem 1rem';
+        adminLink.style.borderRadius = '8px';
+        adminLink.style.transition = 'all 0.3s ease';
+        adminLink.style.background = 'rgba(255, 152, 0, 0.3)';
+
+        adminLink.onmouseover = () => {
+            adminLink.style.background = 'rgba(255, 152, 0, 0.5)';
+        };
+        adminLink.onmouseout = () => {
+            adminLink.style.background = 'rgba(255, 152, 0, 0.3)';
+        };
+
+        nav.appendChild(adminLink);
     }
+
+    nav.appendChild(marker);
 }
 
 // Initialize header login status when DOM is ready
 document.addEventListener('DOMContentLoaded', initHeaderLoginStatus);
+
 
 
