@@ -37,6 +37,7 @@ CREATE TABLE place (
     price DECIMAL(10, 2) NOT NULL,
     latitude FLOAT,
     longitude FLOAT,
+    image_urls TEXT,
     owner_id CHAR(36) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

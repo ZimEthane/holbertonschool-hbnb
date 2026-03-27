@@ -158,10 +158,11 @@ function createPlaceCard(place) {
     const name = place.title || place.name || 'Unnamed Place';
     const price = priceValue;
     const description = place.description || '';
+    const imageUrl = getPlaceImage(place);
 
     card.innerHTML = `
         <div class="place-image">
-            <img src="/images/logo.png" alt="${escapeHtml(name)}">
+            <img src="${imageUrl}" alt="${escapeHtml(name)}" onerror="this.src='/images/logo.png'">
         </div>
         <div class="place-info">
             <h3 class="place-name">${escapeHtml(name)}</h3>
@@ -174,6 +175,27 @@ function createPlaceCard(place) {
     `;
 
     return card;
+}
+
+function getPlaceImage(place) {
+    const imageUrls = place.image_urls;
+
+    if (Array.isArray(imageUrls) && imageUrls.length > 0 && typeof imageUrls[0] === 'string') {
+        return imageUrls[0];
+    }
+
+    if (typeof imageUrls === 'string') {
+        try {
+            const parsed = JSON.parse(imageUrls);
+            if (Array.isArray(parsed) && parsed.length > 0 && typeof parsed[0] === 'string') {
+                return parsed[0];
+            }
+        } catch (error) {
+            return '/images/logo.png';
+        }
+    }
+
+    return '/images/logo.png';
 }
 
 /**

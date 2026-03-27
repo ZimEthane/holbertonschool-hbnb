@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+import json
+
 from flask_restx import Namespace, Resource, fields
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from app.services import facade
@@ -12,6 +14,7 @@ place_model = api.model('Place', {
     'latitude': fields.Float(required=True),
     'longitude': fields.Float(required=True),
     'amenities': fields.List(fields.String),
+    'image_urls': fields.List(fields.String),
 })
 
 update_place_model = api.model('UpdatePlace', {
@@ -21,27 +24,45 @@ update_place_model = api.model('UpdatePlace', {
     'latitude': fields.Float(),
     'longitude': fields.Float(),
     'amenities': fields.List(fields.String),
+    'image_urls': fields.List(fields.String),
 })
+
+
+def parse_image_urls(raw_value):
+    if not raw_value:
+        return []
+    if isinstance(raw_value, list):
+        return [url for url in raw_value if isinstance(url, str) and url.strip()]
+    if isinstance(raw_value, str):
+        try:
+            parsed = json.loads(raw_value)
+            if isinstance(parsed, list):
+                return [url for url in parsed if isinstance(url, str) and url.strip()]
+        except (TypeError, ValueError):
+            return []
+    return []
+
+
+def serialize_place(place):
+    return {
+        'id': place.id,
+        'title': place.title,
+        'price': place.price,
+        'latitude': place.latitude,
+        'longitude': place.longitude,
+        'description': place.description,
+        'owner_id': place.owner_id,
+        'owner_name': f"{place.owner.first_name} {place.owner.last_name}" if place.owner else 'Unknown',
+        'amenities': [a.id for a in place.amenities],
+        'image_urls': parse_image_urls(getattr(place, 'image_urls', []))
+    }
 
 
 @api.route('/')
 class PlaceList(Resource):
     def get(self):
         places = facade.get_all_places()
-        return [
-            {
-                'id': p.id,
-                'title': p.title,
-                'price': p.price,
-                'latitude': p.latitude,
-                'longitude': p.longitude,
-                'description': p.description,
-                'owner_id': p.owner_id,
-                'owner_name': f"{p.owner.first_name} {p.owner.last_name}" if p.owner else 'Unknown',
-                'amenities': [a.id for a in p.amenities]
-            }
-            for p in places
-        ], 200
+        return [serialize_place(p) for p in places], 200
 
     @jwt_required()
     @api.expect(place_model)
@@ -51,16 +72,7 @@ class PlaceList(Resource):
         data['owner_id'] = current_user_id
         try:
             new_place = facade.create_place(data)
-            return {
-                'id': new_place.id,
-                'title': new_place.title,
-                'description': new_place.description,
-                'price': new_place.price,
-                'latitude': new_place.latitude,
-                'longitude': new_place.longitude,
-                'owner_id': new_place.owner_id,
-                'amenities': [a.id for a in new_place.amenities]
-            }, 201
+            return serialize_place(new_place), 201
         except (ValueError, TypeError) as e:
             return {"error": str(e)}, 400
 
@@ -71,17 +83,7 @@ class PlaceResource(Resource):
         place = facade.get_place(place_id)
         if not place:
             return {'error': 'Place not found'}, 404
-        return {
-            'id': place.id,
-            'title': place.title,
-            'description': place.description,
-            'price': place.price,
-            'latitude': place.latitude,
-            'longitude': place.longitude,
-            'owner_id': place.owner_id,
-            'owner_name': f"{place.owner.first_name} {place.owner.last_name}" if place.owner else 'Unknown',
-            'amenities': [a.id for a in place.amenities]
-        }, 200
+        return serialize_place(place), 200
 
     @jwt_required()
     @api.expect(update_place_model)
@@ -97,15 +99,7 @@ class PlaceResource(Resource):
         data = api.payload
         try:
             updated = facade.update_place(place_id, data)
-            return {
-                'id': updated.id,
-                'title': updated.title,
-                'description': updated.description,
-                'price': updated.price,
-                'latitude': updated.latitude,
-                'longitude': updated.longitude,
-                'amenities': [a.id for a in updated.amenities]
-            }, 200
+            return serialize_place(updated), 200
         except (ValueError, TypeError) as e:
             return {"error": str(e)}, 400
 

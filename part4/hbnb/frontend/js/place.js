@@ -9,6 +9,8 @@ let currentToken = null;
 let allAmenities = [];
 let placeOwnerId = null;
 let currentUserId = null;
+let carouselImages = [];
+let currentImageIndex = 0;
 
 /**
  * Auto-détecte l'URL de l'API selon l'environnement
@@ -189,6 +191,11 @@ function displayPlaceDetails(place) {
     const ownerName = place.owner_name || 'Unknown';
     const latitude = place.latitude || 'N/A';
     const longitude = place.longitude || 'N/A';
+    carouselImages = normalizeImageUrls(place.image_urls);
+    if (carouselImages.length === 0) {
+        carouselImages = ['/images/logo.png'];
+    }
+    currentImageIndex = 0;
 
     // Build amenities HTML
     const amenitiesHtml = place.amenities && place.amenities.length > 0
@@ -205,7 +212,16 @@ function displayPlaceDetails(place) {
 
     const html = `
         <div class="place-hero">
-            <img src="/images/logo.png" alt="${escapeHtml(title)}" class="place-hero-image">
+            <img id="placeHeroImage" src="${carouselImages[0]}" alt="${escapeHtml(title)}" class="place-hero-image" onerror="this.src='/images/logo.png'">
+            ${carouselImages.length > 1 ? `
+                <button type="button" class="hero-nav hero-nav-prev" onclick="changePlaceImage(-1)" aria-label="Image precedente">&#10094;</button>
+                <button type="button" class="hero-nav hero-nav-next" onclick="changePlaceImage(1)" aria-label="Image suivante">&#10095;</button>
+                <div id="placeHeroDots" class="hero-dots">
+                    ${carouselImages.map((_, index) => `
+                        <button type="button" class="hero-dot ${index === 0 ? 'active' : ''}" onclick="goToPlaceImage(${index})" aria-label="Aller a l'image ${index + 1}"></button>
+                    `).join('')}
+                </div>
+            ` : ''}
         </div>
 
         <div class="place-header">
@@ -235,6 +251,62 @@ function displayPlaceDetails(place) {
     `;
 
     detailsContainer.innerHTML = html;
+}
+
+function normalizeImageUrls(imageUrls) {
+    if (!imageUrls) {
+        return [];
+    }
+
+    if (Array.isArray(imageUrls)) {
+        return imageUrls.filter(url => typeof url === 'string' && url.trim() !== '');
+    }
+
+    if (typeof imageUrls === 'string') {
+        try {
+            const parsed = JSON.parse(imageUrls);
+            if (Array.isArray(parsed)) {
+                return parsed.filter(url => typeof url === 'string' && url.trim() !== '');
+            }
+        } catch {
+            return [];
+        }
+    }
+
+    return [];
+}
+
+function changePlaceImage(direction) {
+    if (carouselImages.length <= 1) {
+        return;
+    }
+
+    const total = carouselImages.length;
+    currentImageIndex = (currentImageIndex + direction + total) % total;
+    updatePlaceImageDisplay();
+}
+
+function goToPlaceImage(index) {
+    if (index < 0 || index >= carouselImages.length) {
+        return;
+    }
+
+    currentImageIndex = index;
+    updatePlaceImageDisplay();
+}
+
+function updatePlaceImageDisplay() {
+    const heroImage = document.getElementById('placeHeroImage');
+    if (!heroImage || carouselImages.length === 0) {
+        return;
+    }
+
+    heroImage.src = carouselImages[currentImageIndex] || '/images/logo.png';
+
+    const dots = document.querySelectorAll('#placeHeroDots .hero-dot');
+    dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentImageIndex);
+    });
 }
 
 /**

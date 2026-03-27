@@ -1,6 +1,7 @@
 from flask import Flask, request, send_from_directory
 from flask_restx import Api
 from app.extensions import bcrypt, jwt, db, cors
+from sqlalchemy import inspect, text
 import os
 
 
@@ -67,6 +68,13 @@ def create_app(config_class="config.DevelopmentConfig"):
         from app.models import review    # noqa: F401
         from app.models import amenity   # noqa: F401
         db.create_all()
+
+        # Lightweight migration for existing databases
+        inspector = inspect(db.engine)
+        columns = {column['name'] for column in inspector.get_columns('places')}
+        if 'image_urls' not in columns:
+            db.session.execute(text("ALTER TABLE places ADD COLUMN image_urls TEXT DEFAULT '[]'"))
+            db.session.commit()
 
     from app.api.v1.users import api as users_ns
     from app.api.v1.amenities import api as amenities_ns

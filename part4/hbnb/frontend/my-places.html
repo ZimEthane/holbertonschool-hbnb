@@ -54,6 +54,13 @@
           </div>
 
           <div class="form-group">
+            <label for="placeImages">Images (jusqu'a 6)</label>
+            <input type="file" id="placeImages" name="images" accept="image/*" multiple>
+            <small class="field-help">Formats acceptes: JPG, PNG, WEBP. Taille max: 5 Mo par image.</small>
+            <div id="placeImagesPreview" class="images-preview"></div>
+          </div>
+
+          <div class="form-group">
             <label>🗺️ Sélectionner un lieu sur la carte *</label>
             <div class="search-container">
               <input
@@ -136,6 +143,13 @@
         <div class="form-group">
           <label for="editPlaceDescription">Description *</label>
           <textarea id="editPlaceDescription" name="description" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="editPlaceImages">Images (jusqu'a 6)</label>
+          <input type="file" id="editPlaceImages" name="images" accept="image/*" multiple>
+          <small class="field-help">Formats acceptes: JPG, PNG, WEBP. Taille max: 5 Mo par image.</small>
+          <div id="editPlaceImagesPreview" class="images-preview"></div>
         </div>
 
         <div class="form-row">

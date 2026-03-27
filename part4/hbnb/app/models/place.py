@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+import json
+
 from app.extensions import db
 from sqlalchemy.orm import validates
 from .baseModel import BaseModel
@@ -17,6 +19,7 @@ class Place(BaseModel):
     price = db.Column(db.Float, nullable=False)
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
+    image_urls = db.Column(db.Text, nullable=False, default='[]')
 
     # FK vers User
     owner_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
@@ -66,6 +69,17 @@ class Place(BaseModel):
             raise ValueError("longitude must be between -180 and 180")
         return float(value)
 
+    def get_image_urls(self):
+        if not self.image_urls:
+            return []
+        try:
+            parsed = json.loads(self.image_urls)
+            if isinstance(parsed, list):
+                return [url for url in parsed if isinstance(url, str) and url.strip()]
+        except (TypeError, ValueError):
+            return []
+        return []
+
     def to_dict(self):
         base = super().to_dict()
         base.update({
@@ -75,5 +89,6 @@ class Place(BaseModel):
             "latitude": self.latitude,
             "longitude": self.longitude,
             "owner_id": self.owner_id,
+            "image_urls": self.get_image_urls(),
         })
         return base

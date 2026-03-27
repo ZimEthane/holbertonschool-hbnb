@@ -1,3 +1,5 @@
+import json
+
 from app.services.repositories.user_repository import UserRepository
 from app.services.repositories.place_repository import PlaceRepository
 from app.services.repositories.review_repository import ReviewRepository
@@ -6,6 +8,25 @@ from app.models.user import User
 from app.models.amenity import Amenity
 from app.models.place import Place
 from app.models.review import Review
+
+
+def normalize_image_urls(image_urls):
+    if image_urls is None:
+        return []
+
+    if isinstance(image_urls, str):
+        try:
+            image_urls = json.loads(image_urls)
+        except (TypeError, ValueError):
+            return []
+
+    if not isinstance(image_urls, list):
+        raise TypeError("image_urls must be a list")
+
+    cleaned = [url.strip() for url in image_urls if isinstance(url, str) and url.strip()]
+    if len(cleaned) > 6:
+        cleaned = cleaned[:6]
+    return cleaned
 
 
 class HBnBFacade:
@@ -91,7 +112,8 @@ class HBnBFacade:
             price=place_data.get('price', 0),
             latitude=place_data.get('latitude', 0),
             longitude=place_data.get('longitude', 0),
-            owner_id=owner_id
+            owner_id=owner_id,
+            image_urls=json.dumps(normalize_image_urls(place_data.get('image_urls', [])))
         )
         self.places_repo.add(place)
 
@@ -136,6 +158,9 @@ class HBnBFacade:
         for key, value in place_data.items():
             if key in allowed:
                 setattr(place, key, value)
+
+        if 'image_urls' in place_data:
+            place.image_urls = json.dumps(normalize_image_urls(place_data.get('image_urls')))
 
         db.session.commit()
         return place

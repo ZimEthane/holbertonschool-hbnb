@@ -11,6 +11,10 @@ let allAmenities = [];
 let editingPlaceId = null;
 let map = null;
 let marker = null;
+const MAX_PLACE_IMAGES = 6;
+const MAX_IMAGE_SIZE_MB = 5;
+let addPlaceImages = [];
+let editPlaceImages = [];
 
 function getApiUrl() {
     const hostname = window.location.hostname;
@@ -82,6 +86,10 @@ function setupEventListeners() {
     const cancelEditBtn = document.getElementById('cancelEditBtn');
     const searchBtn = document.getElementById('searchBtn');
     const locationSearch = document.getElementById('locationSearch');
+    const addImagesInput = document.getElementById('placeImages');
+    const editImagesInput = document.getElementById('editPlaceImages');
+    const addImagesPreview = document.getElementById('placeImagesPreview');
+    const editImagesPreview = document.getElementById('editPlaceImagesPreview');
 
     if (addBtn) addBtn.addEventListener('click', showAddForm);
     if (emptyAddBtn) emptyAddBtn.addEventListener('click', showAddForm);
@@ -91,6 +99,10 @@ function setupEventListeners() {
     if (closeModalBtn) closeModalBtn.addEventListener('click', hideModal);
     if (cancelEditBtn) cancelEditBtn.addEventListener('click', hideModal);
     if (searchBtn) searchBtn.addEventListener('click', searchLocation);
+    if (addImagesInput) addImagesInput.addEventListener('change', (e) => handleImagesSelection(e, 'add'));
+    if (editImagesInput) editImagesInput.addEventListener('change', (e) => handleImagesSelection(e, 'edit'));
+    if (addImagesPreview) addImagesPreview.addEventListener('click', (e) => handleImageRemoval(e, 'add'));
+    if (editImagesPreview) editImagesPreview.addEventListener('click', (e) => handleImageRemoval(e, 'edit'));
     if (locationSearch) {
         locationSearch.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
@@ -98,6 +110,124 @@ function setupEventListeners() {
             }
         });
     }
+
+    renderImagePreviews('add');
+    renderImagePreviews('edit');
+}
+
+async function handleImagesSelection(event, mode) {
+    const files = Array.from(event.target.files || []);
+    if (files.length === 0) {
+        return;
+    }
+
+    const targetArray = mode === 'edit' ? editPlaceImages : addPlaceImages;
+    const remainingSlots = MAX_PLACE_IMAGES - targetArray.length;
+
+    if (remainingSlots <= 0) {
+        showError(`Vous pouvez ajouter au maximum ${MAX_PLACE_IMAGES} images.`);
+        event.target.value = '';
+        return;
+    }
+
+    const filesToProcess = files.slice(0, remainingSlots);
+
+    if (files.length > remainingSlots) {
+        showError(`Seulement ${remainingSlots} image(s) ajoutee(s). Limite: ${MAX_PLACE_IMAGES}.`);
+    }
+
+    for (const file of filesToProcess) {
+        if (!file.type.startsWith('image/')) {
+            showError(`Le fichier \"${file.name}\" n'est pas une image.`);
+            continue;
+        }
+
+        if (file.size > MAX_IMAGE_SIZE_MB * 1024 * 1024) {
+            showError(`\"${file.name}\" depasse ${MAX_IMAGE_SIZE_MB} Mo.`);
+            continue;
+        }
+
+        try {
+            const base64Image = await fileToBase64(file);
+            targetArray.push(base64Image);
+        } catch (error) {
+            console.error('Erreur lecture image:', error);
+            showError(`Impossible de lire \"${file.name}\".`);
+        }
+    }
+
+    renderImagePreviews(mode);
+    event.target.value = '';
+}
+
+function handleImageRemoval(event, mode) {
+    const removeButton = event.target.closest('.remove-image-btn');
+    if (!removeButton) {
+        return;
+    }
+
+    const index = parseInt(removeButton.dataset.index, 10);
+    if (Number.isNaN(index) || index < 0) {
+        return;
+    }
+
+    const targetArray = mode === 'edit' ? editPlaceImages : addPlaceImages;
+    targetArray.splice(index, 1);
+    renderImagePreviews(mode);
+}
+
+function renderImagePreviews(mode) {
+    const targetArray = mode === 'edit' ? editPlaceImages : addPlaceImages;
+    const containerId = mode === 'edit' ? 'editPlaceImagesPreview' : 'placeImagesPreview';
+    const container = document.getElementById(containerId);
+
+    if (!container) {
+        return;
+    }
+
+    if (targetArray.length === 0) {
+        container.innerHTML = '<p class="images-empty">Aucune image selectionnee.</p>';
+        return;
+    }
+
+    container.innerHTML = targetArray.map((image, index) => `
+        <div class="image-preview-item">
+            <img src="${image}" alt="Image ${index + 1}">
+            <button type="button" class="remove-image-btn" data-index="${index}" aria-label="Retirer l'image">&times;</button>
+        </div>
+    `).join('');
+}
+
+function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
+function normalizeImageUrls(imageUrls) {
+    if (!imageUrls) {
+        return [];
+    }
+
+    if (Array.isArray(imageUrls)) {
+        return imageUrls.filter(url => typeof url === 'string' && url.trim() !== '');
+    }
+
+    if (typeof imageUrls === 'string') {
+        try {
+            const parsed = JSON.parse(imageUrls);
+            if (Array.isArray(parsed)) {
+                return parsed.filter(url => typeof url === 'string' && url.trim() !== '');
+            }
+        } catch (error) {
+            return [];
+        }
+    }
+
+    return [];
 }
 
 async function loadUserPlaces() {
@@ -119,7 +249,12 @@ async function loadUserPlaces() {
         const places = await response.json();
 
         // Filter places owned by current user
-        allPlaces = places.filter(p => p.owner_id === currentUserId);
+        allPlaces = places
+            .filter(p => p.owner_id === currentUserId)
+            .map(p => ({
+                ...p,
+                image_urls: normalizeImageUrls(p.image_urls)
+            }));
 
         displayPlaces();
 
@@ -198,6 +333,11 @@ function displayPlaces() {
 
         return `
         <div class="place-item">
+            ${place.image_urls && place.image_urls.length > 0 ? `
+                <div class="place-cover-preview">
+                    <img src="${place.image_urls[0]}" alt="${escapeHtml(place.title)}">
+                </div>
+            ` : ''}
             <div class="place-item-header">
                 <h3>${escapeHtml(place.title)}</h3>
                 <div class="place-badges">
@@ -344,6 +484,8 @@ function selectSearchResult(lat, lon, name) {
 function hideAddForm() {
     document.getElementById('addPlaceForm').classList.add('hidden');
     document.getElementById('placeFormSubmit').reset();
+    addPlaceImages = [];
+    renderImagePreviews('add');
 
     // Clean up map
     if (map) {
@@ -386,7 +528,8 @@ async function handleAddPlace(e) {
                 description,
                 latitude,
                 longitude,
-                amenities
+                amenities,
+                image_urls: addPlaceImages
             })
         });
 
@@ -420,6 +563,8 @@ function editPlace(placeId) {
     document.getElementById('editPlaceDescription').value = place.description || '';
     document.getElementById('editPlaceLatitude').value = place.latitude;
     document.getElementById('editPlaceLongitude').value = place.longitude;
+    editPlaceImages = normalizeImageUrls(place.image_urls);
+    renderImagePreviews('edit');
 
     // Display amenities with place's current amenities checked
     displayEditAmenities(place.amenities || []);
@@ -453,6 +598,8 @@ function displayEditAmenities(selectedAmenityIds) {
 function hideModal() {
     document.getElementById('editPlaceModal').classList.add('hidden');
     document.getElementById('editPlaceForm').reset();
+    editPlaceImages = [];
+    renderImagePreviews('edit');
     editingPlaceId = null;
 }
 
@@ -484,7 +631,8 @@ async function handleEditPlace(e) {
                 description,
                 latitude,
                 longitude,
-                amenities
+                amenities,
+                image_urls: editPlaceImages
             })
         });
 
