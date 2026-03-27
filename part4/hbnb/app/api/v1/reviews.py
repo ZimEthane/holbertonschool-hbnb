@@ -33,6 +33,17 @@ class ReviewList(Resource):
     def post(self):
         current_user_id = get_jwt_identity()
         data = api.payload
+
+        # Verify place exists and user is not the owner
+        place_id = data.get('place_id')
+        place = facade.get_place(place_id)
+        if not place:
+            return {'error': 'Place not found'}, 404
+
+        # Prevent place owner from reviewing their own place
+        if place.owner_id == current_user_id:
+            return {'error': 'You cannot review your own place'}, 403
+
         data['user_id'] = current_user_id
         try:
             new_review = facade.create_review(data)
