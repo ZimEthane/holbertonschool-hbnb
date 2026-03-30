@@ -93,7 +93,7 @@ class UserResource(Resource):
         """Update user details.
 
         * Admin: full access, can change email/password (with uniqueness check)
-        * Regular: only self; cannot change email/password.
+        * Regular: can change own email/name/phone; cannot change password.
         """
         from app.extensions import db
 
@@ -105,10 +105,13 @@ class UserResource(Resource):
             return {'error': 'Unauthorized action'}, 403
 
         data = api.payload
-        if not is_admin and ('email' in data or 'password' in data):
-            return {'error': 'You cannot modify email or password'}, 400
 
-        if is_admin and 'email' in data:
+        # Only admins can change password
+        if not is_admin and 'password' in data:
+            return {'error': 'You cannot modify password'}, 400
+
+        # Email uniqueness check for both admin and regular users
+        if 'email' in data:
             existing_user = facade.get_user_by_email(data['email'])
             if existing_user and existing_user.id != user_id:
                 return {'error': 'Email already in use'}, 400

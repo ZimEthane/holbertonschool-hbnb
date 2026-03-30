@@ -178,9 +178,10 @@ async function handleProfileUpdate(e) {
 
     const firstName = document.getElementById('firstName').value.trim();
     const lastName = document.getElementById('lastName').value.trim();
+    const email = document.getElementById('email').value.trim();
     const phone = document.getElementById('phone').value.trim();
 
-    if (!firstName || !lastName) {
+    if (!firstName || !lastName || !email) {
         showMessage('Veuillez remplir tous les champs requis', 'error');
         return;
     }
@@ -196,6 +197,7 @@ async function handleProfileUpdate(e) {
             body: JSON.stringify({
                 first_name: firstName,
                 last_name: lastName,
+                email: email,
                 phone: phone
             })
         });
