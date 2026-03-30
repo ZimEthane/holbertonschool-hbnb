@@ -10,7 +10,9 @@ let allPlaces = [];
 let allAmenities = [];
 let editingPlaceId = null;
 let map = null;
+let editMap = null;
 let marker = null;
+let editMarker = null;
 const MAX_PLACE_IMAGES = 6;
 const MAX_IMAGE_SIZE_MB = 5;
 let addPlaceImages = [];
@@ -86,6 +88,8 @@ function setupEventListeners() {
     const cancelEditBtn = document.getElementById('cancelEditBtn');
     const searchBtn = document.getElementById('searchBtn');
     const locationSearch = document.getElementById('locationSearch');
+    const editSearchBtn = document.getElementById('editSearchBtn');
+    const editLocationSearch = document.getElementById('editLocationSearch');
     const addImagesInput = document.getElementById('placeImages');
     const editImagesInput = document.getElementById('editPlaceImages');
     const addImagesPreview = document.getElementById('placeImagesPreview');
@@ -99,6 +103,7 @@ function setupEventListeners() {
     if (closeModalBtn) closeModalBtn.addEventListener('click', hideModal);
     if (cancelEditBtn) cancelEditBtn.addEventListener('click', hideModal);
     if (searchBtn) searchBtn.addEventListener('click', searchLocation);
+    if (editSearchBtn) editSearchBtn.addEventListener('click', searchEditLocation);
     if (addImagesInput) addImagesInput.addEventListener('change', (e) => handleImagesSelection(e, 'add'));
     if (editImagesInput) editImagesInput.addEventListener('change', (e) => handleImagesSelection(e, 'edit'));
     if (addImagesPreview) addImagesPreview.addEventListener('click', (e) => handleImageRemoval(e, 'add'));
@@ -107,6 +112,13 @@ function setupEventListeners() {
         locationSearch.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 searchLocation();
+            }
+        });
+    }
+    if (editLocationSearch) {
+        editLocationSearch.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                searchEditLocation();
             }
         });
     }
@@ -477,6 +489,105 @@ function selectSearchResult(lat, lon, name) {
     document.getElementById('searchResults').classList.add('hidden');
 }
 
+// ==================== EDIT MAP FUNCTIONS ====================
+async function searchEditLocation() {
+    const searchInput = document.getElementById('editLocationSearch').value.trim();
+    if (!searchInput) return;
+
+    try {
+        const response = await fetch(
+            `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(searchInput)}&format=json&limit=5`
+        );
+        const results = await response.json();
+
+        if (results.length === 0) {
+            displayEditSearchResults([]);
+            return;
+        }
+
+        displayEditSearchResults(results);
+    } catch (error) {
+        console.error('Erreur de recherche:', error);
+    }
+}
+
+function displayEditSearchResults(results) {
+    const resultsContainer = document.getElementById('editSearchResults');
+    if (results.length === 0) {
+        resultsContainer.classList.add('hidden');
+        return;
+    }
+
+    resultsContainer.innerHTML = results.map((result, index) => `
+        <div class="p-3 border-b border-gray-200 hover:bg-gray-50 cursor-pointer transition-colors" onclick="selectEditSearchResult(${result.lat}, ${result.lon}, '${escapeHtml(result.display_name)}')">
+            <strong class="text-gray-900 block">${escapeHtml(result.display_name.split(',')[0])}</strong>
+            <small class="text-gray-500">${escapeHtml(result.display_name)}</small>
+        </div>
+    `).join('');
+
+    resultsContainer.classList.remove('hidden');
+}
+
+function selectEditSearchResult(lat, lon, name) {
+    // Mettre à jour la map et les coordonnées
+    setLocationFromEditMap(lat, lon);
+
+    // Mettre à jour le champ de recherche
+    document.getElementById('editLocationSearch').value = name;
+
+    // Masquer les résultats
+    document.getElementById('editSearchResults').classList.add('hidden');
+}
+
+function initializeEditMap(lat, lng) {
+    const mapElement = document.getElementById('editPlaceMap');
+    if (!mapElement || editMap !== null) return;
+
+    // Initialize map
+    editMap = L.map('editPlaceMap').setView([lat, lng], 13);
+
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19
+    }).addTo(editMap);
+
+    // Handle map clicks to set coordinates
+    editMap.on('click', function(e) {
+        setLocationFromEditMap(e.latlng.lat, e.latlng.lng);
+    });
+
+    // Add initial marker
+    setLocationFromEditMap(lat, lng);
+}
+
+function setLocationFromEditMap(lat, lng) {
+    // Remove old marker
+    if (editMarker) {
+        editMap.removeLayer(editMarker);
+    }
+
+    // Add new marker
+    editMarker = L.marker([lat, lng], {
+        icon: L.icon({
+            iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+            iconSize: [25, 41],
+            shadowSize: [41, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowAnchor: [12, 41]
+        })
+    }).addTo(editMap);
+
+    // Update input fields with fixed precision
+    document.getElementById('editPlaceLatitude').value = lat.toFixed(6);
+    document.getElementById('editPlaceLongitude').value = lng.toFixed(6);
+
+    // Pan map to marker
+    editMap.panTo([lat, lng]);
+}
+
 function hideAddForm() {
     document.getElementById('addPlaceForm').classList.add('hidden');
     document.getElementById('placeFormSubmit').reset();
@@ -557,8 +668,8 @@ function editPlace(placeId) {
     document.getElementById('editPlaceName').value = place.title;
     document.getElementById('editPlacePrice').value = place.price;
     document.getElementById('editPlaceDescription').value = place.description || '';
-    document.getElementById('editPlaceLatitude').value = place.latitude;
-    document.getElementById('editPlaceLongitude').value = place.longitude;
+    document.getElementById('editPlaceLatitude').value = place.latitude.toFixed(6);
+    document.getElementById('editPlaceLongitude').value = place.longitude.toFixed(6);
     editPlaceImages = normalizeImageUrls(place.image_urls);
     renderImagePreviews('edit');
 
@@ -567,6 +678,17 @@ function editPlace(placeId) {
 
     // Show modal
     document.getElementById('editPlaceModal').classList.remove('hidden');
+
+    // Initialize map after modal is shown
+    setTimeout(() => {
+        // Clean up old map if exists
+        if (editMap) {
+            editMap.remove();
+            editMap = null;
+            editMarker = null;
+        }
+        initializeEditMap(place.latitude, place.longitude);
+    }, 100);
 }
 
 function displayEditAmenities(selectedAmenityIds) {
@@ -597,6 +719,13 @@ function hideModal() {
     editPlaceImages = [];
     renderImagePreviews('edit');
     editingPlaceId = null;
+
+    // Clean up edit map
+    if (editMap) {
+        editMap.remove();
+        editMap = null;
+        editMarker = null;
+    }
 }
 
 async function handleEditPlace(e) {
