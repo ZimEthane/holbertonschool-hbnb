@@ -123,29 +123,29 @@ function displayReviews(reviews) {
     const reviewsHtml = reviews.map(review => {
         const userAvatar = review.user_profile_picture || review.profile_picture || '/images/default-avatar.svg';
         return `
-        <div class="review-item">
-            <div class="review-header-info">
-                <img src="${userAvatar}" alt="${escapeHtml(review.place_title)}" class="review-item-avatar" onerror="this.src='/images/default-avatar.svg'">
-                <div class="review-place-info">
-                    <h3>${escapeHtml(review.place_title || 'Unknown Place')}</h3>
-                    <p class="review-meta">Avis le ${formatDate(review.created_at || new Date())}</p>
+        <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6 hover:shadow-md transition-shadow">
+            <div class="flex items-start gap-4 mb-4">
+                <img src="${userAvatar}" alt="${escapeHtml(review.place_title)}" class="w-12 h-12 rounded-full object-cover bg-gray-200" onerror="this.src='/images/default-avatar.svg'">
+                <div class="flex-1">
+                    <h3 class="font-bold text-gray-900">${escapeHtml(review.place_title || 'Unknown Place')}</h3>
+                    <p class="text-xs text-gray-500">Avis le ${formatDate(review.created_at || new Date())}</p>
                 </div>
             </div>
 
-            <div class="review-rating">
-                <span class="stars">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</span>
-                <span class="rating-number">${review.rating}/5</span>
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-lg text-yellow-500">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</span>
+                <span class="text-sm font-bold text-gray-700">${review.rating}/5</span>
             </div>
 
-            <div class="review-text">
-                <p>${escapeHtml(review.text)}</p>
+            <div class="mb-4">
+                <p class="text-gray-700 text-sm">${escapeHtml(review.text)}</p>
             </div>
 
-            <div class="review-actions">
-                <button class="edit-btn" onclick="openEditModal('${review.id}', '${escapeHtml(review.place_title)}', ${review.rating}, '${escapeHtml(review.text)}', '${review.place_id}')">
+            <div class="flex gap-2">
+                <button class="flex-1 text-sm bg-blue-500 text-white font-semibold py-2 rounded-lg hover:bg-blue-600 transition-colors" onclick="openEditModal('${review.id}', '${escapeHtml(review.place_title)}', ${review.rating}, '${escapeHtml(review.text)}', '${review.place_id}')">
                     ✏️ Modifier
                 </button>
-                <button class="delete-btn" onclick="deleteReview('${review.id}')">
+                <button class="flex-1 text-sm bg-red-500 text-white font-semibold py-2 rounded-lg hover:bg-red-600 transition-colors" onclick="deleteReview('${review.id}')">
                     🗑️ Supprimer
                 </button>
             </div>
@@ -319,8 +319,8 @@ function showError(message) {
     const container = document.getElementById('reviewsContainer');
     if (container) {
         container.innerHTML = `
-            <div class="error-message" style="color: #d32f2f; padding: 20px; text-align: center;">
-                ${escapeHtml(message)}
+            <div class="col-span-full bg-red-100 border border-red-300 rounded-lg p-6 text-center">
+                <p class="text-red-700 font-semibold">${escapeHtml(message)}</p>
             </div>
         `;
     }

@@ -186,14 +186,14 @@ function renderImagePreviews(mode) {
     }
 
     if (targetArray.length === 0) {
-        container.innerHTML = '<p class="images-empty">Aucune image selectionnee.</p>';
+        container.innerHTML = '<p class="text-gray-500 text-center py-4">Aucune image selectionnee.</p>';
         return;
     }
 
     container.innerHTML = targetArray.map((image, index) => `
-        <div class="image-preview-item">
-            <img src="${image}" alt="Image ${index + 1}">
-            <button type="button" class="remove-image-btn" data-index="${index}" aria-label="Retirer l'image">&times;</button>
+        <div class="relative bg-gray-200 rounded-lg overflow-hidden aspect-square">
+            <img src="${image}" alt="Image ${index + 1}" class="w-full h-full object-cover">
+            <button type="button" class="remove-image-btn absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600 transition-colors" data-index="${index}" aria-label="Retirer l'image">&times;</button>
         </div>
     `).join('');
 }
@@ -294,14 +294,14 @@ function displayAmenities() {
     if (!container) return;
 
     if (allAmenities.length === 0) {
-        container.innerHTML = '<p class="no-amenities">Aucune aménité disponible</p>';
+        container.innerHTML = '<p class="text-gray-500 col-span-full">Aucune aménité disponible</p>';
         return;
     }
 
     const html = allAmenities.map(amenity => `
-        <label class="amenity-checkbox">
-            <input type="checkbox" name="amenities" value="${amenity.id}">
-            <span>${escapeHtml(amenity.name)}</span>
+        <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+            <input type="checkbox" name="amenities" value="${amenity.id}" class="w-4 h-4 text-red-500 rounded">
+            <span class="text-gray-700 font-medium">${escapeHtml(amenity.name)}</span>
         </label>
     `).join('');
 
@@ -323,43 +323,40 @@ function displayPlaces() {
 
     placesList.innerHTML = allPlaces.map(place => {
         const amenitiesHtml = place.amenities && place.amenities.length > 0
-            ? `<div class="place-amenities">
+            ? `<div class="flex flex-wrap gap-2">
                 ${place.amenities.map(amenityId => {
                     const amenity = allAmenities.find(a => a.id === amenityId);
-                    return amenity ? `<span class="amenity-tag">${escapeHtml(amenity.name)}</span>` : '';
+                    return amenity ? `<span class="inline-block bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs font-medium">${escapeHtml(amenity.name)}</span>` : '';
                 }).join('')}
                 </div>`
             : '';
 
         return `
-        <div class="place-item">
+        <div class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
             ${place.image_urls && place.image_urls.length > 0 ? `
-                <div class="place-cover-preview">
-                    <img src="${place.image_urls[0]}" alt="${escapeHtml(place.title)}">
+                <div class="relative h-40 bg-gray-200 overflow-hidden">
+                    <img src="${place.image_urls[0]}" alt="${escapeHtml(place.title)}" class="w-full h-full object-cover">
                 </div>
             ` : ''}
-            <div class="place-item-header">
-                <h3>${escapeHtml(place.title)}</h3>
-                <div class="place-badges">
-                    <span class="badge price">${place.price}€/nuit</span>
+            <div class="p-6">
+                <div class="flex justify-between items-start gap-4 mb-3">
+                    <h3 class="text-lg font-bold text-gray-900 flex-1">${escapeHtml(place.title)}</h3>
+                    <span class="inline-block bg-red-100 text-red-700 px-3 py-1 rounded-lg text-base font-semibold whitespace-nowrap">${place.price}€/nuit</span>
                 </div>
-            </div>
 
-            <p class="place-description">${escapeHtml(place.description || '')}</p>
+                <p class="text-gray-600 text-sm mb-4 line-clamp-2">${escapeHtml(place.description || '')}</p>
 
-            ${amenitiesHtml}
+                ${amenitiesHtml}
 
-            <div class="place-meta">
-                <div class="meta-item">
-                    <span class="label">Coordonnées:</span>
-                    <span>${place.latitude.toFixed(4)}, ${place.longitude.toFixed(4)}</span>
+                <div class="mt-4 pt-4 border-t border-gray-200 text-xs text-gray-500">
+                    📍 ${place.latitude.toFixed(4)}, ${place.longitude.toFixed(4)}
                 </div>
-            </div>
 
-            <div class="place-actions">
-                <a href="/place.html?id=${place.id}" class="btn-view">👁️ Voir</a>
-                <button class="btn-edit" onclick="editPlace('${place.id}')">✏️ Modifier</button>
-                <button class="btn-delete" onclick="deletePlace('${place.id}')">🗑️ Supprimer</button>
+                <div class="mt-4 flex gap-2">
+                    <a href="/place.html?id=${place.id}" class="flex-1 text-center bg-gray-100 text-gray-900 font-semibold px-3 py-2 rounded-lg hover:bg-gray-200 transition-colors text-sm">👁️ Voir</a>
+                    <button class="flex-1 bg-blue-500 text-white font-semibold px-3 py-2 rounded-lg hover:bg-blue-600 transition-colors text-sm" onclick="editPlace('${place.id}')">✏️ Modifier</button>
+                    <button class="flex-1 bg-red-500 text-white font-semibold px-3 py-2 rounded-lg hover:bg-red-600 transition-colors text-sm" onclick="deletePlace('${place.id}')">🗑️ Supprimer</button>
+                </div>
             </div>
         </div>
     `}).join('');
@@ -460,10 +457,9 @@ function displaySearchResults(results) {
     }
 
     resultsContainer.innerHTML = results.map((result, index) => `
-        <div class="search-result-item" onclick="selectSearchResult(${result.lat}, ${result.lon}, '${escapeHtml(result.display_name)}')">
-            <strong>${escapeHtml(result.display_name.split(',')[0])}</strong>
-            <br>
-            <small style="color: #999;">${escapeHtml(result.display_name)}</small>
+        <div class="p-3 border-b border-gray-200 hover:bg-gray-50 cursor-pointer transition-colors" onclick="selectSearchResult(${result.lat}, ${result.lon}, '${escapeHtml(result.display_name)}')">
+            <strong class="text-gray-900 block">${escapeHtml(result.display_name.split(',')[0])}</strong>
+            <small class="text-gray-500">${escapeHtml(result.display_name)}</small>
         </div>
     `).join('');
 
@@ -578,16 +574,16 @@ function displayEditAmenities(selectedAmenityIds) {
     if (!container) return;
 
     if (allAmenities.length === 0) {
-        container.innerHTML = '<p class="no-amenities">Aucune aménité disponible</p>';
+        container.innerHTML = '<p class="text-gray-500 col-span-full">Aucune aménité disponible</p>';
         return;
     }
 
     const html = allAmenities.map(amenity => {
         const isChecked = selectedAmenityIds.includes(amenity.id) ? 'checked' : '';
         return `
-        <label class="amenity-checkbox">
-            <input type="checkbox" name="editAmenities" value="${amenity.id}" ${isChecked}>
-            <span>${escapeHtml(amenity.name)}</span>
+        <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+            <input type="checkbox" name="editAmenities" value="${amenity.id}" ${isChecked} class="w-4 h-4 text-red-500 rounded">
+            <span class="text-gray-700 font-medium">${escapeHtml(amenity.name)}</span>
         </label>
     `;
     }).join('');
