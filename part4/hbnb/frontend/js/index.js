@@ -58,14 +58,36 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- * Initialize price filter event listener
+ * Initialize page on load
  */
-function initPriceFilter() {
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('Index page loaded');
+    console.log('API URL:', API_BASE_URL);
+
+    initFilters();
+    loadPlaces();
+});
+
+/**
+ * Initialize all filters event listeners
+ */
+function initFilters() {
     const priceFilter = document.getElementById('priceFilter');
+    const sortPrice = document.getElementById('sortPrice');
+    const searchInput = document.getElementById('searchInput');
+    const resetBtn = document.getElementById('resetFiltersBtn');
+
     if (priceFilter) {
-        priceFilter.addEventListener('change', (event) => {
-            filterPlacesByPrice(event.target.value);
-        });
+        priceFilter.addEventListener('change', applyFilters);
+    }
+    if (sortPrice) {
+        sortPrice.addEventListener('change', applyFilters);
+    }
+    if (searchInput) {
+        searchInput.addEventListener('input', applyFilters);
+    }
+    if (resetBtn) {
+        resetBtn.addEventListener('click', resetFilters);
     }
 }
 
@@ -148,12 +170,15 @@ function displayPlaces(places) {
  */
 function createPlaceCard(place) {
     const card = document.createElement('div');
-    card.className = 'group cursor-pointer transition-all duration-300 hover:shadow-lg hover:border-red-300 border border-gray-100 rounded-xl overflow-hidden';
+    card.className = 'place-card group cursor-pointer transition-all duration-300 hover:shadow-lg hover:border-red-300 border border-gray-100 rounded-xl overflow-hidden bg-white';
     card.id = `place-${place.id}`;
 
-    // Utilise 'price' au lieu de 'price_per_night'
+    // Store data for filtering
     const priceValue = parseFloat(place.price) || 0;
+    const title = (place.title || place.name || 'Unnamed Place').toLowerCase();
+
     card.dataset.price = priceValue;
+    card.dataset.title = title;
 
     const name = place.title || place.name || 'Unnamed Place';
     const price = priceValue;
@@ -199,26 +224,95 @@ function getPlaceImage(place) {
 }
 
 /**
- * Filter places by price
+ * Apply all filters and sorting
  */
-function filterPlacesByPrice(maxPrice) {
-    console.log('Filtering by price:', maxPrice);
+function applyFilters() {
+    const priceFilter = document.getElementById('priceFilter').value;
+    const sortPrice = document.getElementById('sortPrice').value;
+    const searchInput = document.getElementById('searchInput').value.toLowerCase();
 
     const placesGrid = document.getElementById('placesGrid');
-    const cards = placesGrid.querySelectorAll('.place-card');
+    const cards = Array.from(placesGrid.querySelectorAll('.place-card'));
 
-    cards.forEach(card => {
+    // Filter cards
+    let visibleCards = cards.filter(card => {
         const price = parseFloat(card.dataset.price);
+        const title = card.dataset.title;
 
-        if (!maxPrice) {
-            // Show all if no filter selected
-            card.style.display = 'block';
-        } else {
-            const max = parseFloat(maxPrice);
-            // Show only if price is less than or equal to max
-            card.style.display = price <= max ? 'block' : 'none';
+        // Prix filter
+        if (priceFilter) {
+            if (priceFilter === '100+') {
+                // "Plus de 100€" - affiche seulement les prix > 100
+                if (price <= 100) {
+                    return false;
+                }
+            } else {
+                // Filtre normal "Jusqu'à X€"
+                if (price > parseFloat(priceFilter)) {
+                    return false;
+                }
+            }
+        }
+
+        // Recherche
+        if (searchInput && !title.includes(searchInput)) {
+            return false;
+        }
+
+        return true;
+    });
+
+    // Sort cards
+    if (sortPrice) {
+        visibleCards.sort((a, b) => {
+            const priceA = parseFloat(a.dataset.price);
+            const priceB = parseFloat(b.dataset.price);
+
+            if (sortPrice === 'asc') {
+                return priceA - priceB;
+            } else if (sortPrice === 'desc') {
+                return priceB - priceA;
+            }
+            return 0;
+        });
+    }
+
+    // Réorganiser les cartes dans le DOM
+    visibleCards.forEach(card => {
+        placesGrid.appendChild(card);
+        card.style.display = 'block';
+    });
+
+    // Cacher les cartes non visibles
+    cards.forEach(card => {
+        if (!visibleCards.includes(card)) {
+            card.style.display = 'none';
         }
     });
+
+    // Afficher message si aucun résultat
+    let emptyMsg = placesGrid.querySelector('.empty-state');
+    if (visibleCards.length === 0) {
+        if (!emptyMsg) {
+            emptyMsg = document.createElement('div');
+            emptyMsg.className = 'empty-state col-span-full text-center py-16 text-gray-500 text-lg';
+            placesGrid.appendChild(emptyMsg);
+        }
+        emptyMsg.textContent = 'Aucune location correspondant à vos critères';
+        emptyMsg.style.display = 'block';
+    } else {
+        if (emptyMsg) emptyMsg.style.display = 'none';
+    }
+}
+
+/**
+ * Reset all filters
+ */
+function resetFilters() {
+    document.getElementById('priceFilter').value = '';
+    document.getElementById('sortPrice').value = '';
+    document.getElementById('searchInput').value = '';
+    applyFilters();
 }
 
 /**
