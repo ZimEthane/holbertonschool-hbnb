@@ -102,7 +102,7 @@ function updateAuthenticationUI() {
         if (placeOwnerId && currentUserId && placeOwnerId === currentUserId) {
             addReviewSection?.classList.add('hidden');
             loginPrompt?.classList.remove('hidden');
-            loginPrompt.innerHTML = '<p>⚠️ Vous ne pouvez pas ajouter un avis à votre propre location</p>';
+            loginPrompt.innerHTML = '<p class="text-center text-yellow-600 font-medium mb-4">⚠️ Vous ne pouvez pas ajouter un avis à votre propre location</p>';
         } else {
             addReviewSection?.classList.remove('hidden');
             loginPrompt?.classList.add('hidden');
@@ -110,7 +110,7 @@ function updateAuthenticationUI() {
     } else {
         addReviewSection?.classList.add('hidden');
         loginPrompt?.classList.remove('hidden');
-        loginPrompt.innerHTML = '<p>Vous devez être connecté pour ajouter un avis</p><a href="/login.html" class="login-button">Se connecter</a>';
+        loginPrompt.innerHTML = '<p class="text-center text-gray-600 mb-4">Vous devez être connecté pour ajouter un avis</p><div class="text-center"><a href="/login.html" class="inline-block bg-red-500 text-white px-6 py-2.5 rounded-lg hover:bg-red-600 font-semibold transition-colors">Se connecter</a></div>';
     }
 }
 
@@ -199,53 +199,74 @@ function displayPlaceDetails(place) {
 
     // Build amenities HTML
     const amenitiesHtml = place.amenities && place.amenities.length > 0
-        ? `<div class="info-block">
-                <h4>Aménités</h4>
-                <div class="amenities-list">
+        ? `<div class="border-t border-gray-200 pt-6">
+                <h4 class="text-lg font-semibold text-gray-900 mb-4">✨ Aménités</h4>
+                <div class="flex flex-wrap gap-2">
                     ${place.amenities.map(amenityId => {
                         const amenity = allAmenities.find(a => a.id === amenityId);
-                        return amenity ? `<span class="amenity-tag">${escapeHtml(amenity.name)}</span>` : '';
+                        return amenity ? `<span class="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-700 text-sm font-medium rounded-full border border-red-200">${escapeHtml(amenity.name)}</span>` : '';
                     }).join('')}
                 </div>
             </div>`
         : '';
 
     const html = `
-        <div class="place-hero">
-            <img id="placeHeroImage" src="${carouselImages[0]}" alt="${escapeHtml(title)}" class="place-hero-image" onerror="this.src='/images/logo.png'">
+        <!-- Carousel Section -->
+        <div class="relative bg-gray-100 rounded-t-lg overflow-hidden">
+            <img id="placeHeroImage" src="${carouselImages[0]}" alt="${escapeHtml(title)}" class="w-full h-96 object-cover" onerror="this.src='/images/logo.png'">
             ${carouselImages.length > 1 ? `
-                <button type="button" class="hero-nav hero-nav-prev" onclick="changePlaceImage(-1)" aria-label="Image precedente">&#10094;</button>
-                <button type="button" class="hero-nav hero-nav-next" onclick="changePlaceImage(1)" aria-label="Image suivante">&#10095;</button>
-                <div id="placeHeroDots" class="hero-dots">
+                <button type="button" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-900 p-2 rounded-full transition-all z-10" onclick="changePlaceImage(-1)" aria-label="Image precedente">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
+                <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-900 p-2 rounded-full transition-all z-10" onclick="changePlaceImage(1)" aria-label="Image suivante">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+                <div id="placeHeroDots" class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
                     ${carouselImages.map((_, index) => `
-                        <button type="button" class="hero-dot ${index === 0 ? 'active' : ''}" onclick="goToPlaceImage(${index})" aria-label="Aller a l'image ${index + 1}"></button>
+                        <button type="button" class="hero-dot w-2.5 h-2.5 rounded-full transition-all ${index === 0 ? 'bg-white w-8' : 'bg-white/50 hover:bg-white/70'}" onclick="goToPlaceImage(${index})" aria-label="Aller a l'image ${index + 1}"></button>
                     `).join('')}
                 </div>
             ` : ''}
         </div>
 
-        <div class="place-header">
-            <h1>${escapeHtml(title)}</h1>
-            <div class="place-price-tag">${price}€ <span>/nuit</span></div>
+        <!-- Header Section -->
+        <div class="border-b border-gray-200 px-6 md:px-8 py-6">
+            <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-bold text-gray-900">${escapeHtml(title)}</h1>
+                </div>
+                <div class="flex items-baseline gap-2">
+                    <span class="text-3xl font-bold text-red-500">${price}€</span>
+                    <span class="text-gray-600 font-medium">/nuit</span>
+                </div>
+            </div>
         </div>
 
-        <div class="place-info-grid">
-            <div class="info-block">
-                <h4>Description</h4>
-                <p>${escapeHtml(description)}</p>
+        <!-- Info Grid Section -->
+        <div class="px-6 md:px-8 py-8 space-y-6">
+            <!-- Description -->
+            <div class="border-b border-gray-200 pb-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-3">📝 Description</h3>
+                <p class="text-gray-700 leading-relaxed">${escapeHtml(description)}</p>
             </div>
 
-            <div class="info-block">
-                <h4>Propriétaire</h4>
-                <p>${escapeHtml(ownerName)}</p>
+            <!-- Owner & Location Grid -->
+            <div class="grid md:grid-cols-2 gap-8 border-b border-gray-200 pb-6">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">👤 Propriétaire</h3>
+                    <p class="text-gray-700">${escapeHtml(ownerName)}</p>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">📍 Localisation</h3>
+                    <div class="text-gray-700 space-y-1">
+                        <p><span class="font-medium">Latitude:</span> ${latitude}</p>
+                        <p><span class="font-medium">Longitude:</span> ${longitude}</p>
+                    </div>
+                </div>
             </div>
 
-            <div class="info-block">
-                <h4>Localisation</h4>
-                <p>Latitude: ${latitude}</p>
-                <p>Longitude: ${longitude}</p>
-            </div>
-
+            <!-- Amenities -->
             ${amenitiesHtml}
         </div>
     `;
@@ -355,25 +376,28 @@ function displayReviews(reviews) {
     if (!reviewsList) return;
 
     if (!reviews || reviews.length === 0) {
-        reviewsList.innerHTML = '<p class="no-reviews">Aucun avis pour cette place. Soyez le premier!</p>';
+        reviewsList.innerHTML = '<p class="text-center text-gray-600 py-12">Aucun avis pour cette place. Soyez le premier!</p>';
         return;
     }
 
     const reviewsHtml = reviews.map(review => {
         const userAvatar = review.user_profile_picture || review.profile_picture || '/images/default-avatar.svg';
         return `
-        <div class="review-card">
-            <div class="review-header">
-                <div class="review-user-info">
-                    <img src="${userAvatar}" alt="${escapeHtml(review.user_name || 'Utilisateur')}" class="review-avatar" onerror="this.src='/images/default-avatar.svg'">
-                    <div class="review-user-details">
-                        <span class="review-author">${escapeHtml(review.user_name || 'Utilisateur')}</span>
-                        <span class="review-date">${formatDate(review.created_at || new Date())}</span>
+        <div class="border border-gray-200 rounded-lg p-6">
+            <div class="flex items-start justify-between mb-4">
+                <div class="flex items-start gap-4">
+                    <img src="${userAvatar}" alt="${escapeHtml(review.user_name || 'Utilisateur')}" class="w-12 h-12 rounded-full object-cover bg-gray-200" onerror="this.src='/images/default-avatar.svg'">
+                    <div>
+                        <p class="font-semibold text-gray-900">${escapeHtml(review.user_name || 'Utilisateur')}</p>
+                        <p class="text-sm text-gray-600">${formatDate(review.created_at || new Date())}</p>
                     </div>
                 </div>
-                <span class="review-rating">★ ${review.rating || 5}<span>/5</span></span>
+                <div class="flex items-center gap-1 text-yellow-400">
+                    <span class="text-lg">★</span>
+                    <span class="font-semibold text-gray-900">${review.rating || 5}<span class="text-sm text-gray-600">/5</span></span>
+                </div>
             </div>
-            <p class="review-comment">${escapeHtml(review.text || review.comment || '')}</p>
+            <p class="text-gray-700 leading-relaxed">${escapeHtml(review.text || review.comment || '')}</p>
         </div>
     `;
     }).join('');
@@ -497,8 +521,10 @@ function showError(message) {
     const detailsContainer = document.getElementById('placeDetails');
     if (detailsContainer) {
         detailsContainer.innerHTML = `
-            <div class="error-message" style="color: #d32f2f; padding: 20px; text-align: center;">
-                ${escapeHtml(message)}
+            <div class="text-center py-12 px-6">
+                <div class="inline-block bg-red-50 border border-red-200 rounded-lg p-6">
+                    <p class="text-red-600 font-medium">${escapeHtml(message)}</p>
+                </div>
             </div>
         `;
     }
