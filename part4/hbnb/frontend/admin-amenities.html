@@ -1,98 +1,101 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="HBNB - Gestion des Aménités">
-    <link rel="icon" type="image/png" href="/images/icon.png">
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/admin-amenities.css">
-    <title>HBNB - Gestion des Aménités</title>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="HBNB - Gestion des Aménités">
+  <link rel="icon" type="image/png" href="/images/icon.png">
+  <title>HBNB - Gestion des Aménités</title>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body>
-    <header>
-        <div class="header-left">
-            <img src="/images/logo.png" alt="HBNB Logo" class="logo">
-            <nav>
-                <a href="/index.html">Accueil</a>
-                <a href="/about.html">Aide</a>
-            </nav>
-        </div>
-        <button class="login-button" id="headerLoginBtn">Connexion</button>
-    </header>
+<body class="bg-gray-50 font-sans text-gray-900">
+  <!-- Header -->
+  <header class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 md:px-6 py-4 flex justify-between items-center gap-8">
+      <div class="flex items-center gap-8">
+        <img src="/images/logo.png" alt="HBNB" class="h-8 w-auto">
+        <nav class="hidden md:flex gap-8">
+          <a href="/index.html" class="font-medium text-gray-700 hover:text-red-500 transition-colors">Accueil</a>
+          <a href="/about.html" class="font-medium text-gray-700 hover:text-red-500 transition-colors">Aide</a>
+        </nav>
+      </div>
+      <button id="headerLoginBtn" class="px-6 py-2 text-gray-900 font-medium hover:text-red-500 transition-colors border border-gray-300 hover:border-red-500 rounded-lg">Connexion</button>
+    </div>
+  </header>
 
-    <main class="container">
-        <div class="page-header">
-            <h1>⚙️ Gestion des Aménités</h1>
-            <p class="subtitle">Administrez les aménités disponibles pour les locations</p>
-        </div>
-
-        <!-- Add Amenity Section -->
-        <div class="add-amenity-section">
-            <div class="section-header">
-                <h2>✨ Ajouter une nouvelle aménité</h2>
-            </div>
-            <form id="addAmenityForm" class="add-form">
-                <div class="form-group">
-                    <label for="amenityName">Nom de l'aménité *</label>
-                    <input
-                        type="text"
-                        id="amenityName"
-                        required
-                        placeholder="ex: WiFi, Piscine, Parking, Ascenseur..."
-                    >
-                </div>
-                <button type="submit" class="details-button">➕ Ajouter</button>
-            </form>
-        </div>
-
-        <!-- Amenities List -->
-        <div class="amenities-section">
-            <div class="section-header">
-                <h2>📋 Liste des aménités disponibles</h2>
-                <span id="amenitiesCount" class="count-badge">0</span>
-            </div>
-
-            <div id="amenitiesContainer" class="amenities-grid">
-                <!-- Aménités chargées dynamiquement -->
-            </div>
-
-            <div id="noAmenities" class="empty-state hidden">
-                <div class="empty-state-content">
-                    <h3>Aucune aménité</h3>
-                    <p>Commencez par ajouter les aménités disponibles pour vos locations</p>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Modal d'édition -->
-    <div id="editModal" class="modal hidden">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Modifier l'aménité</h2>
-                <button class="close-btn" onclick="closeEditModal()">✕</button>
-            </div>
-            <form id="editAmenityForm" class="modal-form">
-                <div class="form-group">
-                    <label for="editAmenityName">Nom de l'aménité</label>
-                    <input type="text" id="editAmenityName" required>
-                </div>
-
-                <div class="modal-buttons">
-                    <button type="submit" class="details-button">Enregistrer</button>
-                    <button type="button" class="cancel-button" onclick="closeEditModal()">Annuler</button>
-                </div>
-            </form>
-        </div>
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12">
+    <!-- Page Header -->
+    <div class="mb-12">
+      <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-2">⚙️ Gestion des Aménités</h1>
+      <p class="text-lg text-gray-600">Administrez les aménités disponibles pour les locations</p>
     </div>
 
-    <footer>
-        <p>&copy; 2026 HBNB. Tous droits réservés.</p>
-    </footer>
+    <!-- Add Amenity Section -->
+    <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6 md:p-8 mb-8">
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">✨ Ajouter une nouvelle aménité</h2>
+      <form id="addAmenityForm" class="flex flex-col md:flex-row gap-4">
+        <div class="flex-1">
+          <input
+            type="text"
+            id="amenityName"
+            required
+            placeholder="ex: WiFi, Piscine, Parking, Ascenseur..."
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-200 transition-all"
+          >
+        </div>
+        <button type="submit" class="bg-red-500 text-white font-semibold px-6 py-2 rounded-lg hover:bg-red-600 transition-colors whitespace-nowrap">➕ Ajouter</button>
+      </form>
+    </div>
 
-    <script src="/js/common.js"></script>
-    <script src="/js/admin-amenities.js"></script>
+    <!-- Amenities List -->
+    <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6 md:p-8">
+      <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
+        <h2 class="text-2xl font-bold text-gray-900">📋 Liste des aménités</h2>
+        <span id="amenitiesCount" class="bg-red-100 text-red-700 font-semibold px-3 py-1 rounded-full">0</span>
+      </div>
+
+      <div id="amenitiesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Amenities loaded by JavaScript -->
+      </div>
+
+      <div id="noAmenities" class="hidden text-center py-12">
+        <h3 class="text-xl font-bold text-gray-900 mb-2">Aucune aménité</h3>
+        <p class="text-gray-600">Commencez par ajouter les aménités disponibles pour vos locations</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal d'édition -->
+  <div id="editModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-lg shadow-lg max-w-md w-full">
+      <div class="flex justify-between items-center p-6 border-b border-gray-200">
+        <h2 class="text-xl font-bold text-gray-900">Modifier l'aménité</h2>
+        <button class="text-gray-500 hover:text-gray-700 text-2xl leading-none" onclick="closeEditModal()">✕</button>
+      </div>
+      <form id="editAmenityForm" class="p-6 space-y-6">
+        <div>
+          <label for="editAmenityName" class="block text-sm font-medium text-gray-700 mb-2">Nom de l'aménité</label>
+          <input type="text" id="editAmenityName" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-200 transition-all">
+        </div>
+
+        <div class="flex gap-4">
+          <button type="submit" class="flex-1 bg-red-500 text-white font-semibold py-2.5 rounded-lg hover:bg-red-600 transition-colors">Enregistrer</button>
+          <button type="button" class="flex-1 bg-gray-200 text-gray-900 font-semibold py-2.5 rounded-lg hover:bg-gray-300 transition-colors" onclick="closeEditModal()">Annuler</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-gray-200 mt-16 py-8">
+    <div class="max-w-7xl mx-auto px-4 md:px-6 text-center text-gray-500 text-sm">
+      <p>&copy; 2026 HBNB. Tous droits réservés.</p>
+    </div>
+  </footer>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/admin-amenities.js"></script>
 </body>
 </html>

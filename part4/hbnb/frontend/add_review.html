@@ -5,82 +5,97 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="HBNB - Ajouter un avis">
   <link rel="icon" type="image/png" href="/images/icon.png">
-  <link rel="stylesheet" href="/css/style.css">
-  <link rel="stylesheet" href="/css/add-review.css">
   <title>HBNB - Ajouter un Avis</title>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body>
-  <header>
-    <div class="header-left">
-      <img src="/images/logo.png" alt="HBNB Logo" class="logo">
-      <nav>
-        <a href="/index.html">Accueil</a>
-        <a href="/about.html">Aide</a>
-      </nav>
+<body class="bg-gray-50 font-sans text-gray-900">
+  <!-- Header -->
+  <header class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 md:px-6 py-4 flex justify-between items-center gap-8">
+      <div class="flex items-center gap-8">
+        <img src="/images/logo.png" alt="HBNB" class="h-8 w-auto">
+        <nav class="hidden md:flex gap-8">
+          <a href="/index.html" class="font-medium text-gray-700 hover:text-red-500 transition-colors">Accueil</a>
+          <a href="/about.html" class="font-medium text-gray-700 hover:text-red-500 transition-colors">Aide</a>
+        </nav>
+      </div>
+      <button id="headerLoginBtn" class="px-6 py-2 text-gray-900 font-medium hover:text-red-500 transition-colors border border-gray-300 hover:border-red-500 rounded-lg">Connexion</button>
     </div>
-    <button class="login-button" id="headerLoginBtn">Connexion</button>
   </header>
 
-  <main class="container">
-    <div class="review-form-container">
-      <div class="back-link">
-        <a href="javascript:history.back()">← Retour</a>
+  <!-- Main Content -->
+  <main class="max-w-2xl mx-auto px-4 md:px-6 py-8 md:py-12">
+    <a href="javascript:history.back()" class="inline-flex items-center text-red-500 hover:text-red-600 font-medium mb-8 transition-colors">
+      ← Retour
+    </a>
+
+    <!-- Auth Check -->
+    <div id="authCheck" class="bg-white rounded-lg border border-gray-200 shadow-sm p-8 text-center">
+      <p class="text-gray-600 mb-6">Vous devez être connecté pour ajouter un avis</p>
+      <button onclick="window.location.href='/login.html'" class="bg-red-500 text-white px-6 py-2.5 rounded-lg hover:bg-red-600 font-semibold transition-colors">Se connecter</button>
+    </div>
+
+    <!-- Review Form -->
+    <div id="reviewFormContent" class="hidden space-y-8">
+      <div>
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900">📝 Ajouter votre avis</h1>
       </div>
 
-      <div id="authCheck" class="auth-check">
-        <p>Vous devez être connecté pour ajouter un avis</p>
-        <button class="login-button" onclick="window.location.href='/login.html'">Se connecter</button>
-      </div>
-
-      <div id="reviewFormContent" class="hidden">
-        <h1>📝 Ajouter votre avis</h1>
-
-        <div class="form-section">
-          <h3>Évaluation</h3>
-          <div class="rating-display" id="ratingDisplay">★ 5</div>
-          <div class="stars-rating" id="starsContainer">
-            <span class="star active" data-rating="1">★</span>
-            <span class="star active" data-rating="2">★</span>
-            <span class="star active" data-rating="3">★</span>
-            <span class="star active" data-rating="4">★</span>
-            <span class="star active" data-rating="5">★</span>
+      <!-- Rating Section -->
+      <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6 md:p-8">
+        <h3 class="text-xl font-bold text-gray-900 mb-6">Évaluation</h3>
+        <div class="text-center">
+          <div id="ratingDisplay" class="text-5xl font-bold text-red-500 mb-6">★ 5</div>
+          <div id="starsContainer" class="flex justify-center gap-2 mb-6">
+            <span class="star active text-4xl cursor-pointer transition-colors hover:text-yellow-400" data-rating="1">★</span>
+            <span class="star active text-4xl cursor-pointer transition-colors hover:text-yellow-400" data-rating="2">★</span>
+            <span class="star active text-4xl cursor-pointer transition-colors hover:text-yellow-400" data-rating="3">★</span>
+            <span class="star active text-4xl cursor-pointer transition-colors hover:text-yellow-400" data-rating="4">★</span>
+            <span class="star active text-4xl cursor-pointer transition-colors hover:text-yellow-400" data-rating="5">★</span>
           </div>
         </div>
+      </div>
 
-        <form class="add-review form" id="addReviewForm">
-          <h3>Détails de votre avis</h3>
-
-          <div class="form-group">
-            <label for="reviewComment">Votre avis détaillé</label>
+      <!-- Review Details Form -->
+      <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6 md:p-8">
+        <h3 class="text-xl font-bold text-gray-900 mb-6">Détails de votre avis</h3>
+        <form id="addReviewForm" class="space-y-6">
+          <div>
+            <label for="reviewComment" class="block text-sm font-medium text-gray-700 mb-2">Votre avis détaillé</label>
             <textarea
               id="reviewComment"
               name="comment"
               required
               placeholder="Décrivez votre expérience..."
-              class="textarea-large"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-200 transition-all min-h-[150px]"
             ></textarea>
           </div>
 
-          <div class="form-buttons">
-            <button type="submit">✓ Soumettre l'avis</button>
-            <button type="reset">✕ Annuler</button>
+          <div class="flex gap-4">
+            <button type="submit" class="flex-1 bg-red-500 text-white font-semibold py-2.5 rounded-lg hover:bg-red-600 transition-colors">✓ Soumettre l'avis</button>
+            <button type="reset" class="flex-1 bg-gray-200 text-gray-900 font-semibold py-2.5 rounded-lg hover:bg-gray-300 transition-colors">✕ Annuler</button>
           </div>
         </form>
 
-        <div id="successMessage" class="hidden" style="color: #4caf50; padding: 20px; text-align: center;">
-          ✓ Avis soumis avec succès!
+        <!-- Success Message -->
+        <div id="successMessage" class="hidden mt-6 p-4 bg-green-50 border border-green-200 rounded-lg text-center">
+          <p class="text-green-700 font-semibold">✓ Avis soumis avec succès!</p>
         </div>
 
-        <div id="errorMessage" class="hidden" style="color: #d32f2f; padding: 20px; text-align: center;">
-          ✕ Erreur lors de la soumission
+        <!-- Error Message -->
+        <div id="errorMessage" class="hidden mt-6 p-4 bg-red-50 border border-red-200 rounded-lg text-center">
+          <p class="text-red-700 font-semibold">✕ Erreur lors de la soumission</p>
         </div>
       </div>
     </div>
   </main>
 
-  <footer>
-    <p>&copy; 2026 HBNB. Tous droits réservés.</p>
+  <!-- Footer -->
+  <footer class="bg-white border-t border-gray-200 mt-16 py-8">
+    <div class="max-w-7xl mx-auto px-4 md:px-6 text-center text-gray-500 text-sm">
+      <p>&copy; 2026 HBNB. Tous droits réservés.</p>
+    </div>
   </footer>
 
   <script src="/js/common.js"></script>

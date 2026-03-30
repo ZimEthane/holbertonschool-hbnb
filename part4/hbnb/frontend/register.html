@@ -5,65 +5,71 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="HBNB - Inscription">
   <link rel="icon" type="image/png" href="/images/icon.png">
-  <link rel="stylesheet" href="/css/style.css">
-  <link rel="stylesheet" href="/css/register.css">
   <title>HBNB - Inscription</title>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body>
-  <header>
-    <div class="header-left">
-      <img src="/images/logo.png" alt="HBNB Logo" class="logo">
-      <nav>
-        <a href="/index.html">Accueil</a>
-        <a href="/about.html">Aide</a>
-      </nav>
+<body class="bg-gray-50 font-sans text-gray-900">
+  <!-- Header -->
+  <header class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 md:px-6 py-4 flex justify-between items-center gap-8">
+      <div class="flex items-center gap-8">
+        <img src="/images/logo.png" alt="HBNB" class="h-8 w-auto">
+        <nav class="hidden md:flex gap-8">
+          <a href="/index.html" class="font-medium text-gray-700 hover:text-red-500 transition-colors">Accueil</a>
+          <a href="/about.html" class="font-medium text-gray-700 hover:text-red-500 transition-colors">Aide</a>
+        </nav>
+      </div>
+      <button id="headerLoginBtn" class="px-6 py-2 text-gray-900 font-medium hover:text-red-500 transition-colors border border-gray-300 hover:border-red-500 rounded-lg">Connexion</button>
     </div>
-    <button class="login-button" id="headerLoginBtn">Connexion</button>
   </header>
 
-  <main class="register-container">
-    <form class="register-form" id="registerForm">
-      <h1>Créer un compte</h1>
-      <p>Rejoignez-nous pour commencer vos aventures</p>
+  <!-- Main Content -->
+  <main class="flex items-center justify-center min-h-[calc(100vh-120px)] px-4 py-12">
+    <form id="registerForm" class="w-full max-w-md bg-white rounded-lg shadow-sm border border-gray-200 p-8 md:p-10">
+      <h1 class="text-3xl font-bold mb-2 text-gray-900">Créer un compte</h1>
+      <p class="text-gray-600 mb-8">Rejoignez-nous pour commencer vos aventures</p>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label for="firstName">Prénom</label>
+      <div class="grid grid-cols-2 gap-4 mb-6">
+        <div>
+          <label for="firstName" class="block text-sm font-medium text-gray-700 mb-2">Prénom</label>
           <input
             type="text"
             id="firstName"
             name="firstName"
             required
             placeholder="Jean"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-200 transition-all"
           >
         </div>
 
-        <div class="form-group">
-          <label for="lastName">Nom</label>
+        <div>
+          <label for="lastName" class="block text-sm font-medium text-gray-700 mb-2">Nom</label>
           <input
             type="text"
             id="lastName"
             name="lastName"
             required
             placeholder="Dupont"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-200 transition-all"
           >
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="email">Email</label>
+      <div class="mb-6">
+        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
         <input
           type="email"
           id="email"
           name="email"
           required
           placeholder="votre@email.com"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-200 transition-all"
         >
       </div>
 
-      <div class="form-group">
-        <label for="password">Mot de passe</label>
+      <div class="mb-6">
+        <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Mot de passe</label>
         <input
           type="password"
           id="password"
@@ -71,45 +77,54 @@
           required
           placeholder="••••••••"
           minlength="8"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-200 transition-all"
         >
-        <small>Minimum 8 caractères</small>
+        <small class="text-gray-500 text-xs mt-1">Minimum 8 caractères</small>
       </div>
 
-      <div class="form-group">
-        <label for="confirmPassword">Confirmer le mot de passe</label>
+      <div class="mb-6">
+        <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-2">Confirmer le mot de passe</label>
         <input
           type="password"
           id="confirmPassword"
           name="confirmPassword"
           required
           placeholder="••••••••"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-200 transition-all"
         >
       </div>
 
-      <div class="terms">
-        <label>
-          <input type="checkbox" id="terms" name="terms" required>
-          J'accepte les <a href="#">conditions d'utilisation</a> et la <a href="#">politique de confidentialité</a>
+      <div class="mb-6">
+        <label class="flex items-start text-sm text-gray-700">
+          <input type="checkbox" id="terms" name="terms" required class="w-4 h-4 border border-gray-300 rounded cursor-pointer mt-0.5">
+          <span class="ml-2">J'accepte les <a href="#" class="text-red-500 hover:text-red-600 font-medium">conditions d'utilisation</a> et la <a href="#" class="text-red-500 hover:text-red-600 font-medium">politique de confidentialité</a></span>
         </label>
       </div>
 
-      <button type="submit" class="register-btn">Créer mon compte</button>
+      <button type="submit" class="w-full bg-red-500 text-white font-semibold py-2.5 rounded-lg hover:bg-red-600 transition-colors mb-6">Créer mon compte</button>
 
-      <div class="divider"><span>OU</span></div>
-
-      <div class="social-buttons">
-        <button type="button">Google</button>
-        <button type="button">Facebook</button>
+      <div class="flex items-center gap-4 mb-6">
+        <div class="flex-1 h-px bg-gray-200"></div>
+        <span class="text-sm text-gray-500 font-medium">OU</span>
+        <div class="flex-1 h-px bg-gray-200"></div>
       </div>
 
-      <div class="login-link">
-        Déjà inscrit? <a href="/login.html">Se connecter</a>
+      <div class="grid grid-cols-2 gap-4 mb-8">
+        <button type="button" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium text-gray-700 transition-colors">Google</button>
+        <button type="button" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium text-gray-700 transition-colors">Facebook</button>
       </div>
+
+      <p class="text-center text-gray-600 text-sm">
+        Déjà inscrit? <a href="/login.html" class="text-red-500 hover:text-red-600 font-semibold">Se connecter</a>
+      </p>
     </form>
   </main>
 
-  <footer>
-    <p>&copy; 2026 HBNB. Tous droits réservés.</p>
+  <!-- Footer -->
+  <footer class="bg-white border-t border-gray-200 mt-16 py-8">
+    <div class="max-w-7xl mx-auto px-4 md:px-6 text-center text-gray-500 text-sm">
+      <p>&copy; 2026 HBNB. Tous droits réservés.</p>
+    </div>
   </footer>
 
   <script src="/js/common.js"></script>

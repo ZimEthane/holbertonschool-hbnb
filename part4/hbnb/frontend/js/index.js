@@ -132,7 +132,7 @@ function displayPlaces(places) {
     placesGrid.innerHTML = '';
 
     if (!places || places.length === 0) {
-        placesGrid.innerHTML = '<p class="no-places">Aucune place disponible</p>';
+        placesGrid.innerHTML = '<p class="col-span-full text-center py-16 text-gray-500 text-lg">Aucune place disponible</p>';
         return;
     }
 
@@ -148,7 +148,7 @@ function displayPlaces(places) {
  */
 function createPlaceCard(place) {
     const card = document.createElement('div');
-    card.className = 'place-card';
+    card.className = 'group cursor-pointer transition-all duration-300 hover:shadow-lg hover:border-red-300 border border-gray-100 rounded-xl overflow-hidden';
     card.id = `place-${place.id}`;
 
     // Utilise 'price' au lieu de 'price_per_night'
@@ -161,16 +161,16 @@ function createPlaceCard(place) {
     const imageUrl = getPlaceImage(place);
 
     card.innerHTML = `
-        <div class="place-image">
-            <img src="${imageUrl}" alt="${escapeHtml(name)}" onerror="this.src='/images/logo.png'">
-        </div>
-        <div class="place-info">
-            <h3 class="place-name">${escapeHtml(name)}</h3>
-            ${description ? `<p class="place-description">${escapeHtml(description.substring(0, 100))}</p>` : ''}
-            <div class="place-footer">
-                <span class="place-price">${price}€/nuit</span>
-                <a href="/place.html?id=${place.id}" class="details-button">Voir détails</a>
+        <div class="relative overflow-hidden">
+            <img src="${imageUrl}" alt="${escapeHtml(name)}" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='/images/logo.png'">
+            <div class="absolute top-3 right-3 bg-white px-3 py-1 rounded-full shadow-md">
+                <span class="font-semibold text-red-500">${price}€</span><span class="text-gray-600 text-sm">/nuit</span>
             </div>
+        </div>
+        <div class="p-4">
+            <h3 class="font-semibold text-gray-900 line-clamp-2 mb-2">${escapeHtml(name)}</h3>
+            ${description ? `<p class="text-gray-600 text-sm line-clamp-2 mb-4">${escapeHtml(description)}</p>` : '<div class="mb-4"></div>'}
+            <a href="/place.html?id=${place.id}" class="inline-block text-red-500 font-medium hover:text-red-700 transition-colors text-sm">Voir plus →</a>
         </div>
     `;
 
@@ -242,6 +242,6 @@ function escapeHtml(text) {
 function showPlacesError(message) {
     const placesGrid = document.getElementById('placesGrid');
     if (placesGrid) {
-        placesGrid.innerHTML = `<div class="error-message" style="color: #d32f2f; padding: 20px; text-align: center;">${escapeHtml(message)}</div>`;
+        placesGrid.innerHTML = `<div class="col-span-full bg-red-50 text-red-600 p-4 rounded-lg text-center border border-red-200">${escapeHtml(message)}</div>`;
     }
 }

@@ -5,74 +5,94 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="HBNB - Détails de la location">
   <link rel="icon" type="image/png" href="/images/icon.png">
-  <link rel="stylesheet" href="/css/style.css">
-  <link rel="stylesheet" href="/css/place.css">
   <title>HBNB - Détails</title>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body>
-  <header>
-    <div class="header-left">
-      <img src="/images/logo.png" alt="HBNB Logo" class="logo">
-      <nav>
-        <a href="/index.html">Accueil</a>
-        <a href="/about.html">Aide</a>
-      </nav>
+<body class="bg-gray-50 font-sans text-gray-900">
+  <!-- Header -->
+  <header class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 md:px-6 py-4 flex justify-between items-center gap-8">
+      <div class="flex items-center gap-8">
+        <img src="/images/logo.png" alt="HBNB" class="h-8 w-auto">
+        <nav class="hidden md:flex gap-8">
+          <a href="/index.html" class="font-medium text-gray-700 hover:text-red-500 transition-colors">Accueil</a>
+          <a href="/about.html" class="font-medium text-gray-700 hover:text-red-500 transition-colors">Aide</a>
+        </nav>
+      </div>
+      <button id="headerLoginBtn" class="px-6 py-2 text-gray-900 font-medium hover:text-red-500 transition-colors border border-gray-300 hover:border-red-500 rounded-lg">Connexion</button>
     </div>
-    <button class="login-button" id="headerLoginBtn">Connexion</button>
   </header>
 
-  <main class="container">
-    <div class="back-link">
-      <a href="/index.html">← Retour à l'accueil</a>
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12">
+    <a href="/index.html" class="inline-flex items-center text-red-500 hover:text-red-600 font-medium mb-8 transition-colors">
+      ← Retour à l'accueil
+    </a>
+
+    <!-- Place Details -->
+    <div id="placeDetails" class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden mb-8">
+      <!-- Details loaded by JavaScript -->
     </div>
 
-    <div class="place-details" id="placeDetails">
-      <!-- Contenu chargé dynamiquement -->
-    </div>
+    <!-- Reviews Section -->
+    <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6 md:p-8">
+      <h2 class="text-2xl font-bold text-gray-900 mb-8">📝 Avis des clients</h2>
 
-    <div class="reviews-section">
-      <h2>📝 Avis des clients</h2>
-      <div id="reviewsList">
-        <!-- Avis chargés dynamiquement -->
+      <div id="reviewsList" class="space-y-6 mb-8">
+        <!-- Reviews loaded by JavaScript -->
       </div>
 
-      <div id="addReviewSection" class="hidden">
-        <div class="add-review form">
-          <h3>Ajouter votre avis</h3>
-          <form id="addReviewForm">
-            <div class="form-group">
-              <label for="reviewRating">Note (1-5)</label>
-              <div class="flex-form">
-                <input type="range" id="reviewRating" name="rating" min="1" max="5" value="5" class="flex-input">
-                <span id="ratingValue">5</span>
-              </div>
+      <!-- Add Review Section -->
+      <div id="addReviewSection" class="hidden border-t border-gray-200 pt-8">
+        <h3 class="text-xl font-bold text-gray-900 mb-6">Ajouter votre avis</h3>
+        <form id="addReviewForm" class="space-y-6">
+          <div>
+            <label for="reviewRating" class="block text-sm font-medium text-gray-700 mb-3">Note (1-5)</label>
+            <div class="flex items-center gap-4">
+              <input
+                type="range"
+                id="reviewRating"
+                name="rating"
+                min="1"
+                max="5"
+                value="5"
+                class="flex-1"
+              >
+              <span id="ratingValue" class="text-lg font-semibold text-gray-900 min-w-[3rem]">5 ⭐</span>
             </div>
+          </div>
 
-            <div class="form-group">
-              <label for="reviewComment">Votre avis</label>
-              <textarea
-                id="reviewComment"
-                name="comment"
-                required
-                placeholder="Partagez votre expérience..."
-              ></textarea>
-            </div>
+          <div>
+            <label for="reviewComment" class="block text-sm font-medium text-gray-700 mb-2">Votre avis</label>
+            <textarea
+              id="reviewComment"
+              name="comment"
+              required
+              placeholder="Partagez votre expérience..."
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-200 transition-all min-h-[120px]"
+            ></textarea>
+          </div>
 
-            <button type="submit" class="details-button full-width">Soumettre l'avis</button>
-          </form>
-        </div>
+          <button type="submit" class="w-full bg-red-500 text-white font-semibold py-2.5 rounded-lg hover:bg-red-600 transition-colors">
+            Soumettre l'avis
+          </button>
+        </form>
       </div>
 
-      <div id="loginPrompt" class="login-prompt">
-        <p>Vous devez être connecté pour ajouter un avis</p>
-        <a href="/login.html" class="login-button">Se connecter</a>
+      <!-- Login Prompt -->
+      <div id="loginPrompt" class="text-center py-8">
+        <p class="text-gray-600 mb-4">Vous devez être connecté pour ajouter un avis</p>
+        <a href="/login.html" class="inline-block bg-red-500 text-white px-6 py-2.5 rounded-lg hover:bg-red-600 font-semibold transition-colors">Se connecter</a>
       </div>
     </div>
   </main>
 
-  <footer>
-    <p>&copy; 2026 HBNB. Tous droits réservés.</p>
+  <!-- Footer -->
+  <footer class="bg-white border-t border-gray-200 mt-16 py-8">
+    <div class="max-w-7xl mx-auto px-4 md:px-6 text-center text-gray-500 text-sm">
+      <p>&copy; 2026 HBNB. Tous droits réservés.</p>
+    </div>
   </footer>
 
   <script src="/js/common.js"></script>

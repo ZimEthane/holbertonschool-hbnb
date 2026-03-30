@@ -5,111 +5,116 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="HBNB - Profil Utilisateur">
   <link rel="icon" type="image/png" href="/images/icon.png">
-  <link rel="stylesheet" href="/css/style.css">
-  <link rel="stylesheet" href="/css/profile.css">
   <title>HBNB - Profil</title>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body>
-  <header>
-    <div class="header-left">
-      <img src="/images/logo.png" alt="HBNB Logo" class="logo">
-      <nav>
-        <a href="/index.html">Accueil</a>
-        <a href="/about.html">Aide</a>
-      </nav>
+<body class="bg-gray-50 font-sans text-gray-900">
+  <!-- Header -->
+  <header class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 md:px-6 py-4 flex justify-between items-center gap-8">
+      <div class="flex items-center gap-8">
+        <img src="/images/logo.png" alt="HBNB" class="h-8 w-auto">
+        <nav class="hidden md:flex gap-8">
+          <a href="/index.html" class="font-medium text-gray-700 hover:text-red-500 transition-colors">Accueil</a>
+          <a href="/about.html" class="font-medium text-gray-700 hover:text-red-500 transition-colors">Aide</a>
+        </nav>
+      </div>
+      <button id="headerLoginBtn" class="px-6 py-2 text-gray-900 font-medium hover:text-red-500 transition-colors border border-gray-300 hover:border-red-500 rounded-lg">Connexion</button>
     </div>
-    <button class="login-button" id="headerLoginBtn">Connexion</button>
   </header>
 
-  <main class="container">
-    <div class="profile-wrapper">
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 md:px-6 py-8 md:py-12">
+    <div class="space-y-6">
       <!-- Profile Header -->
-      <div class="profile-header">
-        <div class="profile-cover"></div>
-        <div class="profile-info">
-          <div class="avatar-container">
-            <img src="/images/logo.png" alt="Avatar" class="avatar" id="avatarDisplay">
-            <label class="avatar-upload">
-              <input type="file" id="avatarInput" accept="image/*">
-              <span class="camera-icon">📷</span>
+      <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6 md:p-8">
+        <div class="flex flex-col sm:flex-row gap-6 items-start sm:items-center mb-6">
+          <div class="relative">
+            <img src="/images/logo.png" alt="Avatar" id="avatarDisplay" class="h-24 w-24 rounded-full border-4 border-gray-200 object-cover">
+            <label class="absolute bottom-0 right-0 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 cursor-pointer transition-colors">
+              <input type="file" id="avatarInput" accept="image/*" class="hidden">
+              <span>📷</span>
             </label>
           </div>
-          <div class="user-basic">
-            <h1 id="displayName">Utilisateur</h1>
-            <p id="displayEmail">email@example.com</p>
+          <div>
+            <h1 id="displayName" class="text-3xl font-bold text-gray-900">Utilisateur</h1>
+            <p id="displayEmail" class="text-gray-600">email@example.com</p>
           </div>
         </div>
       </div>
 
       <!-- Edit Profile Form -->
-      <div class="profile-section">
-        <h2>Informations Personnelles</h2>
+      <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6 md:p-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Informations Personnelles</h2>
 
-        <form id="profileForm" class="profile-form">
-          <div class="form-row">
-            <div class="form-group">
-              <label for="firstName">Prénom</label>
-              <input type="text" id="firstName" name="firstName" required>
+        <form id="profileForm" class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="firstName" class="block text-sm font-medium text-gray-700 mb-2">Prénom</label>
+              <input type="text" id="firstName" name="firstName" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-200 transition-all">
             </div>
-            <div class="form-group">
-              <label for="lastName">Nom</label>
-              <input type="text" id="lastName" name="lastName" required>
+            <div>
+              <label for="lastName" class="block text-sm font-medium text-gray-700 mb-2">Nom</label>
+              <input type="text" id="lastName" name="lastName" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-200 transition-all">
             </div>
           </div>
 
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required>
+          <div>
+            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+            <input type="email" id="email" name="email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-200 transition-all">
           </div>
 
-          <div class="form-group">
-            <label for="phone">Téléphone (optionnel)</label>
-            <input type="tel" id="phone" name="phone" placeholder="+33 6 12 34 56 78">
+          <div>
+            <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Téléphone (optionnel)</label>
+            <input type="tel" id="phone" name="phone" placeholder="+33 6 12 34 56 78" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-200 transition-all">
           </div>
 
-          <div class="form-buttons">
-            <button type="submit" class="btn-primary">💾 Enregistrer les modifications</button>
-            <button type="reset" class="btn-secondary">↻ Annuler</button>
+          <div class="flex gap-4 pt-4">
+            <button type="submit" class="bg-red-500 text-white font-semibold px-6 py-2.5 rounded-lg hover:bg-red-600 transition-colors">💾 Enregistrer</button>
+            <button type="reset" class="bg-gray-200 text-gray-900 font-semibold px-6 py-2.5 rounded-lg hover:bg-gray-300 transition-colors">↻ Annuler</button>
           </div>
         </form>
 
-        <div id="profileMessage" class="message hidden"></div>
+        <div id="profileMessage" class="hidden mt-6 p-4 rounded-lg"></div>
       </div>
 
       <!-- Account Stats -->
-      <div class="profile-stats">
-        <div class="stat-card">
-          <div class="stat-number" id="placesCount">0</div>
-          <div class="stat-label">Locations</div>
-          <a href="/my-places.html" class="stat-link">Voir →</a>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6 text-center">
+          <div class="text-4xl font-bold text-red-500 mb-2" id="placesCount">0</div>
+          <div class="text-gray-600 font-medium mb-4">Locations</div>
+          <a href="/my-places.html" class="text-red-500 hover:text-red-600 font-semibold transition-colors">Voir →</a>
         </div>
-        <div class="stat-card">
-          <div class="stat-number" id="reviewsCount">0</div>
-          <div class="stat-label">Avis donnés</div>
+        <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6 text-center">
+          <div class="text-4xl font-bold text-red-500 mb-2" id="reviewsCount">0</div>
+          <div class="text-gray-600 font-medium">Avis donnés</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-number" id="accountAge">0</div>
-          <div class="stat-label">Jours</div>
+        <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6 text-center">
+          <div class="text-4xl font-bold text-red-500 mb-2" id="accountAge">0</div>
+          <div class="text-gray-600 font-medium">Jours</div>
         </div>
       </div>
 
       <!-- Danger Zone -->
-      <div class="profile-section danger-zone">
-        <h2>Zone Dangereuse</h2>
-        <div class="danger-box">
-          <div class="danger-info">
-            <h3>Supprimer le compte</h3>
-            <p>Une fois supprimé, il n'y a pas de retour en arrière. Soyez certain.</p>
+      <div class="bg-white rounded-lg border border-red-200 shadow-sm p-6 md:p-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">Zone Dangereuse</h2>
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-4 bg-red-50 rounded-lg border border-red-200">
+          <div>
+            <h3 class="font-bold text-gray-900">Supprimer le compte</h3>
+            <p class="text-gray-600 text-sm">Une fois supprimé, il n'y a pas de retour en arrière. Soyez certain.</p>
           </div>
-          <button id="deleteAccountBtn" class="btn-danger">🗑️ Supprimer mon compte</button>
+          <button id="deleteAccountBtn" class="bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-2.5 rounded-lg transition-colors whitespace-nowrap">🗑️ Supprimer</button>
         </div>
       </div>
     </div>
   </main>
 
-  <footer>
-    <p>&copy; 2026 HBNB. Tous droits réservés.</p>
+  <!-- Footer -->
+  <footer class="bg-white border-t border-gray-200 mt-16 py-8">
+    <div class="max-w-7xl mx-auto px-4 md:px-6 text-center text-gray-500 text-sm">
+      <p>&copy; 2026 HBNB. Tous droits réservés.</p>
+    </div>
   </footer>
 
   <script src="/js/common.js"></script>

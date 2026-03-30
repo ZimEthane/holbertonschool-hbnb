@@ -5,181 +5,182 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="HBNB - Mes Locations">
   <link rel="icon" type="image/png" href="/images/icon.png">
-  <link rel="stylesheet" href="/css/style.css">
-  <link rel="stylesheet" href="/css/my-places.css">
-  <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
   <title>HBNB - Mes Locations</title>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body>
-  <header>
-    <div class="header-left">
-      <img src="/images/logo.png" alt="HBNB Logo" class="logo">
-      <nav>
-        <a href="/index.html">Accueil</a>
-        <a href="/about.html">Aide</a>
-      </nav>
+<body class="bg-gray-50 font-sans text-gray-900">
+  <!-- Header -->
+  <header class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 md:px-6 py-4 flex justify-between items-center gap-8">
+      <div class="flex items-center gap-8">
+        <img src="/images/logo.png" alt="HBNB" class="h-8 w-auto">
+        <nav class="hidden md:flex gap-8">
+          <a href="/index.html" class="font-medium text-gray-700 hover:text-red-500 transition-colors">Accueil</a>
+          <a href="/about.html" class="font-medium text-gray-700 hover:text-red-500 transition-colors">Aide</a>
+        </nav>
+      </div>
+      <button id="headerLoginBtn" class="px-6 py-2 text-gray-900 font-medium hover:text-red-500 transition-colors border border-gray-300 hover:border-red-500 rounded-lg">Connexion</button>
     </div>
-    <button class="login-button" id="headerLoginBtn">Connexion</button>
   </header>
 
-  <main class="container">
-    <div class="my-places-wrapper">
-      <!-- Page Header -->
-      <div class="page-header">
-        <h1>🏠 Mes Locations</h1>
-        <button id="addPlaceBtn" class="btn-add-place">+ Ajouter une Location</button>
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12">
+    <!-- Page Header -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+      <div>
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900">🏠 Mes Locations</h1>
       </div>
+      <button id="addPlaceBtn" class="bg-red-500 text-white font-semibold px-6 py-2.5 rounded-lg hover:bg-red-600 transition-colors whitespace-nowrap">+ Ajouter une Location</button>
+    </div>
 
-      <!-- Add Place Form (Hidden by default) -->
-      <div id="addPlaceForm" class="add-place-form hidden">
-        <h2>Ajouter une nouvelle location</h2>
-        <form id="placeFormSubmit">
-          <div class="form-row">
-            <div class="form-group">
-              <label for="placeName">Nom de la location *</label>
-              <input type="text" id="placeName" name="title" required placeholder="Ex: Cosy Studio en Centre-Ville">
-            </div>
-            <div class="form-group">
-              <label for="placePrice">Prix par nuit (€) *</label>
-              <input type="number" id="placePrice" name="price" required min="1" step="0.01" placeholder="75">
-            </div>
+    <!-- Add Place Form (Hidden by default) -->
+    <div id="addPlaceForm" class="hidden bg-white rounded-lg border border-gray-200 shadow-sm p-6 md:p-8 mb-8">
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">Ajouter une nouvelle location</h2>
+      <form id="placeFormSubmit" class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label for="placeName" class="block text-sm font-medium text-gray-700 mb-2">Nom de la location *</label>
+            <input type="text" id="placeName" name="title" required placeholder="Ex: Cosy Studio en Centre-Ville" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-200 transition-all">
           </div>
-
-          <div class="form-group">
-            <label for="placeDescription">Description *</label>
-            <textarea id="placeDescription" name="description" required placeholder="Décrivez votre location..."></textarea>
+          <div>
+            <label for="placePrice" class="block text-sm font-medium text-gray-700 mb-2">Prix par nuit (€) *</label>
+            <input type="number" id="placePrice" name="price" required min="1" step="0.01" placeholder="75" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-200 transition-all">
           </div>
+        </div>
 
-          <div class="form-group">
-            <label for="placeImages">Images (jusqu'a 6)</label>
-            <input type="file" id="placeImages" name="images" accept="image/*" multiple>
-            <small class="field-help">Formats acceptes: JPG, PNG, WEBP. Taille max: 5 Mo par image.</small>
-            <div id="placeImagesPreview" class="images-preview"></div>
+        <div>
+          <label for="placeDescription" class="block text-sm font-medium text-gray-700 mb-2">Description *</label>
+          <textarea id="placeDescription" name="description" required placeholder="Décrivez votre location..." class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-200 transition-all min-h-[120px]"></textarea>
+        </div>
+
+        <div>
+          <label for="placeImages" class="block text-sm font-medium text-gray-700 mb-2">Images (jusqu'à 6)</label>
+          <input type="file" id="placeImages" name="images" accept="image/*" multiple class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+          <small class="text-gray-500 text-sm mt-1">Formats acceptés: JPG, PNG, WEBP. Taille max: 5 Mo par image.</small>
+          <div id="placeImagesPreview" class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4"></div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">🗺️ Sélectionner un lieu sur la carte *</label>
+          <div class="flex gap-4 mb-4">
+            <input type="text" id="locationSearch" placeholder="Chercher une ville, une adresse... (ex: Paris, France)" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-200 transition-all">
+            <button type="button" id="searchBtn" class="bg-gray-200 text-gray-900 font-semibold px-6 py-2 rounded-lg hover:bg-gray-300 transition-colors">🔍 Chercher</button>
           </div>
-
-          <div class="form-group">
-            <label>🗺️ Sélectionner un lieu sur la carte *</label>
-            <div class="search-container">
-              <input
-                type="text"
-                id="locationSearch"
-                placeholder="Chercher une ville, une adresse... (ex: Paris, France)"
-                class="location-search"
-              >
-              <button type="button" id="searchBtn" class="search-btn">🔍 Chercher</button>
-            </div>
-            <div id="searchResults" class="search-results hidden"></div>
-            <div id="mapContainer" class="map-container">
-              <div id="placeMap" class="map"></div>
-            </div>
+          <div id="searchResults" class="hidden mb-4 max-h-48 overflow-y-auto border border-gray-200 rounded-lg"></div>
+          <div id="mapContainer" class="mb-4">
+            <div id="placeMap" class="h-80 border border-gray-300 rounded-lg"></div>
           </div>
+        </div>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label for="placeLatitude">Latitude *</label>
-              <input type="number" id="placeLatitude" name="latitude" required step="0.0001" placeholder="48.8566" readonly>
-            </div>
-            <div class="form-group">
-              <label for="placeLongitude">Longitude *</label>
-              <input type="number" id="placeLongitude" name="longitude" required step="0.0001" placeholder="2.3522" readonly>
-            </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label for="placeLatitude" class="block text-sm font-medium text-gray-700 mb-2">Latitude *</label>
+            <input type="number" id="placeLatitude" name="latitude" required step="0.0001" placeholder="48.8566" readonly class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-600">
           </div>
-
-          <div class="form-group">
-            <label>Aménités</label>
-            <div id="amenitiesContainer" class="amenities-checkboxes">
-              <p class="loading-amenities">Chargement des aménités...</p>
-            </div>
+          <div>
+            <label for="placeLongitude" class="block text-sm font-medium text-gray-700 mb-2">Longitude *</label>
+            <input type="number" id="placeLongitude" name="longitude" required step="0.0001" placeholder="2.3522" readonly class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-600">
           </div>
+        </div>
 
-          <div class="form-buttons">
-            <button type="submit" class="btn-primary">✓ Créer la location</button>
-            <button type="button" class="btn-secondary" id="cancelFormBtn">Annuler</button>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Aménités</label>
+          <div id="amenitiesContainer" class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <p class="text-gray-500">Chargement des aménités...</p>
           </div>
-        </form>
-      </div>
+        </div>
 
-      <!-- Places List -->
-      <div class="places-list" id="placesList">
-        <p class="loading">Chargement de vos locations...</p>
-      </div>
+        <div class="flex gap-4 pt-4">
+          <button type="submit" class="bg-red-500 text-white font-semibold px-6 py-2.5 rounded-lg hover:bg-red-600 transition-colors">✓ Créer la location</button>
+          <button type="button" class="bg-gray-200 text-gray-900 font-semibold px-6 py-2.5 rounded-lg hover:bg-gray-300 transition-colors" id="cancelFormBtn">Annuler</button>
+        </div>
+      </form>
+    </div>
 
-      <!-- Empty State -->
-      <div id="emptyState" class="empty-state hidden">
-        <div class="empty-icon">📪</div>
-        <h3>Pas encore de locations</h3>
-        <p>Commencez à partager votre espace avec la communauté HBNB!</p>
-        <button id="emptyAddBtn" class="btn-primary">+ Ajouter ma première location</button>
+    <!-- Places List -->
+    <div id="placesList" class="space-y-6">
+      <p class="text-center text-gray-600 py-8">Chargement de vos locations...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="hidden text-center py-12">
+      <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-8">
+        <div class="text-4xl mb-4">📪</div>
+        <h3 class="text-2xl font-bold text-gray-900 mb-2">Pas encore de locations</h3>
+        <p class="text-gray-600 mb-6">Commencez à partager votre espace avec la communauté HBNB!</p>
+        <button id="emptyAddBtn" class="bg-red-500 text-white font-semibold px-6 py-2.5 rounded-lg hover:bg-red-600 transition-colors">+ Ajouter ma première location</button>
       </div>
     </div>
   </main>
 
-  <footer>
-    <p>&copy; 2026 HBNB. Tous droits réservés.</p>
-  </footer>
-
   <!-- Edit Place Modal -->
-  <div id="editPlaceModal" class="modal hidden">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>Modifier la location</h2>
-        <button class="modal-close" id="closeModalBtn">&times;</button>
+  <div id="editPlaceModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+    <div class="bg-white rounded-lg shadow-lg max-w-2xl w-full my-8">
+      <div class="flex justify-between items-center p-6 border-b border-gray-200 sticky top-0 bg-white">
+        <h2 class="text-xl font-bold text-gray-900">Modifier la location</h2>
+        <button id="closeModalBtn" class="text-gray-500 hover:text-gray-700 text-2xl leading-none">&times;</button>
       </div>
-      <form id="editPlaceForm">
-        <div class="form-row">
-          <div class="form-group">
-            <label for="editPlaceName">Nom de la location *</label>
-            <input type="text" id="editPlaceName" name="title" required>
+      <form id="editPlaceForm" class="p-6 space-y-6 max-h-[calc(100vh-200px)] overflow-y-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label for="editPlaceName" class="block text-sm font-medium text-gray-700 mb-2">Nom de la location *</label>
+            <input type="text" id="editPlaceName" name="title" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-200 transition-all">
           </div>
-          <div class="form-group">
-            <label for="editPlacePrice">Prix par nuit (€) *</label>
-            <input type="number" id="editPlacePrice" name="price" required min="1" step="0.01">
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="editPlaceDescription">Description *</label>
-          <textarea id="editPlaceDescription" name="description" required></textarea>
-        </div>
-
-        <div class="form-group">
-          <label for="editPlaceImages">Images (jusqu'a 6)</label>
-          <input type="file" id="editPlaceImages" name="images" accept="image/*" multiple>
-          <small class="field-help">Formats acceptes: JPG, PNG, WEBP. Taille max: 5 Mo par image.</small>
-          <div id="editPlaceImagesPreview" class="images-preview"></div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="editPlaceLatitude">Latitude *</label>
-            <input type="number" id="editPlaceLatitude" name="latitude" required step="0.0001">
-          </div>
-          <div class="form-group">
-            <label for="editPlaceLongitude">Longitude *</label>
-            <input type="number" id="editPlaceLongitude" name="longitude" required step="0.0001">
+          <div>
+            <label for="editPlacePrice" class="block text-sm font-medium text-gray-700 mb-2">Prix par nuit (€) *</label>
+            <input type="number" id="editPlacePrice" name="price" required min="1" step="0.01" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-200 transition-all">
           </div>
         </div>
 
-        <div class="form-group">
-          <label>Aménités</label>
-          <div id="editAmenitiesContainer" class="amenities-checkboxes">
-            <p class="loading-amenities">Chargement des aménités...</p>
+        <div>
+          <label for="editPlaceDescription" class="block text-sm font-medium text-gray-700 mb-2">Description *</label>
+          <textarea id="editPlaceDescription" name="description" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-200 transition-all min-h-[120px]"></textarea>
+        </div>
+
+        <div>
+          <label for="editPlaceImages" class="block text-sm font-medium text-gray-700 mb-2">Images (jusqu'à 6)</label>
+          <input type="file" id="editPlaceImages" name="images" accept="image/*" multiple class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+          <small class="text-gray-500 text-sm mt-1">Formats acceptés: JPG, PNG, WEBP. Taille max: 5 Mo par image.</small>
+          <div id="editPlaceImagesPreview" class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4"></div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label for="editPlaceLatitude" class="block text-sm font-medium text-gray-700 mb-2">Latitude *</label>
+            <input type="number" id="editPlaceLatitude" name="latitude" required step="0.0001" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-200 transition-all">
+          </div>
+          <div>
+            <label for="editPlaceLongitude" class="block text-sm font-medium text-gray-700 mb-2">Longitude *</label>
+            <input type="number" id="editPlaceLongitude" name="longitude" required step="0.0001" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-200 transition-all">
           </div>
         </div>
 
-        <div class="form-buttons">
-          <button type="submit" class="btn-primary">✓ Enregistrer</button>
-          <button type="button" class="btn-secondary" id="cancelEditBtn">Annuler</button>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Aménités</label>
+          <div id="editAmenitiesContainer" class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <p class="text-gray-500">Chargement des aménités...</p>
+          </div>
+        </div>
+
+        <div class="flex gap-4 pt-4">
+          <button type="submit" class="flex-1 bg-red-500 text-white font-semibold py-2.5 rounded-lg hover:bg-red-600 transition-colors">✓ Enregistrer</button>
+          <button type="button" class="flex-1 bg-gray-200 text-gray-900 font-semibold py-2.5 rounded-lg hover:bg-gray-300 transition-colors" id="cancelEditBtn">Annuler</button>
         </div>
       </form>
     </div>
   </div>
 
-  <script src="/js/common.js"></script>
-  <!-- Leaflet JS -->
+  <!-- Footer -->
+  <footer class="bg-white border-t border-gray-200 mt-16 py-8">
+    <div class="max-w-7xl mx-auto px-4 md:px-6 text-center text-gray-500 text-sm">
+      <p>&copy; 2026 HBNB. Tous droits réservés.</p>
+    </div>
+  </footer>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="/js/common.js"></script>
   <script src="/js/my-places.js"></script>
 </body>
 </html>

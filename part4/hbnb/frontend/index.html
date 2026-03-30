@@ -3,45 +3,59 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="HBNB - Your home away from home">
+  <meta name="description" content="HBNB - Locations de vacances">
   <link rel="icon" type="image/png" href="/images/icon.png">
-  <link rel="stylesheet" href="/css/style.css">
-  <title>HBNB - Places</title>
+  <title>HBNB - Locations de vacances</title>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body>
-  <header>
-    <div class="header-left">
-      <img src="/images/logo.png" alt="HBNB Logo" class="logo">
-      <nav>
-        <a href="/index.html">Accueil</a>
-        <a href="/about.html">Aide</a>
-      </nav>
+<body class="bg-gray-50 font-sans text-gray-900">
+  <!-- Header -->
+  <header class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 md:px-6 py-4 flex justify-between items-center gap-8">
+      <div class="flex items-center gap-8">
+        <img src="/images/logo.png" alt="HBNB" class="h-8 w-auto">
+        <nav class="hidden md:flex gap-8">
+          <a href="/index.html" class="font-medium text-gray-700 hover:text-red-500 transition-colors">Accueil</a>
+          <a href="/about.html" class="font-medium text-gray-700 hover:text-red-500 transition-colors">Aide</a>
+        </nav>
+      </div>
+      <button id="headerLoginBtn" class="px-6 py-2 text-gray-900 font-medium hover:text-red-500 transition-colors border border-gray-300 hover:border-red-500 rounded-lg">Connexion</button>
     </div>
-    <button class="login-button" id="headerLoginBtn">Connexion</button>
   </header>
 
-  <main class="container">
-    <h1>Découvrez nos meilleures locations</h1>
-    <p class="subtitle">Trouvez votre maison idéale parmi nos sélections de propriétés</p>
-
-    <div class="filters">
-      <label for="priceFilter">Filtrer par prix (par nuit):</label>
-      <select id="priceFilter" class="price-filter">
-        <option value="">Tous les prix</option>
-        <option value="10">Jusqu'à 10€</option>
-        <option value="50">Jusqu'à 50€</option>
-        <option value="100">Jusqu'à 100€</option>
-      </select>
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12">
+    <!-- Hero Section -->
+    <div class="mb-12">
+      <h1 class="text-4xl md:text-5xl font-bold mb-3 text-gray-900">Découvrez les meilleures locations</h1>
+      <p class="text-lg text-gray-600">Trouvez votre <span class="text-red-500 font-semibold">maison idéale</span> pour vos prochaines vacances</p>
     </div>
 
-    <div class="places-grid" id="placesGrid">
-      <!-- Les places seront chargées ici via JavaScript -->
+    <!-- Filters -->
+    <div class="mb-10 pb-8 border-b border-gray-200">
+      <div class="flex flex-col md:flex-row md:items-center gap-4">
+        <label for="priceFilter" class="font-medium text-gray-700 md:whitespace-nowrap">Filtrer par prix (par nuit):</label>
+        <select id="priceFilter" class="px-4 py-2 border border-gray-300 rounded-lg hover:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-200 transition-all text-gray-900 bg-white cursor-pointer md:max-w-xs">
+          <option value="">Tous les prix</option>
+          <option value="10">Jusqu'à 10€</option>
+          <option value="50">Jusqu'à 50€</option>
+          <option value="100">Jusqu'à 100€</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Places Grid -->
+    <div id="placesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Places loaded by JavaScript -->
     </div>
   </main>
 
-  <footer>
-    <p>&copy; 2026 HBNB. Tous droits réservés.</p>
+  <!-- Footer -->
+  <footer class="bg-white border-t border-gray-200 mt-16 py-8">
+    <div class="max-w-7xl mx-auto px-4 md:px-6 text-center text-gray-500 text-sm">
+      <p>&copy; 2026 HBNB. Tous droits réservés.</p>
+    </div>
   </footer>
 
   <script src="/js/common.js"></script>

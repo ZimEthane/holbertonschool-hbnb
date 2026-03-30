@@ -92,7 +92,7 @@ async function initHeaderLoginStatus() {
     } else {
         // User is not logged in - show login button
         headerLoginBtn.textContent = 'Connexion';
-        headerLoginBtn.className = 'login-button';
+        headerLoginBtn.className = 'px-6 py-2 text-gray-900 font-medium hover:text-red-500 transition-colors border border-gray-300 hover:border-red-500 rounded-lg';
         headerLoginBtn.onclick = () => {
             window.location.href = '/login.html';
         };
@@ -127,11 +127,11 @@ async function createProfileDropdown(headerLoginBtn) {
 
     // Create profile dropdown HTML
     const profileDropdown = document.createElement('div');
-    profileDropdown.className = 'profile-dropdown';
+    profileDropdown.className = 'relative';
     profileDropdown.id = 'profileDropdown';
 
     const profileBtn = document.createElement('button');
-    profileBtn.className = 'profile-btn';
+    profileBtn.className = 'flex items-center gap-2 px-4 py-2 text-gray-900 font-medium hover:text-red-500 transition-colors border border-gray-300 hover:border-red-500 rounded-lg';
     profileBtn.type = 'button';
     profileBtn.setAttribute('aria-label', 'Profil utilisateur');
 
@@ -140,40 +140,40 @@ async function createProfileDropdown(headerLoginBtn) {
     const userAvatar = fallbackAvatar;
 
     profileBtn.innerHTML = `
-        <img src="${userAvatar}" alt="Avatar" class="profile-avatar" onerror="this.src='/images/default-avatar.svg'">
-        <span>${userName.substring(0, 15)}</span>
-        <span style="font-size: 0.7rem;">▼</span>
+        <img src="${userAvatar}" alt="Avatar" class="h-8 w-8 rounded-full object-cover" onerror="this.src='/images/default-avatar.svg'">
+        <span class="hidden md:inline text-sm">${userName.substring(0, 15)}</span>
+        <span class="hidden md:inline text-xs">▼</span>
     `;
 
     const profileMenu = document.createElement('div');
-    profileMenu.className = 'profile-menu';
+    profileMenu.className = 'hidden absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-10';
 
     profileMenu.innerHTML = `
-        <div class="profile-menu-header">
-            <img src="${userAvatar}" alt="Avatar" class="profile-menu-avatar" onerror="this.src='/images/default-avatar.svg'">
-            <div class="profile-menu-info">
-                <h3>${escapeHtml(userName)}</h3>
-                <p>${escapeHtml(userEmail)}</p>
+        <div class="flex items-center gap-3 p-4 border-b border-gray-200">
+            <img src="${userAvatar}" alt="Avatar" class="h-12 w-12 rounded-full object-cover" onerror="this.src='/images/default-avatar.svg'">
+            <div class="flex-1 min-w-0">
+                <h3 class="font-bold text-gray-900 truncate">${escapeHtml(userName)}</h3>
+                <p class="text-sm text-gray-600 truncate">${escapeHtml(userEmail)}</p>
             </div>
         </div>
-        <div class="profile-menu-items">
-            <a href="/user-profile.html" class="profile-menu-item">
+        <div class="py-2">
+            <a href="/user-profile.html" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-red-500 transition-colors text-sm">
                 <span>👤</span> Profil
             </a>
-            <a href="/my-places.html" class="profile-menu-item">
+            <a href="/my-places.html" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-red-500 transition-colors text-sm">
                 <span>🏠</span> Mes Locations
             </a>
-            <a href="/my-reviews.html" class="profile-menu-item">
+            <a href="/my-reviews.html" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-red-500 transition-colors text-sm">
                 <span>📝</span> Mes Avis
             </a>
             ${isUserAdmin() ? `
-            <div class="profile-menu-divider"></div>
-            <a href="/admin-amenities.html" class="profile-menu-item">
+            <div class="border-t border-gray-200 my-2"></div>
+            <a href="/admin-amenities.html" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-red-500 transition-colors text-sm">
                 <span>⚙️</span> Aménités (Admin)
             </a>
             ` : ''}
-            <div class="profile-menu-divider"></div>
-            <button class="profile-menu-item logout" style="width: 100%; text-align: left; background: none; border: none; cursor: pointer;">
+            <div class="border-t border-gray-200 my-2"></div>
+            <button class="logout w-full flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-red-500 transition-colors text-sm text-left">
                 <span>🚪</span> Déconnexion
             </button>
         </div>
@@ -188,7 +188,7 @@ async function createProfileDropdown(headerLoginBtn) {
     // Setup event listeners
     profileBtn.addEventListener('click', function(e) {
         e.stopPropagation();
-        profileMenu.classList.toggle('active');
+        profileMenu.classList.toggle('hidden');
     });
 
     // Close menu when clicking on a link
@@ -199,7 +199,7 @@ async function createProfileDropdown(headerLoginBtn) {
                 e.preventDefault();
                 logoutUser();
             } else {
-                profileMenu.classList.remove('active');
+                profileMenu.classList.add('hidden');
             }
         });
     });
@@ -208,7 +208,7 @@ async function createProfileDropdown(headerLoginBtn) {
     document.addEventListener('click', function(event) {
         const isClickInsideDropdown = profileDropdown.contains(event.target);
         if (!isClickInsideDropdown) {
-            profileMenu.classList.remove('active');
+            profileMenu.classList.add('hidden');
         }
     });
 
@@ -313,15 +313,17 @@ function initHamburgerMenu() {
     let hamburger = document.querySelector('.hamburger');
     if (!hamburger) {
         hamburger = document.createElement('button');
-        hamburger.className = 'hamburger';
-        hamburger.innerHTML = '<span></span><span></span><span></span>';
+        hamburger.className = 'md:hidden flex flex-col gap-1.5 p-2 text-gray-900 hover:text-red-500 transition-colors';
+        hamburger.innerHTML = '<span class="w-6 h-0.5 bg-current block"></span><span class="w-6 h-0.5 bg-current block"></span><span class="w-6 h-0.5 bg-current block"></span>';
         hamburger.setAttribute('aria-label', 'Toggle menu');
         hamburger.setAttribute('aria-expanded', 'false');
-        
+
         // Insert before login button
-        const loginButton = header.querySelector('.login-button');
+        const loginButton = header.querySelector('button:not(.hamburger)');
         if (loginButton) {
             header.insertBefore(hamburger, loginButton);
+        } else {
+            header.appendChild(hamburger);
         }
     }
 
@@ -329,18 +331,22 @@ function initHamburgerMenu() {
     let mobileMenu = document.querySelector('.mobile-menu');
     if (!mobileMenu) {
         mobileMenu = document.createElement('div');
-        mobileMenu.className = 'mobile-menu';
-        
+        mobileMenu.className = 'hidden md:hidden fixed top-16 left-0 right-0 bg-white border-b border-gray-200 shadow-lg z-40';
+
         // Clone nav links into mobile menu
         const nav = header.querySelector('nav');
         if (nav) {
             const links = nav.querySelectorAll('a');
+            const menuContainer = document.createElement('div');
+            menuContainer.className = 'flex flex-col';
             links.forEach(link => {
                 const clonedLink = link.cloneNode(true);
-                mobileMenu.appendChild(clonedLink);
+                clonedLink.className = 'px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-red-500 transition-colors border-b border-gray-100 text-sm font-medium';
+                menuContainer.appendChild(clonedLink);
             });
+            mobileMenu.appendChild(menuContainer);
         }
-        
+
         // Insert after header
         header.parentNode.insertBefore(mobileMenu, header.nextSibling);
     }
@@ -349,8 +355,8 @@ function initHamburgerMenu() {
     hamburger.addEventListener('click', function(e) {
         e.stopPropagation();
         hamburger.classList.toggle('active');
-        mobileMenu.classList.toggle('active');
-        hamburger.setAttribute('aria-expanded', 
+        mobileMenu.classList.toggle('hidden');
+        hamburger.setAttribute('aria-expanded',
             hamburger.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
     });
 
@@ -359,7 +365,7 @@ function initHamburgerMenu() {
     menuLinks.forEach(link => {
         link.addEventListener('click', function() {
             hamburger.classList.remove('active');
-            mobileMenu.classList.remove('active');
+            mobileMenu.classList.add('hidden');
             hamburger.setAttribute('aria-expanded', 'false');
         });
     });
@@ -368,10 +374,10 @@ function initHamburgerMenu() {
     document.addEventListener('click', function(event) {
         const isClickInsideHeader = header.contains(event.target);
         const isClickInsideMenu = mobileMenu.contains(event.target);
-        
+
         if (!isClickInsideHeader && !isClickInsideMenu) {
             hamburger.classList.remove('active');
-            mobileMenu.classList.remove('active');
+            mobileMenu.classList.add('hidden');
             hamburger.setAttribute('aria-expanded', 'false');
         }
     });
@@ -380,7 +386,7 @@ function initHamburgerMenu() {
     window.addEventListener('resize', function() {
         if (window.innerWidth > 768) {
             hamburger.classList.remove('active');
-            mobileMenu.classList.remove('active');
+            mobileMenu.classList.add('hidden');
             hamburger.setAttribute('aria-expanded', 'false');
         }
     });
