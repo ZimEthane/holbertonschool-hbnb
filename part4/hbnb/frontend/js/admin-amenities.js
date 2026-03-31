@@ -163,18 +163,23 @@ function displayAmenities(amenities) {
     countBadge.textContent = amenities.length;
 
     const amenitiesHtml = amenities.map(amenity => `
-        <div class="amenity-card">
-            <div class="amenity-info">
-                <h3>${escapeHtml(amenity.name)}</h3>
-                <p class="amenity-id">ID: ${amenity.id.substring(0, 8)}...</p>
+        <div class="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg hover:border-red-300 transition-all duration-200 group">
+            <div class="flex items-start justify-between mb-4">
+                <div class="flex-1">
+                    <h3 class="text-lg font-bold text-gray-900 mb-1 group-hover:text-red-500 transition-colors">${escapeHtml(amenity.name)}</h3>
+                    <p class="text-xs text-gray-500 font-mono">ID: ${amenity.id.substring(0, 8)}...</p>
+                </div>
+                <span class="bg-red-50 text-red-600 text-xs font-semibold px-3 py-1 rounded-full">Actif</span>
             </div>
 
-            <div class="amenity-actions">
-                <button class="edit-btn" onclick="openEditModal('${amenity.id}', '${escapeHtml(amenity.name)}')">
-                    ✏️ Modifier
+            <div class="flex gap-2">
+                <button onclick="openEditModal('${amenity.id}', '${escapeHtml(amenity.name)}')" 
+                        class="flex-1 bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors flex items-center justify-center gap-2">
+                    <span>✏️</span> Modifier
                 </button>
-                <button class="delete-btn" onclick="deleteAmenity('${amenity.id}')">
-                    🗑️ Supprimer
+                <button onclick="deleteAmenity('${amenity.id}')" 
+                        class="flex-1 bg-red-500 hover:bg-red-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors flex items-center justify-center gap-2">
+                    <span>🗑️</span> Supprimer
                 </button>
             </div>
         </div>
