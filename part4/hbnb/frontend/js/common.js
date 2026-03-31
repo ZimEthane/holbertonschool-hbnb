@@ -164,7 +164,7 @@ async function createProfileDropdown(headerLoginBtn) {
     const userAvatar = fallbackAvatar;
 
     profileBtn.innerHTML = `
-        <img src="${userAvatar}" alt="Avatar" class="h-8 w-8 rounded-full object-cover" onerror="this.src='/images/default-avatar.svg'">
+        <img src="${userAvatar}" alt="Avatar" class="profile-avatar h-8 w-8 rounded-full object-cover" onerror="this.src='/images/default-avatar.svg'">
         <span class="hidden md:inline text-sm">${userName.substring(0, 15)}</span>
         <span class="hidden md:inline text-xs">▼</span>
     `;
@@ -174,8 +174,8 @@ async function createProfileDropdown(headerLoginBtn) {
 
     profileMenu.innerHTML = `
         <div class="flex items-center gap-3 p-4 border-b border-gray-200">
-            <img src="${userAvatar}" alt="Avatar" class="h-12 w-12 rounded-full object-cover" onerror="this.src='/images/default-avatar.svg'">
-            <div class="flex-1 min-w-0">
+            <img src="${userAvatar}" alt="Avatar" class="profile-menu-avatar h-12 w-12 rounded-full object-cover" onerror="this.src='/images/default-avatar.svg'">
+            <div class="flex-1 min-w-0 profile-menu-info">
                 <h3 class="font-bold text-gray-900 truncate">${escapeHtml(userName)}</h3>
                 <p class="text-sm text-gray-600 truncate">${escapeHtml(userEmail)}</p>
             </div>
@@ -255,7 +255,7 @@ async function createProfileDropdown(headerLoginBtn) {
                 const userData = await response.json();
                 const fullName = `${userData.first_name || ''} ${userData.last_name || ''}`.trim() || 'Profil';
                 const email = userData.email || '';
-                const avatar = userData.profile_picture || '/images/default-avatar.svg';
+                const avatar = userData.photo_url || '/images/default-avatar.svg';
 
                 const profileAvatar = profileBtn.querySelector('.profile-avatar');
                 const profileName = profileBtn.querySelector('span');

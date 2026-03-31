@@ -117,7 +117,7 @@ function displayUsersTable(users) {
         const date = new Date(user.created_at);
         const formattedDate = date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
         const fullName = `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'N/A';
-        const role = user.is_admin ? '👑 Admin' : '👤 User';
+        const avatar = user.photo_url || '/images/default-avatar.svg';
         const roleBadge = user.is_admin 
             ? '<span class="bg-purple-100 text-purple-700 text-xs font-semibold px-2 py-1 rounded-full">👑 Admin</span>'
             : '<span class="bg-blue-100 text-blue-700 text-xs font-semibold px-2 py-1 rounded-full">👤 User</span>';
@@ -125,7 +125,10 @@ function displayUsersTable(users) {
         return `
             <tr class="hover:bg-gray-50 transition-colors">
                 <td class="py-3 px-4">
-                    <div class="font-semibold text-gray-900">${escapeHtml(fullName)}</div>
+                    <div class="flex items-center gap-3">
+                        <img src="${avatar}" alt="${escapeHtml(fullName)}" class="w-10 h-10 rounded-full object-cover border-2 border-gray-200" onerror="this.src='/images/default-avatar.svg'">
+                        <div class="font-semibold text-gray-900">${escapeHtml(fullName)}</div>
+                    </div>
                 </td>
                 <td class="py-3 px-4 text-gray-700">${escapeHtml(user.email)}</td>
                 <td class="py-3 px-4 text-gray-600">${escapeHtml(user.phone || '-')}</td>
