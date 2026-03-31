@@ -33,36 +33,51 @@ function getApiUrl() {
  * Get JWT token from cookie
  */
 function getToken() {
-    const name = 'access_token=';
+    const cookieName = 'access_token=';
     const decodedCookie = decodeURIComponent(document.cookie);
     const cookieArray = decodedCookie.split(';');
 
     for (let cookie of cookieArray) {
         cookie = cookie.trim();
-        if (cookie.indexOf(name) === 0) {
-            return cookie.substring(name.length);
+        if (cookie.indexOf(cookieName) === 0) {
+            return cookie.substring(cookieName.length);
         }
     }
-    return null;
+
+    // Fallback for cases where cookie is not readable yet
+    return localStorage.getItem('access_token');
 }
 
 /**
- * Decode JWT to check if user is admin
+ * Decode JWT payload safely
+ */
+function decodeJwtPayload(token) {
+    if (!token || typeof token !== 'string') {
+        return null;
+    }
+
+    try {
+        const parts = token.split('.');
+        if (parts.length < 2) {
+            return null;
+        }
+
+        const base64Url = parts[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const padded = base64.padEnd(Math.ceil(base64.length / 4) * 4, '=');
+        return JSON.parse(atob(padded));
+    } catch (error) {
+        console.error('Error decoding token payload:', error);
+        return null;
+    }
+}
+
+/**
+ * Check if token payload has admin role
  */
 function isUserAdmin(token) {
-    try {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map((c) => {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-
-        const payload = JSON.parse(jsonPayload);
-        return payload.is_admin === true;
-    } catch (error) {
-        console.error('Error decoding token:', error);
-        return false;
-    }
+    const payload = decodeJwtPayload(token);
+    return payload?.is_admin === true;
 }
 
 /**

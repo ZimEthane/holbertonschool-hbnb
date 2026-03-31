@@ -22,11 +22,46 @@ function getTokenFromCookie() {
 }
 
 /**
+ * Get token from cookie or localStorage fallback
+ */
+function getAuthToken() {
+    const cookieToken = getTokenFromCookie();
+    if (cookieToken) {
+        return cookieToken;
+    }
+    return localStorage.getItem('access_token');
+}
+
+/**
+ * Decode JWT payload safely
+ */
+function decodeJwtPayload(token) {
+    if (!token || typeof token !== 'string') {
+        return null;
+    }
+
+    try {
+        const parts = token.split('.');
+        if (parts.length < 2) {
+            return null;
+        }
+
+        const base64Url = parts[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const padded = base64.padEnd(Math.ceil(base64.length / 4) * 4, '=');
+        return JSON.parse(atob(padded));
+    } catch (error) {
+        console.error('Error decoding token payload:', error);
+        return null;
+    }
+}
+
+/**
  * Check if user is logged in
  */
 function isUserLoggedIn() {
-    // Check cookie first (primary method)
-    const token = getTokenFromCookie();
+    // Check token first (cookie, then localStorage fallback)
+    const token = getAuthToken();
     if (token) {
         return true;
     }
@@ -38,22 +73,11 @@ function isUserLoggedIn() {
  * Check if user is admin from JWT
  */
 function isUserAdmin() {
-    const token = getTokenFromCookie();
+    const token = getAuthToken();
     if (!token) return false;
 
-    try {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map((c) => {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-
-        const payload = JSON.parse(jsonPayload);
-        return payload.is_admin === true;
-    } catch (error) {
-        console.error('Error decoding token:', error);
-        return false;
-    }
+    const payload = decodeJwtPayload(token);
+    return payload?.is_admin === true;
 }
 
 /**
@@ -123,7 +147,7 @@ async function createProfileDropdown(headerLoginBtn) {
     const fallbackEmail = localStorage.getItem('userEmail') || '';
     const fallbackAvatar = '/images/default-avatar.svg';
     const userId = localStorage.getItem('userId');
-    const token = getTokenFromCookie();
+    const token = getAuthToken();
 
     // Create profile dropdown HTML
     const profileDropdown = document.createElement('div');
@@ -166,12 +190,12 @@ async function createProfileDropdown(headerLoginBtn) {
             <a href="/my-reviews.html" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-red-500 transition-colors text-sm">
                 <span>📝</span> Mes Avis
             </a>
-            ${isUserAdmin() ? `
-            <div class="border-t border-gray-200 my-2"></div>
-            <a href="/admin-amenities.html" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-red-500 transition-colors text-sm">
+            <a href="/admin-amenities.html" class="admin-amenities-link flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-red-500 transition-colors text-sm" style="display: none;">
                 <span>⚙️</span> Aménités (Admin)
             </a>
-            ` : ''}
+            <a href="/admin-dashboard.html" class="admin-dashboard-link flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-red-500 transition-colors text-sm" style="display: none;">
+                <span>📊</span> Dashboard (Admin)
+            </a>
             <div class="border-t border-gray-200 my-2"></div>
             <button class="logout w-full flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-red-500 transition-colors text-sm text-left">
                 <span>🚪</span> Déconnexion
@@ -244,6 +268,23 @@ async function createProfileDropdown(headerLoginBtn) {
                 if (menuAvatar) menuAvatar.src = avatar;
                 if (menuName) menuName.textContent = fullName;
                 if (menuEmail) menuEmail.textContent = email;
+
+                // Show admin links if user is admin (check JWT token inline)
+                const token = getAuthToken();
+                const payload = token ? decodeJwtPayload(token) : null;
+                const userIsAdmin = payload?.is_admin === true;
+                
+                if (userIsAdmin) {
+                    const adminAmenitiesLink = profileMenu.querySelector('.admin-amenities-link');
+                    const adminDashboardLink = profileMenu.querySelector('.admin-dashboard-link');
+                    
+                    if (adminAmenitiesLink) {
+                        adminAmenitiesLink.style.display = 'flex';
+                    }
+                    if (adminDashboardLink) {
+                        adminDashboardLink.style.display = 'flex';
+                    }
+                }
             }
         } catch (error) {
             console.error('Error fetching user data:', error);
@@ -299,8 +340,20 @@ function removeUserNavLinks() {
     }
 }
 
+/**
+ * Add admin link to navbar for admins
+ * DISABLED: Admin link is now only in profile dropdown menu
+ */
+function addAdminNavLink() {
+    // Admin link is now in the profile dropdown menu only
+    return;
+}
+
 // Initialize header login status when DOM is ready
-document.addEventListener('DOMContentLoaded', initHeaderLoginStatus);
+document.addEventListener('DOMContentLoaded', function() {
+    initHeaderLoginStatus();
+    setTimeout(addAdminNavLink, 100); // Add admin link after auth check
+});
 
 /**
  * Initialize hamburger menu for mobile responsiveness
@@ -344,6 +397,16 @@ function initHamburgerMenu() {
                 clonedLink.className = 'px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-red-500 transition-colors border-b border-gray-100 text-sm font-medium';
                 menuContainer.appendChild(clonedLink);
             });
+
+            // Add admin link for admins
+            if (isUserAdmin()) {
+                const adminLink = document.createElement('a');
+                adminLink.href = '/admin-amenities.html';
+                adminLink.className = 'px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-red-500 transition-colors border-b border-gray-100 text-sm font-medium';
+                adminLink.innerHTML = '<span>⚙️</span> Aménités (Admin)';
+                menuContainer.appendChild(adminLink);
+            }
+
             mobileMenu.appendChild(menuContainer);
         }
 
