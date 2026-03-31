@@ -36,7 +36,7 @@
     <div class="mb-10 pb-8 border-b border-gray-200">
       <div class="flex flex-col gap-4">
         <h2 class="text-lg font-bold text-gray-900">🔍 Filtres</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <!-- Prix Filter -->
           <div class="space-y-2">
             <label for="priceFilter" class="block text-sm font-semibold text-gray-700">Prix maximum par nuit</label>
@@ -56,6 +56,16 @@
               <option value="">📊 Défaut</option>
               <option value="asc">⬆️ Prix croissant</option>
               <option value="desc">⬇️ Prix décroissant</option>
+            </select>
+          </div>
+
+          <!-- Tri par notation -->
+          <div class="space-y-2">
+            <label for="sortRating" class="block text-sm font-semibold text-gray-700">Trier par note</label>
+            <select id="sortRating" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-white text-gray-900 font-medium hover:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-transparent transition-all cursor-pointer">
+              <option value="">⭐ Défaut</option>
+              <option value="desc">⭐ Meilleures notes d'abord</option>
+              <option value="asc">⭐ Notes les plus basses</option>
             </select>
           </div>
 
