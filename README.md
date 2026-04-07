@@ -189,8 +189,8 @@ Après l’initialisation de la base de données :
 
 | Rôle | Email | Mot de passe |
 |------|-------|-------------|
-| Admin | admin@example.com | admin123 |
-| User | user@example.com | user123 |
+| Admin | admin@hbnb.com | Admin123! |
+| User | user@hbnb.com | User123! |
 
 _Les mots de passe exacts dépendent de vos scripts d’initialisation_
 
