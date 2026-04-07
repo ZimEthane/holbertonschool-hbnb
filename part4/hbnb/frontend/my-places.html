@@ -35,10 +35,31 @@
       <button id="addPlaceBtn" class="bg-red-500 text-white font-semibold px-6 py-2.5 rounded-lg hover:bg-red-600 transition-colors whitespace-nowrap">+ Ajouter une Location</button>
     </div>
 
-    <!-- Add Place Form (Hidden by default) -->
-    <div id="addPlaceForm" class="hidden bg-white rounded-lg border border-gray-200 shadow-sm p-6 md:p-8 mb-8">
-      <h2 class="text-2xl font-bold text-gray-900 mb-6">Ajouter une nouvelle location</h2>
-      <form id="placeFormSubmit" class="space-y-6">
+
+    <!-- Places List -->
+    <div id="placesList" class="space-y-6">
+      <p class="text-center text-gray-600 py-8">Chargement de vos locations...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="hidden text-center py-12">
+      <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-8">
+        <div class="text-4xl mb-4">📪</div>
+        <h3 class="text-2xl font-bold text-gray-900 mb-2">Pas encore de locations</h3>
+        <p class="text-gray-600 mb-6">Commencez à partager votre espace avec la communauté HBNB!</p>
+        <button id="emptyAddBtn" class="bg-red-500 text-white font-semibold px-6 py-2.5 rounded-lg hover:bg-red-600 transition-colors">+ Ajouter ma première location</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Add Place Modal -->
+  <div id="addPlaceModal" class="hidden fixed inset-0 bg-black/10 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
+    <div class="bg-white rounded-3xl shadow-lg max-w-2xl w-full my-8">
+      <div class="flex justify-between items-center p-6 border-b border-gray-200 sticky top-0 bg-white">
+        <h2 class="text-xl font-bold text-gray-900">Ajouter une nouvelle location</h2>
+        <button id="closeAddModalBtn" class="text-gray-500 hover:text-gray-700 text-2xl leading-none">&times;</button>
+      </div>
+      <form id="placeFormSubmit" class="p-6 space-y-6 max-h-[calc(100vh-200px)] overflow-y-auto">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label for="placeName" class="block text-sm font-medium text-gray-700 mb-2">Nom de la location *</label>
@@ -93,27 +114,12 @@
         </div>
 
         <div class="flex gap-4 pt-4">
-          <button type="submit" class="bg-red-500 text-white font-semibold px-6 py-2.5 rounded-lg hover:bg-red-600 transition-colors">✓ Créer la location</button>
-          <button type="button" class="bg-gray-200 text-gray-900 font-semibold px-6 py-2.5 rounded-lg hover:bg-gray-300 transition-colors" id="cancelFormBtn">Annuler</button>
+          <button type="submit" class="flex-1 bg-red-500 text-white font-semibold py-2.5 rounded-lg hover:bg-red-600 transition-colors">✓ Créer la location</button>
+          <button type="button" class="flex-1 bg-gray-200 text-gray-900 font-semibold py-2.5 rounded-lg hover:bg-gray-300 transition-colors" id="cancelFormBtn">Annuler</button>
         </div>
       </form>
     </div>
-
-    <!-- Places List -->
-    <div id="placesList" class="space-y-6">
-      <p class="text-center text-gray-600 py-8">Chargement de vos locations...</p>
-    </div>
-
-    <!-- Empty State -->
-    <div id="emptyState" class="hidden text-center py-12">
-      <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-8">
-        <div class="text-4xl mb-4">📪</div>
-        <h3 class="text-2xl font-bold text-gray-900 mb-2">Pas encore de locations</h3>
-        <p class="text-gray-600 mb-6">Commencez à partager votre espace avec la communauté HBNB!</p>
-        <button id="emptyAddBtn" class="bg-red-500 text-white font-semibold px-6 py-2.5 rounded-lg hover:bg-red-600 transition-colors">+ Ajouter ma première location</button>
-      </div>
-    </div>
-  </main>
+  </div>
 
   <!-- Edit Place Modal -->
   <div id="editPlaceModal" class="hidden fixed inset-0 bg-black/10 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">

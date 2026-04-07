@@ -84,6 +84,7 @@ function setupEventListeners() {
     const cancelBtn = document.getElementById('cancelFormBtn');
     const form = document.getElementById('placeFormSubmit');
     const editForm = document.getElementById('editPlaceForm');
+    const closeAddModalBtn = document.getElementById('closeAddModalBtn');
     const closeModalBtn = document.getElementById('closeModalBtn');
     const cancelEditBtn = document.getElementById('cancelEditBtn');
     const searchBtn = document.getElementById('searchBtn');
@@ -98,6 +99,7 @@ function setupEventListeners() {
     if (addBtn) addBtn.addEventListener('click', showAddForm);
     if (emptyAddBtn) emptyAddBtn.addEventListener('click', showAddForm);
     if (cancelBtn) cancelBtn.addEventListener('click', hideAddForm);
+    if (closeAddModalBtn) closeAddModalBtn.addEventListener('click', hideAddForm);
     if (form) form.addEventListener('submit', handleAddPlace);
     if (editForm) editForm.addEventListener('submit', handleEditPlace);
     if (closeModalBtn) closeModalBtn.addEventListener('click', hideModal);
@@ -374,17 +376,6 @@ function displayPlaces() {
     `}).join('');
 }
 
-function showAddForm() {
-    document.getElementById('addPlaceForm').classList.remove('hidden');
-
-    // Initialize map on form show
-    setTimeout(() => {
-        initializeMap();
-    }, 100);
-
-    document.getElementById('cancelFormBtn').scrollIntoView({ behavior: 'smooth' });
-}
-
 // ==================== MAP INITIALIZATION ====================
 function initializeMap() {
     const mapElement = document.getElementById('placeMap');
@@ -589,7 +580,7 @@ function setLocationFromEditMap(lat, lng) {
 }
 
 function hideAddForm() {
-    document.getElementById('addPlaceForm').classList.add('hidden');
+    document.getElementById('addPlaceModal').classList.add('hidden');
     document.getElementById('placeFormSubmit').reset();
     addPlaceImages = [];
     renderImagePreviews('add');
@@ -600,6 +591,15 @@ function hideAddForm() {
         map = null;
         marker = null;
     }
+}
+
+function showAddForm() {
+    document.getElementById('addPlaceModal').classList.remove('hidden');
+
+    // Initialize map on form show
+    setTimeout(() => {
+        initializeMap();
+    }, 100);
 }
 
 async function handleAddPlace(e) {
