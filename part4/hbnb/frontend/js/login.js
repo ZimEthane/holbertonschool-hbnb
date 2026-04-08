@@ -4,6 +4,33 @@
  */
 
 /**
+ * Fill test account credentials
+ */
+function fillTestAccount(email, password) {
+    if (emailInput && passwordInput) {
+        emailInput.value = email;
+        passwordInput.value = password;
+        emailInput.focus();
+    }
+}
+
+/**
+ * Toggle password visibility
+ */
+function togglePasswordVisibility() {
+    const passwordField = document.getElementById('password');
+    const toggleBtn = document.getElementById('toggleBtn');
+
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        toggleBtn.textContent = '🙈';
+    } else {
+        passwordField.type = 'password';
+        toggleBtn.textContent = '👁️';
+    }
+}
+
+/**
  * Auto-détecte l'URL de l'API selon l'environnement
  */
 function getApiUrl() {
